@@ -1,0 +1,933 @@
+# Human Decision Required (draft)
+
+## Activity Indicator Mapping
+
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Aasaman Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: ADRA Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: CMC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SAATHI, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: FPAN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Good Neighbors International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: KIDS, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Nepal Red Cross Society, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: PeaceWin, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: Plan International Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SOSEC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SOSEC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SOSEC Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: TPO Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: TPO Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: TPO Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: TPO Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: TPO Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: TPO Nepal, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: SPN, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+- IP: WOREC, Field: activity_indicator_mapping, Proposed: needs clarification, Confidence: high, Rationale: No matching entry in canonical crosswalk.
+
+## Evidence
+
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Aasaman Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: ADRA Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: CMC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SAATHI, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: FPAN, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Good Neighbors International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: KIDS, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Nepal Red Cross Society, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: PeaceWin, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: Plan International Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SOSEC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SOSEC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: SOSEC Nepal, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+- IP: WOREC, Field: evidence_requirement, Proposed: , Confidence: medium, Rationale: Evidence requirement not in canonical registry.
+
+## Kobo Label List
+
+- IP: N/A, Field: kobo_label_list, Proposed: see Kobo audit for label/list mismatches, Confidence: low, Rationale: Kobo forms cannot provide canonical codes; only label/list review is possible.
+

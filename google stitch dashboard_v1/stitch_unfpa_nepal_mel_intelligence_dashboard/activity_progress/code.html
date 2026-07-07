@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#360f00",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#a7c8ff",
+                    "on-surface-variant": "#43474f",
+                    "background": "#f8f9fa",
+                    "on-secondary-fixed-variant": "#7c2e00",
+                    "surface": "#f8f9fa",
+                    "primary-fixed": "#d5e3ff",
+                    "on-primary-container": "#799dd6",
+                    "on-secondary-container": "#541d00",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#a5c8ff",
+                    "tertiary-fixed": "#d4e3ff",
+                    "outline-variant": "#c3c6d1",
+                    "on-tertiary-container": "#4f9efd",
+                    "secondary": "#a33e00",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-fixed": "#ffdbcd",
+                    "outline": "#737780",
+                    "on-primary-fixed-variant": "#1f477b",
+                    "surface-container": "#edeeef",
+                    "on-background": "#191c1d",
+                    "on-tertiary-fixed-variant": "#004785",
+                    "secondary-container": "#fe6500",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e1e3e4",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "primary": "#001e40",
+                    "surface-dim": "#d9dadb",
+                    "surface-container-high": "#e7e8e9",
+                    "on-tertiary-fixed": "#001c3a",
+                    "surface-tint": "#3a5f94",
+                    "tertiary": "#001f3f",
+                    "on-surface": "#191c1d",
+                    "primary-fixed-dim": "#a7c8ff",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#003463",
+                    "inverse-surface": "#2e3132",
+                    "secondary-fixed-dim": "#ffb596",
+                    "primary-container": "#003366",
+                    "on-primary-fixed": "#001b3c",
+                    "surface-variant": "#e1e3e4",
+                    "surface-bright": "#f8f9fa",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "grid-gutter": "24px",
+                    "sidebar-width-collapsed": "72px",
+                    "sidebar-width-expanded": "260px",
+                    "canvas-aspect-ratio": "16:9",
+                    "component-gap": "16px",
+                    "container-padding": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display-lg": ["44px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-active {
+            border-left: 4px solid #fe6500;
+            background-color: #003366;
+            color: #799dd6;
+            font-weight: 700;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Side Navigation -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-primary w-sidebar-width-expanded shadow-sm">
+<div class="p-6 mb-4">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">UNFPA Nepal</h1>
+<p class="text-on-primary opacity-70 text-label-sm font-label-sm">MEL Intelligence</p>
+</div>
+<nav class="flex-1 overflow-y-auto hide-scrollbar">
+<ul class="space-y-1 px-2">
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span><span>Executive Overview</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 border-l-4 border-secondary-container bg-primary-container text-on-primary-container font-bold rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="trending_up">trending_up</span><span>Activity Progress</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="groups">groups</span><span>Participant &amp; Reach Profile</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="analytics">analytics</span><span>Indicator Progress</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="handshake">handshake</span><span>IP / Partner Performance</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="map">map</span><span>Geographic Coverage</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span><span>GBV / OCMC Service Summary</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="fact_check">fact_check</span><span>Data Quality &amp; Evidence</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="psychology">psychology</span><span>Management Decision Centre</span></a></li>
+<li><a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="list_alt">list_alt</span><span>Activity Detail</span></a></li>
+</ul>
+</nav>
+<div class="p-4 border-t border-primary-container/30">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-primary flex items-center justify-center font-bold">JD</div>
+<div class="flex-1">
+<p class="text-on-primary text-sm font-semibold">John Doe</p>
+<p class="text-on-primary/60 text-xs">M&amp;E Executive</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width-expanded min-h-screen flex flex-col">
+<!-- Top Nav Bar -->
+<header class="fixed top-0 right-0 left-sidebar-width-expanded z-30 flex items-center h-16 px-grid-gutter bg-surface/95 backdrop-blur-md border-b border-outline-variant">
+<div class="flex-1 flex items-center gap-6">
+<span class="font-headline-md text-headline-md text-primary font-bold">Activity Progress</span>
+<div class="h-8 w-px bg-outline-variant"></div>
+<!-- Filters Group -->
+<div class="flex items-center gap-4">
+<select class="bg-surface border border-outline rounded-lg px-3 py-1 text-label-sm font-label-sm focus:border-primary-container outline-none transition-colors">
+<option>Year: 2024</option>
+<option>2023</option>
+</select>
+<select class="bg-surface border border-outline rounded-lg px-3 py-1 text-label-sm font-label-sm focus:border-primary-container outline-none transition-colors">
+<option>Quarter: Q3</option>
+<option>Q1</option>
+<option>Q2</option>
+<option>Q4</option>
+</select>
+<select class="bg-surface border border-outline rounded-lg px-3 py-1 text-label-sm font-label-sm focus:border-primary-container outline-none transition-colors">
+<option>Outcome: All</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<input class="bg-surface-container-low border border-outline-variant rounded-full py-1.5 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary outline-none w-64" placeholder="Search activities..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors"><span class="material-symbols-outlined text-primary">filter_list</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors"><span class="material-symbols-outlined text-primary">notifications</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors"><span class="material-symbols-outlined text-primary">settings</span></button>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="pt-24 px-grid-gutter pb-grid-gutter flex-1 space-y-grid-gutter">
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-component-gap">
+<!-- Activities Conducted -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Activities Conducted</p>
+<span class="material-symbols-outlined text-primary-container opacity-60">event_available</span>
+</div>
+<p class="text-headline-lg font-headline-lg text-primary">450</p>
+<div class="flex items-center gap-1 mt-2 text-green-600 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm">arrow_upward</span>
+<span>12% vs last Q</span>
+</div>
+</div>
+<!-- Completed -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Completed</p>
+<span class="material-symbols-outlined text-green-600 opacity-60">check_circle</span>
+</div>
+<p class="text-headline-lg font-headline-lg text-primary">380</p>
+<div class="flex items-center gap-1 mt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span>84.4% of Target</span>
+</div>
+</div>
+<!-- Delayed (Red) -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-error">
+<div class="flex justify-between items-start mb-2">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Delayed</p>
+<span class="material-symbols-outlined text-error opacity-60">pending_actions</span>
+</div>
+<p class="text-headline-lg font-headline-lg text-error">42</p>
+<div class="flex items-center gap-1 mt-2 text-error font-label-sm text-label-sm">
+<span>Attention Required</span>
+</div>
+</div>
+<!-- Missing Evidence (Amber) -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-secondary">
+<div class="flex justify-between items-start mb-2">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Missing Evidence</p>
+<span class="material-symbols-outlined text-secondary opacity-60">warning</span>
+</div>
+<p class="text-headline-lg font-headline-lg text-secondary">28</p>
+<div class="flex items-center gap-1 mt-2 text-secondary font-label-sm text-label-sm">
+<span>Due for follow-up</span>
+</div>
+</div>
+<!-- Avg Achievement Rate -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Avg Achievement Rate</p>
+<span class="material-symbols-outlined text-primary opacity-60">bolt</span>
+</div>
+<p class="text-headline-lg font-headline-lg text-primary">92%</p>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-3">
+<div class="bg-primary-container h-full rounded-full" style="width: 92%"></div>
+</div>
+</div>
+<!-- IPs Reporting -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<p class="text-on-surface-variant font-label-sm text-label-sm">IPs Reporting</p>
+<span class="material-symbols-outlined text-primary opacity-60">handshake</span>
+</div>
+<p class="text-headline-lg font-headline-lg text-primary">24</p>
+<p class="mt-2 text-on-surface-variant font-label-sm text-label-sm">Out of 26 total</p>
+</div>
+</div>
+<!-- Visuals Grid (Middle Row) -->
+<div class="grid grid-cols-12 gap-grid-gutter">
+<!-- Activity by Project (Stacked Bars) -->
+<div class="col-span-8 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Activity by Project</h3>
+<div class="flex gap-4 text-label-sm font-label-sm">
+<div class="flex items-center gap-1"><span class="w-3 h-3 bg-primary-container rounded-sm"></span> Completed</div>
+<div class="flex items-center gap-1"><span class="w-3 h-3 bg-secondary-container rounded-sm"></span> On-track</div>
+<div class="flex items-center gap-1"><span class="w-3 h-3 bg-error rounded-sm"></span> Delayed</div>
+</div>
+</div>
+<div class="space-y-6">
+<!-- Project Row 1 -->
+<div>
+<div class="flex justify-between text-label-sm font-medium mb-2"><span>Gender Equality &amp; Empowerment</span><span>120 Activities</span></div>
+<div class="flex h-6 rounded-md overflow-hidden bg-surface-container">
+<div class="bg-primary-container h-full" style="width: 70%"></div>
+<div class="bg-secondary-container h-full" style="width: 20%"></div>
+<div class="bg-error h-full" style="width: 10%"></div>
+</div>
+</div>
+<!-- Project Row 2 -->
+<div>
+<div class="flex justify-between text-label-sm font-medium mb-2"><span>Adolescent &amp; Youth Empowerment</span><span>95 Activities</span></div>
+<div class="flex h-6 rounded-md overflow-hidden bg-surface-container">
+<div class="bg-primary-container h-full" style="width: 85%"></div>
+<div class="bg-secondary-container h-full" style="width: 10%"></div>
+<div class="bg-error h-full" style="width: 5%"></div>
+</div>
+</div>
+<!-- Project Row 3 -->
+<div>
+<div class="flex justify-between text-label-sm font-medium mb-2"><span>Reproductive Health Services</span><span>140 Activities</span></div>
+<div class="flex h-6 rounded-md overflow-hidden bg-surface-container">
+<div class="bg-primary-container h-full" style="width: 60%"></div>
+<div class="bg-secondary-container h-full" style="width: 30%"></div>
+<div class="bg-error h-full" style="width: 10%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Evidence Status (Donut Chart) -->
+<div class="col-span-4 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant flex flex-col">
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Evidence Status</h3>
+<div class="flex-1 flex flex-col items-center justify-center relative">
+<!-- Circular Graphic Placeholder -->
+<div class="w-48 h-48 rounded-full border-[16px] border-primary-container flex items-center justify-center relative">
+<div class="absolute inset-[-16px] rounded-full border-[16px] border-secondary-container border-r-transparent border-t-transparent border-b-transparent transform rotate-[45deg]" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);"></div>
+<div class="text-center">
+<span class="block text-headline-lg font-headline-lg text-primary">94%</span>
+<span class="text-label-sm text-on-surface-variant">Validated</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4 w-full">
+<div class="bg-surface-container p-3 rounded-lg text-center">
+<p class="text-headline-md text-primary-container font-bold">422</p>
+<p class="text-label-sm">Uploaded</p>
+</div>
+<div class="bg-error-container p-3 rounded-lg text-center">
+<p class="text-headline-md text-error font-bold">28</p>
+<p class="text-label-sm">Missing</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity by Event Type & IP Rankings (Bottom Row) -->
+<div class="grid grid-cols-12 gap-grid-gutter">
+<!-- Activity by Event Type (Bar Chart) -->
+<div class="col-span-6 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Activity by Event Type</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<span class="w-24 text-label-sm font-medium">Workshops</span>
+<div class="flex-1 bg-surface-container h-8 rounded-r-lg overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 88%"></div>
+</div>
+<span class="w-8 text-label-sm font-bold text-primary">124</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-label-sm font-medium">Training</span>
+<div class="flex-1 bg-surface-container h-8 rounded-r-lg overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 76%"></div>
+</div>
+<span class="w-8 text-label-sm font-bold text-primary">108</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-label-sm font-medium">Awareness</span>
+<div class="flex-1 bg-surface-container h-8 rounded-r-lg overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 65%"></div>
+</div>
+<span class="w-8 text-label-sm font-bold text-primary">92</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-label-sm font-medium">Service Del.</span>
+<div class="flex-1 bg-surface-container h-8 rounded-r-lg overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 42%"></div>
+</div>
+<span class="w-8 text-label-sm font-bold text-primary">58</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-label-sm font-medium">Advocacy</span>
+<div class="flex-1 bg-surface-container h-8 rounded-r-lg overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 30%"></div>
+</div>
+<span class="w-8 text-label-sm font-bold text-primary">42</span>
+</div>
+</div>
+</div>
+<!-- Activity by IP (Ranked List) -->
+<div class="col-span-6 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Leading Partners (IPs)</h3>
+<button class="text-primary font-bold text-label-sm flex items-center gap-1 hover:underline">View All <span class="material-symbols-outlined text-sm">open_in_new</span></button>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center font-bold text-primary text-xs">01</div>
+<div>
+<p class="font-bold text-sm">WOREC Nepal</p>
+<p class="text-xs text-on-surface-variant">42 Activities Conducted</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-green-600">98%</p>
+<p class="text-[10px] uppercase text-on-surface-variant tracking-wider">Achievement</p>
+</div>
+</div>
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center font-bold text-primary text-xs">02</div>
+<div>
+<p class="font-bold text-sm">FWLD</p>
+<p class="text-xs text-on-surface-variant">38 Activities Conducted</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-green-600">95%</p>
+<p class="text-[10px] uppercase text-on-surface-variant tracking-wider">Achievement</p>
+</div>
+</div>
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center font-bold text-primary text-xs">03</div>
+<div>
+<p class="font-bold text-sm">Plan International</p>
+<p class="text-xs text-on-surface-variant">35 Activities Conducted</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-green-600">92%</p>
+<p class="text-[10px] uppercase text-on-surface-variant tracking-wider">Achievement</p>
+</div>
+</div>
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center font-bold text-primary text-xs">04</div>
+<div>
+<p class="font-bold text-sm">Restless Development</p>
+<p class="text-xs text-on-surface-variant">31 Activities Conducted</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-green-600">89%</p>
+<p class="text-[10px] uppercase text-on-surface-variant tracking-wider">Achievement</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Table -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-primary">Activity Detail Table</h3>
+<div class="flex gap-2">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-label-sm font-bold flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">download</span> Export CSV
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">
+<tr>
+<th class="px-6 py-4">Project</th>
+<th class="px-6 py-4">Activity Name</th>
+<th class="px-6 py-4">Implementing Partner</th>
+<th class="px-6 py-4">Province</th>
+<th class="px-6 py-4">Achievement %</th>
+<th class="px-6 py-4">Evidence</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-sm">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 text-primary font-medium">Reproductive Health</td>
+<td class="px-6 py-4">Mobile Health Camp - Bajura</td>
+<td class="px-6 py-4">ADRA Nepal</td>
+<td class="px-6 py-4">Sudurpashchim</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 bg-surface-container h-1.5 rounded-full"><div class="bg-green-600 h-full rounded-full" style="width: 100%"></div></div>
+<span>100%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-primary"><span class="material-symbols-outlined">description</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 text-primary font-medium">Gender Equality</td>
+<td class="px-6 py-4">SASANE Training Workshop</td>
+<td class="px-6 py-4">WOREC</td>
+<td class="px-6 py-4">Lumbini</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 bg-surface-container h-1.5 rounded-full"><div class="bg-green-600 h-full rounded-full" style="width: 95%"></div></div>
+<span>95%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-primary"><span class="material-symbols-outlined">description</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors bg-error-container/10">
+<td class="px-6 py-4 text-primary font-medium">Youth Empowerment</td>
+<td class="px-6 py-4">Peer Educator Refresher</td>
+<td class="px-6 py-4">Restless Dev</td>
+<td class="px-6 py-4">Madhesh</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 bg-surface-container h-1.5 rounded-full"><div class="bg-secondary-container h-full" style="width: 40%"></div></div>
+<span>40%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-secondary"><span class="material-symbols-outlined" data-weight="fill">warning</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 text-primary font-medium">GBV Prevention</td>
+<td class="px-6 py-4">Community Legal Awareness</td>
+<td class="px-6 py-4">FWLD</td>
+<td class="px-6 py-4">Bagmati</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 bg-surface-container h-1.5 rounded-full"><div class="bg-green-600 h-full rounded-full" style="width: 88%"></div></div>
+<span>88%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-primary"><span class="material-symbols-outlined">description</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant flex items-center justify-between text-label-sm font-label-sm">
+<p class="text-on-surface-variant">Showing 1-10 of 450 activities</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-outline rounded hover:bg-surface-container transition-colors">Previous</button>
+<button class="px-3 py-1 bg-primary text-on-primary rounded">1</button>
+<button class="px-3 py-1 border border-outline rounded hover:bg-surface-container transition-colors">2</button>
+<button class="px-3 py-1 border border-outline rounded hover:bg-surface-container transition-colors">3</button>
+<button class="px-3 py-1 border border-outline rounded hover:bg-surface-container transition-colors">Next</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-4 px-grid-gutter flex justify-between items-center bg-surface-container-lowest border-t border-outline-variant text-label-sm font-label-sm text-on-surface-variant">
+<p>© 2024 UNFPA Nepal. Data freshness: Updated 24h ago. Privacy Suppressed for sensitive indicators.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary underline transition-colors" href="#">Methodology</a>
+<a class="hover:text-primary underline transition-colors" href="#">Contact Support</a>
+<a class="hover:text-primary underline transition-colors" href="#">Privacy Policy</a>
+</div>
+</footer>
+</main>
+<!-- Contextual Floating Action Button -->
+<button class="fixed bottom-8 right-8 bg-secondary-container text-white p-4 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-50 flex items-center gap-2 group">
+<span class="material-symbols-outlined">add</span>
+<span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 font-bold whitespace-nowrap">Report New Activity</span>
+</button>
+</body></html>

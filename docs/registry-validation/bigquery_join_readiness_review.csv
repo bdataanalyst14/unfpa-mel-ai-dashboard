@@ -1,0 +1,3 @@
+table,join_key,status,me_review_status,me_corrected_value,me_comments,approved_by,approved_date
+combined_activity_summary,registry_activity_id,weak,,,,,
+indicator_progress_summary,registry_indicator_id,ready,,,,,

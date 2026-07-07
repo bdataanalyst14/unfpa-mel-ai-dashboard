@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UNFPA Nepal MEL Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "on-secondary-fixed": "#360f00",
+                "error": "#ba1a1a",
+                "inverse-primary": "#a7c8ff",
+                "on-surface-variant": "#43474f",
+                "background": "#f8f9fa",
+                "on-secondary-fixed-variant": "#7c2e00",
+                "surface": "#f8f9fa",
+                "primary-fixed": "#d5e3ff",
+                "on-primary-container": "#799dd6",
+                "on-secondary-container": "#541d00",
+                "on-error-container": "#93000a",
+                "tertiary-fixed-dim": "#a5c8ff",
+                "tertiary-fixed": "#d4e3ff",
+                "outline-variant": "#c3c6d1",
+                "on-tertiary-container": "#4f9efd",
+                "secondary": "#a33e00",
+                "surface-container-low": "#f3f4f5",
+                "secondary-fixed": "#ffdbcd",
+                "outline": "#737780",
+                "on-primary-fixed-variant": "#1f477b",
+                "surface-container": "#edeeef",
+                "on-background": "#191c1d",
+                "on-tertiary-fixed-variant": "#004785",
+                "secondary-container": "#fe6500",
+                "on-tertiary": "#ffffff",
+                "surface-container-highest": "#e1e3e4",
+                "inverse-on-surface": "#f0f1f2",
+                "on-primary": "#ffffff",
+                "primary": "#001e40",
+                "surface-dim": "#d9dadb",
+                "surface-container-high": "#e7e8e9",
+                "on-tertiary-fixed": "#001c3a",
+                "surface-tint": "#3a5f94",
+                "tertiary": "#001f3f",
+                "on-surface": "#191c1d",
+                "primary-fixed-dim": "#a7c8ff",
+                "error-container": "#ffdad6",
+                "tertiary-container": "#003463",
+                "inverse-surface": "#2e3132",
+                "secondary-fixed-dim": "#ffb596",
+                "primary-container": "#003366",
+                "on-primary-fixed": "#001b3c",
+                "surface-variant": "#e1e3e4",
+                "surface-bright": "#f8f9fa",
+                "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "grid-gutter": "24px",
+                "sidebar-width-collapsed": "72px",
+                "sidebar-width-expanded": "260px",
+                "canvas-aspect-ratio": "16:9",
+                "component-gap": "16px",
+                "container-padding": "32px"
+              },
+              "fontFamily": {
+                "body-md": ["Inter"],
+                "headline-md": ["Inter"],
+                "label-sm": ["Inter"],
+                "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .custom-shadow { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03); }
+        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full bg-primary text-on-primary z-40 sidebar-transition w-[260px] flex flex-col shadow-sm" id="sidebar">
+<div class="h-16 flex items-center px-6 shrink-0 border-b border-primary-container/20">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-on-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div class="overflow-hidden whitespace-nowrap">
+<p class="font-headline-md text-[18px] font-bold leading-none">UNFPA Nepal</p>
+<p class="text-[10px] opacity-70 tracking-wider">MEL INTELLIGENCE</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto py-4">
+<ul class="space-y-1 px-3">
+<!-- Executive Overview - ACTIVE -->
+<li>
+<a class="flex items-center gap-4 px-3 py-3 border-l-4 border-secondary-container bg-primary-container text-on-primary-container font-bold rounded-r-lg transition-all" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="dashboard">dashboard</span>
+<span class="text-body-md whitespace-nowrap">Executive Overview</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="trending_up">trending_up</span>
+<span class="text-body-md whitespace-nowrap">Activity Progress</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="groups">groups</span>
+<span class="text-body-md whitespace-nowrap">Participant Profile</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="analytics">analytics</span>
+<span class="text-body-md whitespace-nowrap">Indicator Progress</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="handshake">handshake</span>
+<span class="text-body-md whitespace-nowrap">IP Performance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="map">map</span>
+<span class="text-body-md whitespace-nowrap">Geographic Coverage</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="health_and_safety">health_and_safety</span>
+<span class="text-body-md whitespace-nowrap">GBV Service Summary</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="fact_check">fact_check</span>
+<span class="text-body-md whitespace-nowrap">Data Quality &amp; Evidence</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="psychology">psychology</span>
+<span class="text-body-md whitespace-nowrap">Decision Centre</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="list_alt">list_alt</span>
+<span class="text-body-md whitespace-nowrap">Activity Detail</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="p-4 border-t border-primary-container/20">
+<button class="flex items-center gap-4 w-full px-3 py-2 text-on-primary opacity-70 hover:opacity-100 transition-opacity" id="sidebarToggle">
+<span class="material-symbols-outlined">menu_open</span>
+<span class="text-label-sm">Collapse View</span>
+</button>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="ml-[260px] sidebar-transition min-h-screen flex flex-col" id="main-content">
+<!-- Top Navigation Bar (Filters) -->
+<header class="h-16 bg-surface/95 backdrop-blur-md border-b border-outline-variant fixed top-0 right-0 left-[260px] sidebar-transition z-30 flex items-center justify-between px-grid-gutter">
+<div class="flex items-center gap-4 overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/30">
+<span class="text-label-sm text-on-surface-variant">Year</span>
+<select class="bg-transparent border-none p-0 text-label-sm font-bold text-primary focus:ring-0">
+<option>2024</option>
+<option>2023</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/30">
+<span class="text-label-sm text-on-surface-variant">Quarter</span>
+<select class="bg-transparent border-none p-0 text-label-sm font-bold text-primary focus:ring-0">
+<option>Q3 (Jul-Sep)</option>
+<option>Q4 (Oct-Dec)</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/30">
+<span class="text-label-sm text-on-surface-variant">Project</span>
+<select class="bg-transparent border-none p-0 text-label-sm font-bold text-primary focus:ring-0">
+<option>All Projects</option>
+<option>CP8 CP Outcome 1</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/30">
+<span class="text-label-sm text-on-surface-variant">Outcome</span>
+<select class="bg-transparent border-none p-0 text-label-sm font-bold text-primary focus:ring-0">
+<option>Sexual &amp; Reproductive Health</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-4 shrink-0">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-1"></div>
+<div class="flex items-center gap-3">
+<img alt="Profile" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a middle-aged male executive with a kind smile, set against a blurred corporate office background. The lighting is soft and professional, with a clean and bright aesthetic. He is wearing a crisp blue business shirt, reflecting a modern, diplomatic, and authoritative style consistent with high-level international organizational leadership." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz11y0P95kZhm2J6kMtgoXuKmkMK-toZPLmvgv_6Z_7MGqTYcE_PoEJT2rTdt612HVawMC0buPjB2bRXr7gFCkHi-bxdlFsQKe74rJzW0fzEaWbOMt3Ewn5gOIiO3OIM5KTv3zq-yETB7qUNS9Lpc2aQa1N8FgAy7xcyp1rT6dNxEi8PeGzLli7wtrFek0wF6NQA9xJmLT-GMCJMwBlJaoRkCQLfeNWrSzur-djMFo5tZ5Eg5qFdr_I70nFEllqAJDekVlcq0AhA"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-grid-gutter space-y-6 flex-1">
+<!-- Top Row KPI Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-4">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">Total Events</p>
+<p class="font-headline-md text-primary">1,245</p>
+<div class="flex items-center gap-1 mt-2 text-[10px] text-primary">
+<span class="material-symbols-outlined text-[12px]">trending_up</span>
+<span>+12% vs Q2</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">Participants</p>
+<p class="font-headline-md text-primary">42.8k</p>
+<div class="w-full bg-surface-container h-1 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">Female %</p>
+<p class="font-headline-md text-primary">68%</p>
+<div class="flex items-center gap-1 mt-2">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="text-[10px] text-on-surface-variant">Target met</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">Male %</p>
+<p class="font-headline-md text-primary">32%</p>
+<div class="flex items-center gap-1 mt-2">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<span class="text-[10px] text-on-surface-variant">Steady reach</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">Districts</p>
+<p class="font-headline-md text-primary">77/77</p>
+<div class="flex items-center gap-1 mt-2 text-[10px] text-secondary">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Full Coverage</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">IPs Reporting</p>
+<p class="font-headline-md text-primary">24</p>
+<p class="text-[10px] text-on-surface-variant mt-2">100% submission rate</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">On Track</p>
+<p class="font-headline-md text-primary">85%</p>
+<div class="w-full bg-surface-container h-1 rounded-full mt-3 overflow-hidden">
+<div class="bg-secondary-container h-full w-[85%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 custom-shadow hover:scale-[1.02] transition-transform cursor-default">
+<p class="text-label-sm text-on-surface-variant mb-1">Data Quality</p>
+<p class="font-headline-md text-primary">94%</p>
+<div class="flex items-center gap-1 mt-2 text-[10px] text-on-primary-container">
+<span class="material-symbols-outlined text-[12px]">verified</span>
+<span>Evidence Verified</span>
+</div>
+</div>
+</div>
+<!-- Main Content Area Grids -->
+<div class="grid grid-cols-12 gap-6">
+<!-- AI Management Summary -->
+<div class="col-span-12 lg:col-span-7 xl:col-span-8 bg-[#F0F7FF] border border-on-tertiary-container/20 rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-7xl">psychology</span>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-headline-md text-primary">Management Insight Summary</h2>
+</div>
+<div class="space-y-4 text-on-background/80 leading-relaxed max-w-3xl">
+<p class="flex items-start gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container mt-2 shrink-0"></span>
+<span><strong>Key progress this quarter:</strong> Youth engagement reached 115% of target, driven by successful vocational training pilots in Province 3.</span>
+</p>
+<p class="flex items-start gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-2 shrink-0"></span>
+<span><strong>Attention Required:</strong> Outcome 2 (GBV Services) is lagging in Province 1 due to staffing transitions within local implementing partners.</span>
+</p>
+<p class="flex items-start gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mt-2 shrink-0"></span>
+<span><strong>IP Follow-up:</strong> 2 IPs (NAME-A, NAME-B) have pending evidence uploads for Q3 indicator verification.</span>
+</p>
+<div class="mt-6 p-4 bg-white/60 rounded-lg border border-primary/10">
+<h4 class="font-bold text-primary mb-1 text-label-sm uppercase tracking-wider">Recommended Action</h4>
+<p class="text-body-md italic text-primary-container">Approve additional monitoring visit for Karnali to address data latency issues identified in the last data audit.</p>
+</div>
+</div>
+<div class="mt-6 flex justify-end">
+<button class="bg-secondary-container text-white px-4 py-2 rounded-lg font-bold text-label-sm hover:opacity-90 transition-opacity">EXPORT FULL ANALYSIS</button>
+</div>
+</div>
+<!-- Indicator Status Chart -->
+<div class="col-span-12 lg:col-span-5 xl:col-span-4 bg-white border border-outline-variant rounded-xl p-6 custom-shadow">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-md text-primary">Indicator Health</h2>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm">
+<span class="font-medium">Achieved / On-track</span>
+<span class="font-bold">64 (72%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm">
+<span class="font-medium text-secondary">Watchlist</span>
+<span class="font-bold">12 (14%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full w-[14%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm">
+<span class="font-medium text-error">Off-track</span>
+<span class="font-bold">8 (9%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-error h-full w-[9%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm">
+<span class="font-medium opacity-50">No Data / Pending</span>
+<span class="font-bold opacity-50">5 (5%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-outline-variant h-full w-[5%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant flex justify-around">
+<div class="text-center">
+<p class="text-[24px] font-bold text-primary">89</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Total KPI</p>
+</div>
+<div class="w-[1px] bg-outline-variant h-10"></div>
+<div class="text-center">
+<p class="text-[24px] font-bold text-primary">12</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Critical</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Row Charts -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Programme Progress by Project -->
+<div class="bg-white border border-outline-variant rounded-xl p-6 custom-shadow">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-primary">Progress by Project</h3>
+<div class="flex gap-2">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-[10px] text-on-surface-variant">Actual</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="text-[10px] text-on-surface-variant">Target</span>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="group">
+<div class="flex justify-between items-center mb-1">
+<span class="text-body-md font-medium">SRHR &amp; Maternal Health</span>
+<span class="text-label-sm font-bold">92%</span>
+</div>
+<div class="relative h-4 bg-surface-container rounded-sm overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-primary w-[92%] transition-all duration-1000"></div>
+</div>
+</div>
+<div class="group">
+<div class="flex justify-between items-center mb-1">
+<span class="text-body-md font-medium">Gender Equality &amp; GBV</span>
+<span class="text-label-sm font-bold">78%</span>
+</div>
+<div class="relative h-4 bg-surface-container rounded-sm overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-primary w-[78%] transition-all duration-1000"></div>
+</div>
+</div>
+<div class="group">
+<div class="flex justify-between items-center mb-1">
+<span class="text-body-md font-medium">Youth Empowerment</span>
+<span class="text-label-sm font-bold">115%</span>
+</div>
+<div class="relative h-4 bg-surface-container rounded-sm overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-secondary-container w-full transition-all duration-1000"></div>
+</div>
+</div>
+<div class="group">
+<div class="flex justify-between items-center mb-1">
+<span class="text-body-md font-medium">Population Dynamics</span>
+<span class="text-label-sm font-bold">64%</span>
+</div>
+<div class="relative h-4 bg-surface-container rounded-sm overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-primary w-[64%] transition-all duration-1000"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Trend by Month -->
+<div class="bg-white border border-outline-variant rounded-xl p-6 custom-shadow">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-primary">Monthly Activity Trend</h3>
+<select class="bg-surface-container border-none text-[10px] rounded p-1 font-bold">
+<option>Last 6 Months</option>
+</select>
+</div>
+<div class="h-48 flex items-end justify-between gap-1 mt-4">
+<!-- Simulated Area Chart Bars -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary/20 rounded-t h-[40%] group relative">
+<div class="absolute bottom-0 left-0 w-full bg-primary h-[80%] rounded-t"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded">210</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">APR</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary/20 rounded-t h-[55%] group relative">
+<div class="absolute bottom-0 left-0 w-full bg-primary h-[85%] rounded-t"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded">345</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">MAY</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary/20 rounded-t h-[75%] group relative">
+<div class="absolute bottom-0 left-0 w-full bg-primary h-[90%] rounded-t"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded">480</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">JUN</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary/20 rounded-t h-[60%] group relative">
+<div class="absolute bottom-0 left-0 w-full bg-primary h-[70%] rounded-t"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded">390</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">JUL</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary/20 rounded-t h-[85%] group relative">
+<div class="absolute bottom-0 left-0 w-full bg-primary h-[95%] rounded-t"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded">560</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">AUG</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary/20 rounded-t h-[100%] group relative">
+<div class="absolute bottom-0 left-0 w-full bg-secondary-container h-[90%] rounded-t"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-secondary-container text-white text-[10px] px-2 py-1 rounded">680</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">SEP</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Row -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Participant Reach by Sex & Age -->
+<div class="col-span-12 lg:col-span-6 bg-white border border-outline-variant rounded-xl p-6 custom-shadow">
+<h3 class="font-headline-md text-primary mb-6">Reach by Age &amp; Sex</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<span class="w-12 text-[10px] font-bold text-right">10-14</span>
+<div class="flex-1 flex gap-1 h-6">
+<div class="bg-primary/40 h-full w-[15%] rounded-l"></div>
+<div class="bg-secondary-container/40 h-full w-[25%] rounded-r"></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-[10px] font-bold text-right">15-19</span>
+<div class="flex-1 flex gap-1 h-6">
+<div class="bg-primary/60 h-full w-[25%] rounded-l"></div>
+<div class="bg-secondary-container/60 h-full w-[45%] rounded-r"></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-[10px] font-bold text-right">20-24</span>
+<div class="flex-1 flex gap-1 h-6">
+<div class="bg-primary/80 h-full w-[35%] rounded-l"></div>
+<div class="bg-secondary-container/80 h-full w-[55%] rounded-r"></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-[10px] font-bold text-right">25+</span>
+<div class="flex-1 flex gap-1 h-6">
+<div class="bg-primary h-full w-[45%] rounded-l"></div>
+<div class="bg-secondary-container h-full w-[30%] rounded-r"></div>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-primary rounded-sm"></div>
+<span class="text-label-sm">Male</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-secondary-container rounded-sm"></div>
+<span class="text-label-sm">Female</span>
+</div>
+</div>
+</div>
+<!-- Top 5 IPs by Reach -->
+<div class="col-span-12 lg:col-span-6 bg-white border border-outline-variant rounded-xl p-6 custom-shadow">
+<h3 class="font-headline-md text-primary mb-4">Top 5 Implementing Partners</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="py-3 text-[10px] uppercase text-on-surface-variant font-bold tracking-wider">Partner Name</th>
+<th class="py-3 text-[10px] uppercase text-on-surface-variant font-bold tracking-wider">Total Reach</th>
+<th class="py-3 text-[10px] uppercase text-on-surface-variant font-bold tracking-wider">Efficiency</th>
+<th class="py-3 text-[10px] uppercase text-on-surface-variant font-bold tracking-wider">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr>
+<td class="py-3 font-medium text-body-md">Rural Health Org</td>
+<td class="py-3 text-body-md">8,420</td>
+<td class="py-3">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[94%]"></div>
+</div>
+</td>
+<td class="py-3">
+<span class="text-[10px] bg-secondary-container/10 text-secondary-container px-2 py-0.5 rounded-full font-bold">EXCELLENT</span>
+</td>
+</tr>
+<tr>
+<td class="py-3 font-medium text-body-md">Women Empowerment Group</td>
+<td class="py-3 text-body-md">7,210</td>
+<td class="py-3">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[88%]"></div>
+</div>
+</td>
+<td class="py-3">
+<span class="text-[10px] bg-secondary-container/10 text-secondary-container px-2 py-0.5 rounded-full font-bold">ON TRACK</span>
+</td>
+</tr>
+<tr>
+<td class="py-3 font-medium text-body-md">Youth Action Nepal</td>
+<td class="py-3 text-body-md">6,840</td>
+<td class="py-3">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[91%]"></div>
+</div>
+</td>
+<td class="py-3">
+<span class="text-[10px] bg-secondary-container/10 text-secondary-container px-2 py-0.5 rounded-full font-bold">ON TRACK</span>
+</td>
+</tr>
+<tr>
+<td class="py-3 font-medium text-body-md">Community Support Org</td>
+<td class="py-3 text-body-md">5,900</td>
+<td class="py-3">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[76%]"></div>
+</div>
+</td>
+<td class="py-3">
+<span class="text-[10px] bg-outline-variant/20 text-on-surface-variant px-2 py-0.5 rounded-full font-bold">AVERAGE</span>
+</td>
+</tr>
+<tr>
+<td class="py-3 font-medium text-body-md">Himalayan Health Dev</td>
+<td class="py-3 text-body-md">5,100</td>
+<td class="py-3">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[96%]"></div>
+</div>
+</td>
+<td class="py-3">
+<span class="text-[10px] bg-secondary-container/10 text-secondary-container px-2 py-0.5 rounded-full font-bold">EXCELLENT</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-4 px-grid-gutter border-t border-outline-variant flex justify-between items-center text-on-surface-variant text-label-sm bg-surface-container-lowest shrink-0">
+<div class="flex items-center gap-4">
+<span>© 2024 UNFPA Nepal. Data freshness: Updated 24h ago.</span>
+<span class="text-error/70 font-medium">Privacy Suppressed for sensitive indicators.</span>
+</div>
+<div class="flex items-center gap-6">
+<a class="hover:text-primary underline transition-colors" href="#">Methodology</a>
+<a class="hover:text-primary underline transition-colors" href="#">Contact Support</a>
+<a class="hover:text-primary underline transition-colors" href="#">Privacy Policy</a>
+</div>
+</footer>
+</main>
+<script>
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const topNav = document.querySelector('header');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const toggleIcon = toggleBtn.querySelector('.material-symbols-outlined');
+        const toggleText = toggleBtn.querySelector('.text-label-sm');
+        let isCollapsed = false;
+
+        toggleBtn.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            if (isCollapsed) {
+                sidebar.style.width = '72px';
+                mainContent.style.marginLeft = '72px';
+                topNav.style.left = '72px';
+                toggleIcon.textContent = 'menu';
+                toggleText.classList.add('hidden');
+                document.querySelectorAll('#sidebar span:last-child').forEach(s => {
+                    if (!s.parentElement.id) s.classList.add('hidden');
+                });
+                document.querySelector('#sidebar .whitespace-nowrap').classList.add('hidden');
+            } else {
+                sidebar.style.width = '260px';
+                mainContent.style.marginLeft = '260px';
+                topNav.style.left = '260px';
+                toggleIcon.textContent = 'menu_open';
+                toggleText.classList.remove('hidden');
+                document.querySelectorAll('#sidebar span:last-child').forEach(s => {
+                    if (!s.parentElement.id) s.classList.remove('hidden');
+                });
+                document.querySelector('#sidebar .whitespace-nowrap').classList.remove('hidden');
+            }
+        });
+
+        // Simple scale interactions for cards
+        const cards = document.querySelectorAll('.custom-shadow');
+        cards.forEach(card => {
+            card.addEventListener('mousedown', () => card.style.transform = 'scale(0.98)');
+            card.addEventListener('mouseup', () => card.style.transform = 'scale(1.02)');
+            card.addEventListener('mouseleave', () => card.style.transform = 'scale(1)');
+        });
+    </script>
+</body></html>

@@ -1,0 +1,339 @@
+AG-001 — UNFPA Nepal AI-Assisted MEL Dashboard Prototype
+Google Antigravity Execution Prompt
+
+ROLE
+Act as a senior Next.js architect, React dashboard engineer, shadcn/ui designer, MEL dashboard specialist, UNFPA programme monitoring advisor, and data-governance reviewer.
+
+REPOSITORY
+Create or work in this repository:
+unfpa-mel-ai-dashboard
+
+TASK TYPE
+Planning + implementation prototype.
+Build a static but polished working prototype using mock data only.
+Do not connect to real APIs, Google Sheets, BigQuery, KoBo, or any production data yet.
+
+OBJECTIVE
+Develop a modern AI-assisted UNFPA Nepal MEL dashboard prototype using:
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Recharts
+- lucide-react
+- date-fns
+
+The dashboard must support programme implementation monitoring, activity/event tracking, participant reach, indicator progress, IP/partner performance, geographic coverage, aggregated GBV/OCMC service monitoring, data quality/evidence review, and senior-management decision support.
+
+SOURCE LOGIC TO REPRESENT WITH MOCK DATA
+Create realistic mock data reflecting these five source structures:
+1. CombinedSummary
+2. MainData
+3. CPD Indicator Data
+4. UNSDCF/CP9/SP Indicator Data
+5. Aggregated GBV Service Data
+
+Also create:
+6. AI_Insights mock table
+
+IMPORTANT PRIVACY RULES
+- Do not display participant names, phone numbers, contacts, or personal identifiers.
+- Do not display individual GBV survivor records.
+- Use aggregated GBV visuals only.
+- Apply small-cell suppression for GBV values from 1 to 4.
+- Clearly separate programme participants from GBV survivor/service-user data.
+- Add privacy and data-quality caveats in the footer of every dashboard page.
+
+DESIGN SYSTEM
+Use a clean UNFPA-style executive dashboard:
+- White/light grey page background
+- White cards with soft borders/shadows
+- UNFPA orange as accent, not full background
+- UN blue as primary chart color
+- Green = achieved/on track
+- Amber = watch
+- Red = off track/high risk
+- Grey = no data
+- Left sidebar navigation
+- Top global filter bar
+- KPI row at the top of each page
+- Chart grid with 2–3 main sections per page
+- AI insight panel on management pages
+- Footer with data freshness, source, caveat, and privacy note
+
+REQUIRED PAGES AND ROUTES
+Create these pages:
+
+1. Executive Overview
+Route: /dashboard/executive-overview
+
+2. Activity Progress
+Route: /dashboard/activity-progress
+
+3. Participant & Reach Profile
+Route: /dashboard/participant-reach
+
+4. Indicator Progress
+Route: /dashboard/indicator-progress
+
+5. IP / Partner Performance
+Route: /dashboard/ip-performance
+
+6. Geographic Coverage
+Route: /dashboard/geographic-coverage
+
+7. GBV / OCMC Service Summary
+Route: /dashboard/gbv-ocmc-summary
+
+8. Data Quality & Evidence
+Route: /dashboard/data-quality
+
+9. Management Decision Centre
+Route: /dashboard/management-decision-centre
+
+10. Activity Detail
+Route: /dashboard/activity-detail
+
+RECOMMENDED FILE STRUCTURE
+Create this structure:
+
+src/app/
+  layout.tsx
+  page.tsx
+  dashboard/
+    layout.tsx
+    executive-overview/page.tsx
+    activity-progress/page.tsx
+    participant-reach/page.tsx
+    indicator-progress/page.tsx
+    ip-performance/page.tsx
+    geographic-coverage/page.tsx
+    gbv-ocmc-summary/page.tsx
+    data-quality/page.tsx
+    management-decision-centre/page.tsx
+    activity-detail/page.tsx
+
+src/components/layout/
+  dashboard-shell.tsx
+  sidebar-nav.tsx
+  top-filter-bar.tsx
+  page-header.tsx
+
+src/components/dashboard/
+  kpi-card.tsx
+  chart-card.tsx
+  ai-insight-panel.tsx
+  status-badge.tsx
+  privacy-banner.tsx
+  data-freshness-footer.tsx
+  management-action-table.tsx
+  drillthrough-button.tsx
+
+src/components/charts/
+  programme-progress-chart.tsx
+  participant-sex-chart.tsx
+  indicator-status-chart.tsx
+  ip-ranking-chart.tsx
+  evidence-completion-chart.tsx
+  data-quality-chart.tsx
+  monthly-activity-trend.tsx
+  target-vs-actual-chart.tsx
+  gbv-summary-chart.tsx
+
+src/config/
+  navigation.ts
+  theme.ts
+  roles.ts
+  dashboard-pages.ts
+
+src/data/mock/
+  combined-summary.ts
+  main-data.ts
+  cpd-indicators.ts
+  unsdcf-sp-indicators.ts
+  gbv-services.ts
+  ai-insights.ts
+
+src/lib/
+  types.ts
+  kpi-calculations.ts
+  indicator-status.ts
+  data-quality-score.ts
+  privacy-rules.ts
+  role-access.ts
+  utils.ts
+
+docs/
+  DATA_MODEL.md
+  KPI_LOGIC.md
+  PRIVACY_AND_GOVERNANCE.md
+  AI_ASSISTANT_PLAN.md
+  BUILD_ROADMAP.md
+
+CORE KPI FUNCTIONS
+Create functions for:
+- getTotalEvents
+- getReportableParticipants
+- getFemaleParticipants
+- getMaleParticipants
+- getOtherSexParticipants
+- getBeneficiaries
+- getGuests
+- getDistrictsCovered
+- getIPsReporting
+- getEvidenceCompletionRate
+- getActivityAchievementRate
+- getIndicatorAchievementRate
+- getDataQualityScore
+- getMissingEvidenceCount
+- getValidationPendingCount
+- getGenderCheckFailedCount
+- getAgeCheckFailedCount
+- getCasteCheckFailedCount
+
+PAGE REQUIREMENTS
+
+PAGE 1: EXECUTIVE OVERVIEW
+Show:
+- KPI cards: Total Events, Reportable Participants, Female Participants, Male Participants, Other Sex Participants, Districts Covered, IPs Reporting, Data Quality Score
+- Programme progress by project
+- Indicator status summary
+- Participant reach by sex
+- Geographic coverage placeholder/card
+- Top 5 IPs needing attention
+- AI executive summary panel
+- Footer with source/freshness/privacy caveat
+
+PAGE 2: ACTIVITY PROGRESS
+Show:
+- KPI cards: activities conducted, completed, in progress, delayed, evidence uploaded, missing evidence, average achievement
+- Activity progress by project
+- Activity progress by IP
+- Activity type mix
+- Monthly activity trend
+- Delayed activities table
+- Missing evidence table
+
+PAGE 3: PARTICIPANT & REACH PROFILE
+Show:
+- KPI cards: reportable participants, beneficiaries, guests, non-reportable participants, female share, PWD participants
+- Participants by sex
+- Participants by age group
+- Participants by caste/ethnicity
+- Participants by disability
+- Participants by project/IP
+- Inclusion by district
+
+PAGE 4: INDICATOR PROGRESS
+Show:
+- KPI cards: indicators tracked, achieved, on track, watch, off track, no data
+- Quarterly target vs actual
+- Indicator status by output
+- Responsible team performance
+- Milestone tracker
+- UNSDCF/SP contribution table
+
+PAGE 5: IP / PARTNER PERFORMANCE
+Show:
+- KPI cards: reporting IPs, activities, participants, evidence completion, late submissions, data-quality issues
+- IP activity ranking
+- IP participant reach
+- Evidence completion by IP
+- IP data-quality scorecard
+- IP follow-up action table
+
+PAGE 6: GEOGRAPHIC COVERAGE
+Show:
+- KPI cards: provinces covered, districts covered, palikas covered, low-coverage districts
+- Nepal map placeholder
+- Activities by district
+- Participants by district
+- Project coverage matrix
+- Coverage gap table
+
+PAGE 7: GBV / OCMC SERVICE SUMMARY
+Show:
+- Privacy banner at top
+- Aggregated GBV KPI cards
+- Survivors by province/district
+- Survivors by sex
+- Survivors by age group
+- Survivors by disability
+- Survivors by caste/ethnicity
+- Referral/follow-up summary
+- Suppression note
+Do not include any case-level or individual-level table.
+
+PAGE 8: DATA QUALITY & EVIDENCE
+Show:
+- KPI cards: approved submissions, pending validation, missing evidence, gender check failed, age check failed, caste check failed, missing location, data quality score
+- Data-quality score by IP
+- Evidence completeness by IP
+- Validation status trend
+- Disaggregation check table
+- Missing evidence table
+- Correction tracker
+
+PAGE 9: MANAGEMENT DECISION CENTRE
+Show:
+- AI executive summary
+- Top risks this quarter
+- Off-track indicators
+- IPs needing follow-up
+- Districts with low implementation
+- Suggested action points
+- Donor narrative draft
+- Programme review talking points
+
+PAGE 10: ACTIVITY DETAIL
+Show:
+- Searchable table-like activity review layout
+- Activity ID, IP, year, quarter, project, outcome, output, activity, subactivity, subactivity code, fund code, event type, start date, end date, province, district, palika, achievement, evidence status, validation status, participant totals
+- Do not show names, contacts, or personal identifiers
+
+IMPLEMENTATION RULES
+- Use modular components.
+- Keep pages clean and consistent.
+- Do not hardcode calculations inside page files.
+- Use TypeScript types for all mock data.
+- Use reusable KPI and chart components.
+- Use responsive grid layout.
+- Use shadcn Card, Badge, Table, Button, Select, Tabs, Alert, Progress, Tooltip, and Sheet where useful.
+- Use Recharts for bar, line, stacked bar, and progress-style charts.
+- Use lucide-react icons.
+- Do not add backend, authentication, or AI API in this first task.
+- AI insights should be static mock content loaded from src/data/mock/ai-insights.ts.
+- Keep all sensitive data mocked and aggregated.
+
+ACCEPTANCE CRITERIA
+- npm install works.
+- npm run dev works.
+- No TypeScript errors.
+- No ESLint errors.
+- All 10 routes load successfully.
+- Sidebar navigation works.
+- Top filter bar is visible on dashboard pages.
+- KPI cards render values from mock data.
+- Charts render using Recharts.
+- GBV page includes privacy banner and suppression logic.
+- Data freshness footer appears on all pages.
+- Dashboard uses clean UNFPA-style visual design.
+- README includes setup instructions.
+- Docs folder includes data model, KPI logic, privacy/governance, AI assistant plan, and roadmap.
+
+FINAL REPORT
+After completion, create:
+ANTIGRAVITY_IMPLEMENTATION_REPORT.txt
+
+The report must include:
+1. Summary of work completed
+2. Files created
+3. Files modified
+4. Pages implemented
+5. Components implemented
+6. Mock data implemented
+7. KPI functions implemented
+8. Privacy/governance safeguards implemented
+9. Validation results
+10. Known limitations
+11. Recommended next task

@@ -1,0 +1,1 @@
+﻿Visual QA Description: Management Decision Centre loading correctly. High-severity critical action items highlighted. Suggested Management Actions table populated. Auto-generated Donor Narrative draft present with copy button.

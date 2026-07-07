@@ -1,0 +1,1 @@
+﻿Visual QA Description: GBV / OCMC Summary verified. Caseload matrix enforces cell suppression (< 5) for privacy. Privacy warning banner active. Social inclusion disaggregation charts present.

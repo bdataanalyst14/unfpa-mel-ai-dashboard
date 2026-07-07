@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Geographic Coverage | UNFPA Nepal MEL Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#799dd6",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e1e3e4",
+                    "primary-fixed-dim": "#a7c8ff",
+                    "on-tertiary-fixed-variant": "#004785",
+                    "secondary-fixed-dim": "#ffb596",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#a7c8ff",
+                    "inverse-surface": "#2e3132",
+                    "surface-bright": "#f8f9fa",
+                    "on-secondary-fixed": "#360f00",
+                    "background": "#f8f9fa",
+                    "surface-container-high": "#e7e8e9",
+                    "primary": "#001e40",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#191c1d",
+                    "secondary": "#a33e00",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#3a5f94",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#c3c6d1",
+                    "surface": "#f8f9fa",
+                    "tertiary": "#001f3f",
+                    "surface-container": "#edeeef",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#191c1d",
+                    "secondary-fixed": "#ffdbcd",
+                    "on-primary-fixed": "#001b3c",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-secondary-fixed-variant": "#7c2e00",
+                    "outline": "#737780",
+                    "tertiary-container": "#003463",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#43474f",
+                    "surface-container-low": "#f3f4f5",
+                    "primary-fixed": "#d5e3ff",
+                    "on-primary-fixed-variant": "#1f477b",
+                    "primary-container": "#003366",
+                    "on-secondary-container": "#541d00",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#4f9efd",
+                    "secondary-container": "#fe6500",
+                    "tertiary-fixed": "#d4e3ff",
+                    "surface-dim": "#d9dadb",
+                    "on-tertiary-fixed": "#001c3a",
+                    "tertiary-fixed-dim": "#a5c8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "component-gap": "16px",
+                    "sidebar-width-expanded": "260px",
+                    "canvas-aspect-ratio": "16:9",
+                    "sidebar-width-collapsed": "72px",
+                    "grid-gutter": "24px",
+                    "container-padding": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .map-container { position: relative; overflow: hidden; }
+        .dot-indicator { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .pulse-orange { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(254, 101, 0, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(254, 101, 0, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(254, 101, 0, 0); }
+        }
+        .canvas-shadow { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-primary sidebar-transition w-[260px] shadow-sm" id="sidebar">
+<div class="flex items-center p-6 gap-3">
+<div class="h-10 w-10 bg-on-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div class="flex flex-col sidebar-text-content">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">UNFPA Nepal</span>
+<span class="text-on-primary opacity-70 text-[10px] tracking-wider uppercase font-bold">MEL Intelligence</span>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="sidebar-text-content">Executive Overview</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">trending_up</span>
+<span class="sidebar-text-content">Activity Progress</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">groups</span>
+<span class="sidebar-text-content">Participant &amp; Reach Profile</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="sidebar-text-content">Indicator Progress</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">handshake</span>
+<span class="sidebar-text-content">IP / Partner Performance</span>
+</a>
+<!-- ACTIVE TAB: Geographic Coverage -->
+<a class="flex items-center px-3 py-3 border-l-4 border-secondary-container bg-primary-container text-on-primary-container font-bold rounded-r-lg group" href="#">
+<span class="material-symbols-outlined mr-3">map</span>
+<span class="sidebar-text-content">Geographic Coverage</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">health_and_safety</span>
+<span class="sidebar-text-content">GBV / OCMC Service Summary</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">fact_check</span>
+<span class="sidebar-text-content">Data Quality &amp; Evidence</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">psychology</span>
+<span class="sidebar-text-content">Management Decision Centre</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3">list_alt</span>
+<span class="sidebar-text-content">Activity Detail</span>
+</a>
+</nav>
+<div class="p-4 border-t border-on-primary/10">
+<button class="flex items-center gap-3 text-on-primary opacity-70 hover:opacity-100 w-full transition-opacity" onclick="toggleSidebar()">
+<span class="material-symbols-outlined" id="collapse-icon">chevron_left</span>
+<span class="sidebar-text-content font-label-sm text-label-sm uppercase tracking-widest">Collapse Menu</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen flex flex-col sidebar-transition" id="main-content">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 left-[260px] z-30 flex items-center h-16 px-grid-gutter bg-surface/95 backdrop-blur-md border-b border-outline-variant sidebar-transition" id="top-nav">
+<div class="flex items-center gap-2 flex-1">
+<h1 class="font-headline-md text-headline-md text-primary font-bold">MEL Intelligence Dashboard</h1>
+<div class="hidden md:flex gap-4 ml-8">
+<div class="flex flex-col border-r border-outline-variant pr-4">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Year</span>
+<select class="bg-transparent border-none p-0 text-primary font-bold text-sm focus:ring-0">
+<option>2024</option>
+<option>2023</option>
+</select>
+</div>
+<div class="flex flex-col border-r border-outline-variant pr-4">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Quarter</span>
+<select class="bg-transparent border-none p-0 text-primary font-bold text-sm focus:ring-0">
+<option>Q3 (Jul-Sep)</option>
+<option>Q2 (Apr-Jun)</option>
+</select>
+</div>
+<div class="flex flex-col border-r border-outline-variant pr-4">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Project</span>
+<select class="bg-transparent border-none p-0 text-primary font-bold text-sm focus:ring-0">
+<option>All Projects</option>
+<option>RH Quality</option>
+</select>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">IP/Partner</span>
+<select class="bg-transparent border-none p-0 text-primary font-bold text-sm focus:ring-0">
+<option>All IPs</option>
+</select>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">filter_list</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">settings</span></button>
+<div class="h-8 w-8 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc-h1qAPx5Ozt7qUfIJJzi1C4dM7NwG4b-QyKv7Hzq67Ocwn6_REyLjAt8Rb1jq_qHmYecDsm3bwCVhOPtjxyUTRGZNd1D3vYabO_AVpPc8MNQyKsFp5TD-K0LN2bDb8Q8jp-GXXkgHWj5np2i30SoVaIKeyXwhR6owLylYaWkW1L9PekDB8K4oUIkU1ySlq2xiEIN2pByulQclNJyplipV-Me3OH_irZSU3R-zTwBxjI81rq9jz_UavSRNn4Q_If6jMevE7hl9w"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="mt-16 p-grid-gutter space-y-grid-gutter max-w-[1600px] mx-auto w-full">
+<!-- KPI Row -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-on-surface-variant text-label-sm uppercase font-bold tracking-wider">Districts Reached</span>
+<span class="material-symbols-outlined text-primary-container">location_on</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary">77/77</span>
+<span class="text-secondary font-bold">100%</span>
+</div>
+<p class="text-on-surface-variant text-body-md mt-1">Full National Coverage</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-on-surface-variant text-label-sm uppercase font-bold tracking-wider">Palikas Covered</span>
+<span class="material-symbols-outlined text-primary-container">apartment</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary">642 / 753</span>
+<span class="text-on-surface-variant font-bold">85%</span>
+</div>
+<p class="text-on-surface-variant text-body-md mt-1">Local Level Reach</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-on-surface-variant text-label-sm uppercase font-bold tracking-wider">High-Intensity</span>
+<span class="material-symbols-outlined text-secondary">priority_high</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary">12</span>
+<span class="text-on-surface-variant text-body-md">Districts</span>
+</div>
+<p class="text-on-surface-variant text-body-md mt-1">Targeting Focus Areas</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-on-surface-variant text-label-sm uppercase font-bold tracking-wider">Mapped Activities</span>
+<span class="material-symbols-outlined text-primary-container">description</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary">450</span>
+</div>
+<p class="text-on-surface-variant text-body-md mt-1">Reporting this Quarter</p>
+</div>
+</div>
+<!-- Map and Insight Row -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-auto">
+<!-- Nepal Interactive Map (Choropleth Visual) -->
+<div class="lg:col-span-8 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-primary">National Geographic Intensity</h2>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="dot-indicator bg-primary/20"></span><span class="text-[10px] font-bold text-on-surface-variant">Low</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="dot-indicator bg-primary/60"></span><span class="text-[10px] font-bold text-on-surface-variant">Medium</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="dot-indicator bg-primary"></span><span class="text-[10px] font-bold text-on-surface-variant">High Intensity</span>
+</div>
+<div class="flex items-center gap-2 ml-2">
+<span class="dot-indicator bg-secondary pulse-orange"></span><span class="text-[10px] font-bold text-on-surface-variant">Active IP Site</span>
+</div>
+</div>
+</div>
+<div class="flex-1 min-h-[400px] relative bg-surface-container-low rounded-lg border border-outline-variant/30 flex items-center justify-center overflow-hidden">
+<!-- Abstract Nepal Map Representation -->
+<div class="w-full h-full relative p-8">
+<img class="w-full h-full object-contain opacity-90" data-alt="A professional SVG-style detailed choropleth map of Nepal showing province and district boundaries. The map uses a sophisticated color-coding system with shades of deep UNFPA navy blue for high activity intensity and lighter blue-greys for lower intensity. Small, bright orange circular markers are strategically placed across major project sites like Kathmandu, Nepalgunj, and Biratnagar to indicate active IPs. The lighting is clean and flat, set against a subtle light-mode grid background, conveying institutional precision and data authority." data-location="Nepal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7-NGmg0daeCkLJDlJs9eWnJJzuK_6FWKbv4-AY5X-Ihjqkhu7IAG4ZmISvKS_DRU_ZSOigvpO815bS2dHE3pltgkvFKoT22HfXkyNb3zHp5aSTzSeC26zsLGj7KkQqjYlmh-NYWNUUSsVPVZ1meqDmxWgcUXcOTZV6lI7IqEnkRizuk81uEfguJj8HT19Rr0GnP_AnoUzFHjB0kYTLh9DATz2khgXAYiTIQW7bbaQvvIEAeMXbs0OSIq0EnBp90OG9dcJAVFdXQ"/>
+</div>
+<div class="absolute bottom-4 left-4 p-4 bg-surface-container-lowest/80 backdrop-blur rounded-lg border border-outline-variant text-[12px] shadow-sm">
+<p class="font-bold text-primary mb-1">Current Focus: Bagmati Province</p>
+<p class="text-on-surface-variant">142 Active Activities | 12 IP Partners</p>
+<a class="text-secondary font-bold hover:underline mt-1 inline-block" href="#">View Details →</a>
+</div>
+</div>
+</div>
+<!-- Geographic Insights Panel -->
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-tertiary-container/10 border border-tertiary-container/20 p-6 rounded-xl canvas-shadow h-full">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">lightbulb</span>
+<h3 class="font-headline-md text-[18px] text-primary">Management Summaries</h3>
+</div>
+<div class="space-y-6">
+<div class="bg-surface-container-lowest/50 p-4 rounded-lg border-l-4 border-secondary">
+<h4 class="text-label-sm font-bold text-secondary uppercase tracking-wider mb-2">Coverage Alert</h4>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                                    Identified 2 districts in <span class="font-bold">Karnali Province</span> (Mugu, Humla) with lower than average activity submission rates. Recommend follow-up with regional coordinators.
+                                </p>
+</div>
+<div class="bg-surface-container-lowest/50 p-4 rounded-lg border-l-4 border-primary">
+<h4 class="text-label-sm font-bold text-primary uppercase tracking-wider mb-2">Resource Allocation</h4>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                                    Strategic reach check: <span class="font-bold">Bagmati and Madhesh</span> currently account for <span class="font-bold">45%</span> of total reach. Allocation is aligned with priority density targets for Q3.
+                                </p>
+</div>
+<div class="bg-surface-container-lowest/50 p-4 rounded-lg border-l-4 border-green-600">
+<h4 class="text-label-sm font-bold text-green-700 uppercase tracking-wider mb-2">Connectivity Progress</h4>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                                    Milestone reached: <span class="font-bold">100% of districts</span> have submitted at least one activity this quarter. Reporting compliance has improved by 12% YoY.
+                                </p>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all">
+                            Export Geographic Report (PDF)
+                        </button>
+</div>
+</div>
+</div>
+<!-- Province and District Detail Row -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Province Chart -->
+<div class="lg:col-span-5 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow">
+<h2 class="font-headline-md text-headline-md text-primary mb-6">Reach by Province</h2>
+<div class="space-y-4">
+<!-- Province Bar 1 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-bold">
+<span class="text-on-surface-variant">Bagmati</span>
+<span class="text-primary">145 Activities</span>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full">
+<div class="bg-primary h-2.5 rounded-full" style="width: 95%"></div>
+</div>
+</div>
+<!-- Province Bar 2 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-bold">
+<span class="text-on-surface-variant">Lumbini</span>
+<span class="text-primary">88 Activities</span>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full">
+<div class="bg-primary h-2.5 rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<!-- Province Bar 3 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-bold">
+<span class="text-on-surface-variant">Madhesh</span>
+<span class="text-primary">76 Activities</span>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full">
+<div class="bg-primary h-2.5 rounded-full" style="width: 55%"></div>
+</div>
+</div>
+<!-- Province Bar 4 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-bold">
+<span class="text-on-surface-variant">Koshi</span>
+<span class="text-primary">62 Activities</span>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full">
+<div class="bg-primary h-2.5 rounded-full" style="width: 48%"></div>
+</div>
+</div>
+<!-- Province Bar 5 -->
+<div class="space-y-1">
+<div class="flex justify-between text-label-sm font-bold">
+<span class="text-on-surface-variant">Sudurpashchim</span>
+<span class="text-primary">45 Activities</span>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full">
+<div class="bg-primary h-2.5 rounded-full" style="width: 35%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- District Detail Table -->
+<div class="lg:col-span-7 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant canvas-shadow overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-primary">District Performance Breakdown</h2>
+<div class="relative">
+<input class="pl-8 pr-4 py-1.5 rounded-full border border-outline-variant text-sm focus:ring-primary focus:border-primary" placeholder="Search districts..." type="text"/>
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-on-surface-variant text-[18px]">search</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant text-[11px] uppercase tracking-widest font-bold">
+<th class="px-4 py-3">District Name</th>
+<th class="px-4 py-3">Province</th>
+<th class="px-4 py-3">IPs Active</th>
+<th class="px-4 py-3">Total Activities</th>
+<th class="px-4 py-3">Ach. Rate (%)</th>
+</tr>
+</thead>
+<tbody class="text-body-md divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-bold text-primary">Kathmandu</td>
+<td class="px-4 py-3">Bagmati</td>
+<td class="px-4 py-3">8</td>
+<td class="px-4 py-3">42</td>
+<td class="px-4 py-3">
+<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">98%</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-bold text-primary">Rupandehi</td>
+<td class="px-4 py-3">Lumbini</td>
+<td class="px-4 py-3">5</td>
+<td class="px-4 py-3">28</td>
+<td class="px-4 py-3">
+<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">92%</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-bold text-primary">Dhanusha</td>
+<td class="px-4 py-3">Madhesh</td>
+<td class="px-4 py-3">6</td>
+<td class="px-4 py-3">34</td>
+<td class="px-4 py-3">
+<span class="bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full text-xs font-bold">76%</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-bold text-primary">Surkhet</td>
+<td class="px-4 py-3">Karnali</td>
+<td class="px-4 py-3">4</td>
+<td class="px-4 py-3">19</td>
+<td class="px-4 py-3">
+<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">88%</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-bold text-primary">Mugu</td>
+<td class="px-4 py-3">Karnali</td>
+<td class="px-4 py-3">2</td>
+<td class="px-4 py-3">12</td>
+<td class="px-4 py-3">
+<span class="bg-red-100 text-red-800 px-2 py-0.5 rounded-full text-xs font-bold">64%</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 flex justify-end">
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+                            View All 77 Districts <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="w-full py-4 flex justify-between items-center border-t border-outline-variant bg-surface-container-lowest mt-12">
+<div class="text-on-surface-variant font-label-sm text-label-sm">
+                    © 2024 UNFPA Nepal. Data freshness: Updated 24h ago. Privacy Suppressed for sensitive indicators.
+                </div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary underline transition-colors" href="#">Methodology</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary underline transition-colors" href="#">Contact Support</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary underline transition-colors" href="#">Privacy Policy</a>
+</div>
+</footer>
+</div>
+</main>
+<script>
+        let sidebarCollapsed = false;
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const topNav = document.getElementById('top-nav');
+        const collapseIcon = document.getElementById('collapse-icon');
+        const sidebarTextElements = document.querySelectorAll('.sidebar-text-content');
+
+        function toggleSidebar() {
+            sidebarCollapsed = !sidebarCollapsed;
+            if (sidebarCollapsed) {
+                sidebar.style.width = '72px';
+                mainContent.style.marginLeft = '72px';
+                topNav.style.left = '72px';
+                collapseIcon.innerText = 'chevron_right';
+                sidebarTextElements.forEach(el => el.classList.add('hidden'));
+            } else {
+                sidebar.style.width = '260px';
+                mainContent.style.marginLeft = '260px';
+                topNav.style.left = '260px';
+                collapseIcon.innerText = 'chevron_left';
+                sidebarTextElements.forEach(el => el.classList.remove('hidden'));
+            }
+        }
+
+        // Simulating data updates
+        console.log('UNFPA Geographic Coverage Screen Initialized');
+    </script>
+</body></html>

@@ -1,0 +1,1 @@
+﻿Visual QA Description: Full Nepal boundary base visible (SVG path data confirmed). Programme bubbles (circle elements) align accurately with geographic districts. Default view: Activity Density by District. Selectors: Fully functional. Privacy: Aggregated view banner and footer caveat present.

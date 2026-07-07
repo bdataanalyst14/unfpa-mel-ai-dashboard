@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UNFPA Nepal: Management Decision Centre</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#9dcaff",
+                      "surface-tint": "#0062a2",
+                      "on-primary-container": "#ecf3ff",
+                      "surface-variant": "#e1e3e4",
+                      "primary-fixed-dim": "#9dcaff",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-tertiary-fixed-variant": "#7c2e00",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f0f1f2",
+                      "inverse-surface": "#2e3132",
+                      "secondary": "#3a5f94",
+                      "surface-container": "#edeeef",
+                      "primary-container": "#0072bc",
+                      "on-secondary-fixed-variant": "#1f477b",
+                      "on-primary-fixed-variant": "#00497c",
+                      "secondary-fixed": "#d5e3ff",
+                      "on-surface": "#191c1d",
+                      "on-background": "#191c1d",
+                      "on-tertiary-container": "#ffefea",
+                      "on-surface-variant": "#404751",
+                      "surface-container-low": "#f3f4f5",
+                      "on-secondary-fixed": "#001b3c",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "tertiary": "#953900",
+                      "surface-dim": "#d9dadb",
+                      "secondary-container": "#9fc2fe",
+                      "surface-bright": "#f8f9fa",
+                      "outline": "#717882",
+                      "surface-container-high": "#e7e8e9",
+                      "tertiary-container": "#bd4a00",
+                      "surface": "#f8f9fa",
+                      "primary": "#005994",
+                      "on-secondary-container": "#294f83",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "background": "#f8f9fa",
+                      "primary-fixed": "#d1e4ff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#a7c8ff",
+                      "on-primary-fixed": "#001d35",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c0c7d3",
+                      "tertiary-fixed-dim": "#ffb596"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "0.5rem",
+                      "stack-md": "1rem",
+                      "stack-lg": "2rem",
+                      "margin-page": "2rem",
+                      "sidebar-width": "260px",
+                      "gutter-grid": "1.5rem",
+                      "ai-panel-width": "380px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "kpi-value": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "kpi-value": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "22px",
+                              {
+                                      "lineHeight": "30px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+        }
+        .ai-pulse {
+            animation: pulse-soft 2s infinite;
+        }
+        @keyframes pulse-soft {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        /* Custom scrollbar for dense data areas */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c0c7d3; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #717882; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-full flex flex-col font-body-md">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-page h-16 fixed top-0 z-50 bg-surface shadow-sm transition-all duration-300">
+<div class="flex items-center gap-4">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">UNFPA Nepal: Strategic Management Portal</h1>
+</div>
+<div class="flex items-center gap-4">
+<!-- Search placeholder if on_right -->
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface placeholder:text-on-surface-variant focus:outline-none" placeholder="Search..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 pt-16 h-full overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-stack-lg bg-surface-container border-r border-outline-variant fixed left-0 w-sidebar-width z-40 overflow-y-auto">
+<div class="px-6 mb-8 flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-bold font-headline-sm">UN</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm font-black text-on-surface">UNFPA Nepal</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Executive Portal</p>
+</div>
+</div>
+</div>
+<div class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-label-md text-label-md">Activity Progress</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md text-label-md">Participant Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Indicator Progress</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="speed">speed</span>
+<span class="font-label-md text-label-md">IP Performance</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md text-label-md">Geographic Coverage</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-label-md text-label-md">GBV Services</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md">Data Quality</span>
+</a>
+<!-- Active Navigation -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-4 border-primary-container font-bold scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-label-md text-label-md">Decision Centre</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-label-md text-label-md">Activity Detail</span>
+</a>
+</div>
+<div class="px-4 mt-auto pt-4 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 ml-0 md:ml-sidebar-width overflow-y-auto bg-surface-bright p-margin-page mr-0 xl:mr-ai-panel-width relative transition-all duration-300">
+<div class="max-w-[1400px] mx-auto">
+<!-- Header -->
+<div class="flex justify-between items-end mb-stack-lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2">Management Decision Centre</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Executive action cockpit for Q3 Strategic Review.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container text-on-surface px-4 py-2 rounded-lg font-label-md flex items-center gap-2 border border-outline-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                            Export Brief
+                        </button>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+                            Share View
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter-grid mb-stack-lg">
+<!-- AI Executive Summary (Spans 8 columns) -->
+<div class="col-span-12 lg:col-span-8 bg-surface rounded-xl border border-outline-variant card-shadow p-6 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-symbols-outlined ai-pulse" data-icon="auto_awesome">auto_awesome</span>
+<h3 class="font-headline-sm text-headline-sm">AI Executive Summary</h3>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface space-y-4">
+<p>The Q3 portfolio is operating at an overall <strong>78% implementation rate</strong> against targets. However, critical bottlenecks have emerged in Province 2 regarding GBV service delivery, primarily linked to delays in localized IP fund disbursements.</p>
+<p>Data quality indicators show a 12% improvement in real-time reporting adherence compared to Q2, suggesting the new validation protocols are effective. Strategic focus is required immediately on the <em>Adolescent Health Initiative</em> which is currently flagging amber due to procurement delays for essential medical commodities.</p>
+</div>
+</div>
+<!-- Top Risks (Spans 4 columns) -->
+<div class="col-span-12 lg:col-span-4 bg-surface rounded-xl border border-outline-variant card-shadow p-6 flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+                                Top Risks This Quarter
+                            </h3>
+</div>
+<ul class="space-y-3 flex-1">
+<li class="p-3 bg-error-container/30 rounded-lg border border-error-container/50">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-error font-bold">HIGH</span>
+<span class="text-xs text-on-surface-variant">Procurement</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">Dignity kit distribution delayed by 3 weeks in Sudurpashchim.</p>
+</li>
+<li class="p-3 bg-[#fff3cd] rounded-lg border border-[#ffe69c]">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-[#856404] font-bold">MEDIUM</span>
+<span class="text-xs text-on-surface-variant">Financial</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">IP liquidation rate below threshold (65%) for 3 key partners.</p>
+</li>
+</ul>
+</div>
+<!-- Off-track Indicators -->
+<div class="col-span-12 lg:col-span-6 bg-surface rounded-xl border border-outline-variant card-shadow p-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-outline-variant pb-2">Off-track Indicators</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-on-surface-variant font-label-md bg-surface-container-low">
+<th class="p-2 rounded-tl-lg">Indicator</th>
+<th class="p-2">Target</th>
+<th class="p-2">Actual</th>
+<th class="p-2 rounded-tr-lg">Gap</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-on-surface divide-y divide-outline-variant/30">
+<tr>
+<td class="p-2 py-3"># Safe spaces established</td>
+<td class="p-2">45</td>
+<td class="p-2">28</td>
+<td class="p-2 text-error font-bold">-37%</td>
+</tr>
+<tr>
+<td class="p-2 py-3">Youth trained in life skills</td>
+<td class="p-2">1500</td>
+<td class="p-2">850</td>
+<td class="p-2 text-[#856404] font-bold">-43%</td>
+</tr>
+<tr>
+<td class="p-2 py-3">Midwives deployed</td>
+<td class="p-2">120</td>
+<td class="p-2">95</td>
+<td class="p-2 text-[#856404] font-bold">-20%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- IPs Needing Follow-up -->
+<div class="col-span-12 lg:col-span-6 bg-surface rounded-xl border border-outline-variant card-shadow p-6">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">IPs Needing Follow-up</h3>
+<span class="bg-error-container text-on-error-container text-xs px-2 py-1 rounded-full font-bold">Action Required</span>
+</div>
+<ul class="space-y-2">
+<li class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant text-xs font-bold">N/A</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Nepal Red Cross Society</p>
+<p class="text-xs text-on-surface-variant">Pending Q2 Financial Report</p>
+</div>
+</div>
+<button class="text-primary hover:bg-primary-container/10 p-1 rounded"><span class="material-symbols-outlined" data-icon="mail">mail</span></button>
+</li>
+<li class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant text-xs font-bold">WOREC</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">WOREC Nepal</p>
+<p class="text-xs text-error">Low expenditure rate (42%)</p>
+</div>
+</div>
+<button class="text-primary hover:bg-primary-container/10 p-1 rounded"><span class="material-symbols-outlined" data-icon="mail">mail</span></button>
+</li>
+</ul>
+</div>
+<!-- Suggested Management Actions -->
+<div class="col-span-12 lg:col-span-6 bg-surface rounded-xl border border-outline-variant card-shadow p-6 border-l-4 border-l-[#FF6600]">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Suggested Management Actions</h3>
+<div class="space-y-3">
+<label class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg cursor-pointer hover:bg-surface-container transition-colors">
+<input class="mt-1 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Approve budget reallocation for Province 2</p>
+<p class="text-xs text-on-surface-variant">Shift $45k from travel to local procurement to expedite dignity kits.</p>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg cursor-pointer hover:bg-surface-container transition-colors">
+<input class="mt-1 rounded border-outline text-primary focus:ring-primary" type="checkbox"/>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Schedule emergency IP review meeting</p>
+<p class="text-xs text-on-surface-variant">Focus on liquidation rates for top 3 partners.</p>
+</div>
+</label>
+</div>
+</div>
+<!-- Donor-ready Narrative Draft -->
+<div class="col-span-12 lg:col-span-6 bg-surface rounded-xl border border-outline-variant card-shadow p-6">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Donor Narrative Draft</h3>
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded border border-outline-variant/50 font-body-md text-on-surface-variant text-sm h-32 overflow-y-auto italic">
+                            "In Quarter 3, UNFPA Nepal advanced its core mandate despite localized logistical challenges in Sudurpashchim. The establishment of 28 new safe spaces underscores our commitment to GBV prevention, providing critical support structures for vulnerable populations. While procurement delays impacted the initial timeline for..."
+                        </div>
+</div>
+</div> <!-- End Grid -->
+</div>
+<!-- Footer (in main canvas area) -->
+<footer class="flex justify-between items-center px-margin-page py-4 w-full bg-surface-container-lowest border-t border-outline-variant mt-stack-lg rounded-xl mb-4">
+<span class="font-label-md text-label-md text-on-surface-variant">Last synced | Source | Validation caveat | Privacy note</span>
+<div class="flex gap-4">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<!-- Right AI Assistant Panel (Desktop) -->
+<aside class="hidden xl:flex flex-col w-ai-panel-width bg-surface border-l border-outline-variant fixed right-0 h-full pt-16 z-30 shadow-lg">
+<div class="p-4 bg-primary text-on-primary flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<h3 class="font-headline-sm font-bold">Management AI Assistant</h3>
+</div>
+<button class="hover:bg-primary-container p-1 rounded transition-colors"><span class="material-symbols-outlined" data-icon="close">close</span></button>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-container-lowest">
+<!-- AI Chat bubbles -->
+<div class="bg-surface-container-low rounded-lg p-3 rounded-tl-none border border-outline-variant/30 self-start max-w-[90%]">
+<p class="font-body-md text-sm text-on-surface">I've analyzed the Q3 data. The procurement delay in Sudurpashchim is the highest risk factor. Would you like me to draft an email to the logistics unit?</p>
+</div>
+<div class="bg-primary-container text-on-primary-container rounded-lg p-3 rounded-tr-none self-end max-w-[90%] ml-auto">
+<p class="font-body-md text-sm">Yes, draft it and include the budget reallocation proposal.</p>
+</div>
+<div class="bg-surface-container-low rounded-lg p-3 rounded-tl-none border border-outline-variant/30 self-start max-w-[90%]">
+<p class="font-body-md text-sm text-on-surface">Drafting... I've also prepared some <strong>Programme Review Talking Points</strong> based on this context:</p>
+<ul class="list-disc pl-4 mt-2 text-xs text-on-surface-variant space-y-1">
+<li>Acknowledge 78% overall implementation success.</li>
+<li>Address Sudurpashchim bottleneck (Propose $45k reallocation).</li>
+<li>Commend 12% data quality improvement.</li>
+</ul>
+</div>
+</div>
+<div class="p-4 bg-surface border-t border-outline-variant">
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-3 pl-4 pr-10 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Ask about Q3 performance..." type="text"/>
+<button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary p-1 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

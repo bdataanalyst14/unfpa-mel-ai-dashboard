@@ -1,0 +1,192 @@
+{
+  "generated_at": "2026-06-11T04:26:22Z",
+  "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+  "source_documents": [
+    "aasamanprogramindicator.xlsx",
+    "adraactivity and indicatorlisting2026.xlsx",
+    "cmcactivitylist_database2026_N.xlsx",
+    "saathiprogramindicator.xlsx",
+    "fpanprogramindicator.xlsx",
+    "gniprograminidcator.xlsx",
+    "juriprograminidcator.xlsx",
+    "kidsindicator.xlsx",
+    "nrcsindicator.xlsx",
+    "peacewinprogramindicator.xlsx",
+    "planinternationalprograminidcator.xlsx",
+    "sosecprogramindicator.xlsx",
+    "tpoprogramindicator.xlsx",
+    "spnprograminidcator.xlsx",
+    "worecprograminidcator.xlsx"
+  ],
+  "validation_status": "pending_user_validation",
+  "data_classification": "dashboard_registry_non_personal",
+  "notes": "Derived from external IP documents; not sourced from BigQuery raw data. Requires M&E review before route integration.",
+  "record_count": 15,
+  "records": [
+    {
+      "registry_id": "ip_1c1aaf74b4ebcc",
+      "ip_name": "Aasaman Nepal",
+      "normalized_ip_name": "aasaman nepal",
+      "source_document": "aasamanprogramindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_20c03888f150f2",
+      "ip_name": "ADRA Nepal",
+      "normalized_ip_name": "adra nepal",
+      "source_document": "adraactivity and indicatorlisting2026.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_5883fec80d6ff6",
+      "ip_name": "CMC Nepal",
+      "normalized_ip_name": "cmc nepal",
+      "source_document": "cmcactivitylist_database2026_N.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_5d5a6625fde404",
+      "ip_name": "SAATHI",
+      "normalized_ip_name": "saathi",
+      "source_document": "saathiprogramindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_4341f1176dc4dd",
+      "ip_name": "FPAN",
+      "normalized_ip_name": "fpan",
+      "source_document": "fpanprogramindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_c4d404e903b32f",
+      "ip_name": "Good Neighbors International Nepal",
+      "normalized_ip_name": "good neighbors international nepal",
+      "source_document": "gniprograminidcator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_badb75e2d34568",
+      "ip_name": "JURI Nepal",
+      "normalized_ip_name": "juri nepal",
+      "source_document": "juriprograminidcator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_e4100ce7c253c4",
+      "ip_name": "KIDS",
+      "normalized_ip_name": "kids",
+      "source_document": "kidsindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_40eef6fbb332a5",
+      "ip_name": "Nepal Red Cross Society",
+      "normalized_ip_name": "nepal red cross society",
+      "source_document": "nrcsindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_5863bebc3cd580",
+      "ip_name": "PeaceWin",
+      "normalized_ip_name": "peacewin",
+      "source_document": "peacewinprogramindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_5a532cdd52ba92",
+      "ip_name": "Plan International Nepal",
+      "normalized_ip_name": "plan international nepal",
+      "source_document": "planinternationalprograminidcator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_0c8683df68725d",
+      "ip_name": "SOSEC Nepal",
+      "normalized_ip_name": "sosec nepal",
+      "source_document": "sosecprogramindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_939b99a6ad5cdb",
+      "ip_name": "TPO Nepal",
+      "normalized_ip_name": "tpo nepal",
+      "source_document": "tpoprogramindicator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_93a2fa21a37d66",
+      "ip_name": "SPN",
+      "normalized_ip_name": "spn",
+      "source_document": "spnprograminidcator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    },
+    {
+      "registry_id": "ip_57b03a6807bd20",
+      "ip_name": "WOREC",
+      "normalized_ip_name": "worec",
+      "source_document": "worecprograminidcator.xlsx",
+      "source_folder": "H:\\My Drive\\unfpamel_agentic_ai\\data\\uploads\\ipprograminidcator",
+      "mapping_status": "matched_direct",
+      "mapping_confidence": 1.0,
+      "validation_status": "pending_user_validation",
+      "remarks": "Responsible IP inferred from source workbook identity."
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+UNFPA Nepal AI-Assisted MEL Dashboard
+Google Antigravity Execution Plan
+
+PROJECT NAME
+unfpa-mel-ai-dashboard
+
+TECH STACK
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Recharts
+- lucide-react
+- date-fns
+
+DEVELOPMENT STRATEGY
+Build in controlled milestones. Do not attempt backend, authentication, real data connection, or AI API integration in the first build. The first target is a static but polished prototype using realistic mock data.
+
+MILESTONE 1 — Repository Setup and Design System
+Goal:
+Create the Next.js project, install dependencies, initialize shadcn/ui, and set up the design foundation.
+
+Tasks:
+1. Create Next.js app with TypeScript, Tailwind, App Router, src directory, and @ alias.
+2. Initialize shadcn/ui.
+3. Install Recharts, lucide-react, date-fns, clsx, and tailwind-merge.
+4. Configure global styles.
+5. Create UNFPA-style color tokens:
+   - Orange accent
+   - Blue primary
+   - Green on track
+   - Amber watch
+   - Red off track
+   - Grey no data
+6. Create base app layout.
+
+Expected output:
+- Working Next.js app
+- Basic dashboard shell
+- Clean visual foundation
+
+MILESTONE 2 — Shared Layout Components
+Goal:
+Create reusable layout components.
+
+Components:
+- dashboard-shell.tsx
+- sidebar-nav.tsx
+- top-filter-bar.tsx
+- page-header.tsx
+- data-freshness-footer.tsx
+
+Expected output:
+- Left navigation
+- Top filter bar
+- Page header
+- Footer with source, refresh timestamp, caveat, and privacy note
+
+MILESTONE 3 — Data Types and Mock Data
+Goal:
+Create TypeScript data structures and realistic mock data.
+
+Files:
+- src/lib/types.ts
+- src/data/mock/combined-summary.ts
+- src/data/mock/main-data.ts
+- src/data/mock/cpd-indicators.ts
+- src/data/mock/unsdcf-sp-indicators.ts
+- src/data/mock/gbv-services.ts
+- src/data/mock/ai-insights.ts
+
+Mock data must represent:
+- Activities/events
+- Participant reach
+- Sex, age, caste/ethnicity, disability disaggregation
+- Evidence status
+- Validation status
+- CPD indicator target vs actual
+- UNSDCF/SP contribution mapping
+- Aggregated GBV services
+- AI management insights
+
+Expected output:
+- Typed mock data
+- No personal identifiers
+- No survivor-level records
+
+MILESTONE 4 — KPI and Governance Utilities
+Goal:
+Create reusable calculation and privacy logic.
+
+Files:
+- src/lib/kpi-calculations.ts
+- src/lib/indicator-status.ts
+- src/lib/data-quality-score.ts
+- src/lib/privacy-rules.ts
+- src/lib/role-access.ts
+
+Required functions:
+- getTotalEvents
+- getReportableParticipants
+- getFemaleParticipants
+- getMaleParticipants
+- getOtherSexParticipants
+- getBeneficiaries
+- getGuests
+- getDistrictsCovered
+- getIPsReporting
+- getEvidenceCompletionRate
+- getActivityAchievementRate
+- getIndicatorAchievementRate
+- getDataQualityScore
+- getMissingEvidenceCount
+- getValidationPendingCount
+- getGenderCheckFailedCount
+- getAgeCheckFailedCount
+- getCasteCheckFailedCount
+- suppressSmallCell
+- getIndicatorStatus
+- getDataQualityStatus
+
+Expected output:
+- All KPI logic outside page files
+- Privacy suppression available for GBV dashboard
+
+MILESTONE 5 — Reusable Dashboard Components
+Goal:
+Create reusable cards, chart wrappers, status badges, and AI panel.
+
+Components:
+- kpi-card.tsx
+- chart-card.tsx
+- ai-insight-panel.tsx
+- status-badge.tsx
+- privacy-banner.tsx
+- management-action-table.tsx
+- drillthrough-button.tsx
+
+Expected output:
+- Consistent UI across pages
+- No repeated card/table code
+
+MILESTONE 6 — Chart Components
+Goal:
+Create reusable Recharts components.
+
+Components:
+- programme-progress-chart.tsx
+- participant-sex-chart.tsx
+- indicator-status-chart.tsx
+- ip-ranking-chart.tsx
+- evidence-completion-chart.tsx
+- data-quality-chart.tsx
+- monthly-activity-trend.tsx
+- target-vs-actual-chart.tsx
+- gbv-summary-chart.tsx
+
+Expected output:
+- Charts render from mock data
+- Status colors applied consistently
+
+MILESTONE 7 — Page Implementation
+Goal:
+Build all 10 dashboard pages.
+
+Implementation order:
+1. Executive Overview
+2. Activity Progress
+3. Participant & Reach Profile
+4. Indicator Progress
+5. IP / Partner Performance
+6. Data Quality & Evidence
+7. Geographic Coverage
+8. GBV / OCMC Service Summary
+9. Management Decision Centre
+10. Activity Detail
+
+Expected output:
+- All routes load
+- Sidebar navigation works
+- KPI cards and charts render
+
+MILESTONE 8 — Documentation
+Goal:
+Create project documentation.
+
+Files:
+- README.md
+- docs/DATA_MODEL.md
+- docs/KPI_LOGIC.md
+- docs/PRIVACY_AND_GOVERNANCE.md
+- docs/AI_ASSISTANT_PLAN.md
+- docs/BUILD_ROADMAP.md
+
+Expected output:
+- Clear setup and run instructions
+- Clear description of mock data model
+- Clear KPI logic
+- Clear privacy/governance logic
+- Roadmap for real data/API/AI integration
+
+MILESTONE 9 — Validation and Final Report
+Goal:
+Validate app and document work.
+
+Commands:
+- npm install
+- npm run lint
+- npm run build
+- npm run dev
+
+Create:
+- ANTIGRAVITY_IMPLEMENTATION_REPORT.txt
+
+Report must include:
+1. Summary of work completed
+2. Setup commands run
+3. Dependencies installed
+4. Files created
+5. Files modified
+6. Routes implemented
+7. Components implemented
+8. KPI functions implemented
+9. Privacy safeguards implemented
+10. Tests/validation run
+11. Known limitations
+12. Recommended next task
+
+OUT OF SCOPE FOR FIRST BUILD
+- Real KoBo API connection
+- Real Google Sheets or BigQuery connection
+- Authentication
+- Role-based login
+- AI API integration
+- Production deployment
+- Real survivor data
+- Real participant identifiers
+- Map shapefile integration
+- Editing or data entry workflow
+
+RECOMMENDED NEXT TASK AFTER PROTOTYPE
+AG-002 — Connect prototype to sample CSV/Excel exports and build a local data-ingestion layer.

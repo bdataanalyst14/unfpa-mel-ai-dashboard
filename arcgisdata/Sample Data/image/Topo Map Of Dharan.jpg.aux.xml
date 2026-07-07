@@ -1,0 +1,47 @@
+<PAMDataset>
+  <Metadata domain="IMAGE_STRUCTURE">
+    <MDI key="COMPRESSION">JPEG</MDI>
+    <MDI key="INTERLEAVE">PIXEL</MDI>
+    <MDI key="SOURCE_COLOR_SPACE">YCbCr</MDI>
+  </Metadata>
+  <Metadata domain="xml:ESRI" format="xml">
+    <GeodataXform xsi:type="typens:PolynomialXform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:typens="http://www.esri.com/schemas/ArcGIS/10.7">
+      <PolynomialOrder>1</PolynomialOrder>
+      <SpatialReference xsi:type="typens:ProjectedCoordinateSystem">
+        <WKT>PROJCS["Nepal_MUTM_Central_84_Everest_1830",GEOGCS["GCS_Everest_1830",DATUM["D_Everest_1830",SPHEROID["Everest_1830",6377276.345,300.8017]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",84.0],PARAMETER["Scale_Factor",0.9999],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]</WKT>
+        <XOrigin>-5683813.9991956223</XOrigin>
+        <YOrigin>-10999732.633947913</YOrigin>
+        <XYScale>409428099.50409752</XYScale>
+        <ZOrigin>-100000</ZOrigin>
+        <ZScale>10000</ZScale>
+        <MOrigin>-100000</MOrigin>
+        <MScale>10000</MScale>
+        <XYTolerance>0.001</XYTolerance>
+        <ZTolerance>0.001</ZTolerance>
+        <MTolerance>0.001</MTolerance>
+        <HighPrecision>true</HighPrecision>
+      </SpatialReference>
+      <SourceGCPs xsi:type="typens:ArrayOfDouble">
+        <Double>471.98357186107148</Double>
+        <Double>-415.86119670335347</Double>
+        <Double>6242.0194624959258</Double>
+        <Double>-398.80418440001085</Double>
+        <Double>6283.8695944112442</Double>
+        <Double>-6937.2989611027297</Double>
+        <Double>505.66336993829464</Double>
+        <Double>-6957.3658178627957</Double>
+      </SourceGCPs>
+      <TargetGCPs xsi:type="typens:ArrayOfDouble">
+        <Double>822959.68244644906</Double>
+        <Double>2977376.3483982957</Double>
+        <Double>835389.60478676739</Double>
+        <Double>2977701.5663895141</Double>
+        <Double>835758.34746002406</Double>
+        <Double>2963839.8475240879</Double>
+        <Double>823314.71096902993</Double>
+        <Double>2963515.6730570141</Double>
+      </TargetGCPs>
+      <Name />
+    </GeodataXform>
+  </Metadata>
+</PAMDataset>

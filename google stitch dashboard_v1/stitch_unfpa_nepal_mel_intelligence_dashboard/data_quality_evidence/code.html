@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Data Quality &amp; Evidence | UNFPA Nepal MEL Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-expanded { width: 260px; }
+        .sidebar-collapsed { width: 72px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c3c6d1; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#360f00",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#a7c8ff",
+                      "on-surface-variant": "#43474f",
+                      "background": "#f8f9fa",
+                      "on-secondary-fixed-variant": "#7c2e00",
+                      "surface": "#f8f9fa",
+                      "primary-fixed": "#d5e3ff",
+                      "on-primary-container": "#799dd6",
+                      "on-secondary-container": "#541d00",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#a5c8ff",
+                      "tertiary-fixed": "#d4e3ff",
+                      "outline-variant": "#c3c6d1",
+                      "on-tertiary-container": "#4f9efd",
+                      "secondary": "#a33e00",
+                      "surface-container-low": "#f3f4f5",
+                      "secondary-fixed": "#ffdbcd",
+                      "outline": "#737780",
+                      "on-primary-fixed-variant": "#1f477b",
+                      "surface-container": "#edeeef",
+                      "on-background": "#191c1d",
+                      "on-tertiary-fixed-variant": "#004785",
+                      "secondary-container": "#fe6500",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-primary": "#ffffff",
+                      "primary": "#001e40",
+                      "surface-dim": "#d9dadb",
+                      "surface-container-high": "#e7e8e9",
+                      "on-tertiary-fixed": "#001c3a",
+                      "surface-tint": "#3a5f94",
+                      "tertiary": "#001f3f",
+                      "on-surface": "#191c1d",
+                      "primary-fixed-dim": "#a7c8ff",
+                      "error-container": "#ffdad6",
+                      "tertiary-container": "#003463",
+                      "inverse-surface": "#2e3132",
+                      "secondary-fixed-dim": "#ffb596",
+                      "primary-container": "#003366",
+                      "on-primary-fixed": "#001b3c",
+                      "surface-variant": "#e1e3e4",
+                      "surface-bright": "#f8f9fa",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "grid-gutter": "24px",
+                      "sidebar-width-collapsed": "72px",
+                      "sidebar-width-expanded": "260px",
+                      "canvas-aspect-ratio": "16:9",
+                      "component-gap": "16px",
+                      "container-padding": "32px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["44px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 left-0 z-30 flex items-center h-16 px-grid-gutter bg-surface/95 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">MEL Intelligence Dashboard</span>
+</div>
+<nav class="hidden md:flex items-center gap-8 ml-12">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Year</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Quarter</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Project</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Outcome</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Output</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">IP/Partner</a>
+</nav>
+<div class="ml-auto flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a senior monitoring and evaluation officer in a modern corporate setting. The lighting is soft and even, typical of a high-end office environment. The individual is wearing a smart navy blazer, reflecting a professional and diplomatic atmosphere. The background is a slightly blurred modern office with soft grey and blue tones to match the UNFPA brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR8PRShtQ3oGmDzz8z6ecb1t_OPFwHJVLyQhvXMN-LZdKDH-SsLQcdpH1PY5W_DgYPhKJdqaDOcmC8sZWhk4ITGbTW-pQADm1f_6UyVCjXRiQHgAihWr0WtaAkEIvyZMgunotgIeOv5a3SxFd1ozE2owbfgHl5efHctkVtULF-dE9Bd9e35FPPS4kqztiTdRqGbgS66xXUqPnmc750bxHyeIYy8BAxLVHZm6uABCQ5nCjFny_KeWbc-TlbK2zCcggbTAmMHZSh9Q"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-primary dark:bg-primary shadow-sm w-sidebar-width-expanded transition-all duration-300">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden p-1">
+<img alt="UNFPA Logo" class="w-full h-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvZm2yx69f3Gzj2Q_l9v3UbDF7HyOqq1BALNbdCZ9EkR-9sgsl0EC0GNb5xyX6P7ZzrlZoC89OM7j2TC5KcmibKv68j_56pqve5pWvprchOojMI6qsxlih83tQXNMEUdestUfaIB0MH_qAt8_HfTf7H2OvcsglZf-juucdgVQrFYMqZ4uM9PDeh_3Su3MvZ3fUPplbt1Vjp3oZTa7Zc9wzgwMDkO1n2sjucxbG2_sYAm76RsIceVUaDFzsA9IIDjB2XFw4EJXi8Q"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-primary leading-none">UNFPA</span>
+<span class="text-[10px] text-on-primary opacity-70 tracking-widest uppercase">MEL Intelligence</span>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1 mt-4 overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Executive Overview</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-body-md text-body-md">Activity Progress</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-body-md text-body-md">Participant &amp; Reach Profile</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Indicator Progress</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+<span class="font-body-md text-body-md">IP / Partner Performance</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-body-md text-body-md">Geographic Coverage</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md text-body-md">GBV / OCMC Service Summary</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 border-l-4 border-secondary-container bg-primary-container text-on-primary-container font-bold rounded-r-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-body-md text-body-md">Data Quality &amp; Evidence</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-body-md text-body-md">Management Decision Centre</span>
+</a>
+<a class="flex items-center gap-4 px-3 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-body-md text-body-md">Activity Detail</span>
+</a>
+</nav>
+<div class="p-4 mt-auto border-t border-white/10">
+<div class="flex items-center gap-3 p-2 bg-white/5 rounded-xl">
+<div class="w-8 h-8 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold">NP</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-primary">UNFPA Nepal</span>
+<span class="text-[10px] text-on-primary opacity-60">MEL Intelligence</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-sidebar-width-expanded pt-16 min-h-screen">
+<div class="p-container-padding max-w-[1600px] mx-auto space-y-grid-gutter">
+<!-- Page Header -->
+<div class="flex items-end justify-between">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary">Data Quality &amp; Evidence</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Monitoring structural integrity and evidence compliance for programmatic reporting.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-sm text-label-sm flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">download</span> Export Audit Report
+                    </button>
+<button class="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-label-sm text-label-sm font-bold flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">notification_add</span> Alert All Partners
+                    </button>
+</div>
+</div>
+<!-- KPI Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-component-gap">
+<!-- KPI: Approved -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-[0px_4px_20px_rgba(0,0,0,0.03)] group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-primary-fixed text-on-primary-fixed-variant rounded-lg">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm cursor-help">info</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wide">Approved Submissions</span>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-primary">1.1k</span>
+<span class="text-[10px] font-bold text-on-primary-container bg-primary-container/10 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">trending_up</span> 4%
+                        </span>
+</div>
+</div>
+<!-- KPI: Pending Validation -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-[0px_4px_20px_rgba(0,0,0,0.03)] group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-lg">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wide">Pending Validation</span>
+<div class="mt-1">
+<span class="font-display-lg text-display-lg text-primary">145</span>
+</div>
+</div>
+<!-- KPI: Missing Evidence -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-2 border-error/20 bg-error/5 shadow-[0px_4px_20px_rgba(0,0,0,0.03)] group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-error-container text-on-error-container rounded-lg">
+<span class="material-symbols-outlined">attach_file_off</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-error-container block uppercase tracking-wide font-bold">Missing Evidence</span>
+<div class="mt-1">
+<span class="font-display-lg text-display-lg text-error">28</span>
+</div>
+</div>
+<!-- KPI: Quality Score -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-[0px_4px_20px_rgba(0,0,0,0.03)] group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-secondary-fixed text-on-secondary-fixed-variant rounded-lg">
+<span class="material-symbols-outlined">verified</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wide">Data Quality Score</span>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-secondary">94%</span>
+<div class="w-16 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full w-[94%]"></div>
+</div>
+</div>
+</div>
+<!-- KPI: Late -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-[0px_4px_20px_rgba(0,0,0,0.03)] group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-surface-container-highest text-on-surface-variant rounded-lg">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wide">Late Submissions</span>
+<div class="mt-1">
+<span class="font-display-lg text-display-lg text-primary">12</span>
+</div>
+</div>
+</div>
+<!-- Main Visuals Grid -->
+<div class="grid grid-cols-12 gap-grid-gutter">
+<!-- Quality Score by IP - Ranked Bar Chart -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Data Quality Score by IP</h3>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm">Actual %</span>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Bar Item -->
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span>Center for Reproductive Rights</span>
+<span class="font-bold">98%</span>
+</div>
+<div class="w-full h-8 bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="absolute inset-y-0 left-0 bg-primary-container w-[98%] transition-all duration-1000 group-hover:brightness-110"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span>Rural Development Centre (RDC)</span>
+<span class="font-bold">95%</span>
+</div>
+<div class="w-full h-8 bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="absolute inset-y-0 left-0 bg-primary-container w-[95%] transition-all duration-1000 group-hover:brightness-110"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span>FPAN Nepal</span>
+<span class="font-bold">91%</span>
+</div>
+<div class="w-full h-8 bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="absolute inset-y-0 left-0 bg-primary-container w-[91%] transition-all duration-1000 group-hover:brightness-110"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-error font-bold">
+<span>WOREC Nepal</span>
+<span>78%</span>
+</div>
+<div class="w-full h-8 bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="absolute inset-y-0 left-0 bg-error/40 w-[78%] transition-all duration-1000 group-hover:brightness-110"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span>VSO International</span>
+<span class="font-bold">89%</span>
+</div>
+<div class="w-full h-8 bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="absolute inset-y-0 left-0 bg-primary-container w-[89%] transition-all duration-1000 group-hover:brightness-110"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Alert Card: Disaggregation Failures -->
+<div class="col-span-12 lg:col-span-4 space-y-grid-gutter">
+<div class="bg-error-container/30 p-6 rounded-xl border-2 border-error/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<h3 class="font-headline-md text-headline-md text-on-error-container">Disaggregation Failures</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+                            Mismatches detected in Sex/Age/Caste reporting for 3 Partners. Data consistency requires immediate remediation.
+                        </p>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-error/5">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-bold">Sex vs Total Mismatch</span>
+<span class="text-[10px] text-on-surface-variant">42 entries (Lumbini)</span>
+</div>
+<span class="material-symbols-outlined text-error">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-error/5">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-bold">Age Group Inconsistency</span>
+<span class="text-[10px] text-on-surface-variant">18 entries (Karnali)</span>
+</div>
+<span class="material-symbols-outlined text-error">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-error/5">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-bold">Invalid Caste Codes</span>
+<span class="text-[10px] text-on-surface-variant">12 entries (Sudurpashchim)</span>
+</div>
+<span class="material-symbols-outlined text-error">chevron_right</span>
+</div>
+</div>
+<button class="w-full mt-6 py-2 bg-error text-white font-bold rounded-lg hover:brightness-110 transition-all text-sm">
+                            Generate Correction Report
+                        </button>
+</div>
+<!-- Validation Trend Miniature -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-4 tracking-wider">Validation Trend (6mo)</h3>
+<div class="h-32 flex items-end justify-between gap-1">
+<div class="w-full bg-primary/10 rounded-t-sm relative group h-[40%] hover:bg-primary transition-colors">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-primary text-white text-[10px] px-1 rounded">12</div>
+</div>
+<div class="w-full bg-primary/10 rounded-t-sm relative group h-[55%] hover:bg-primary transition-colors"></div>
+<div class="w-full bg-primary/10 rounded-t-sm relative group h-[45%] hover:bg-primary transition-colors"></div>
+<div class="w-full bg-primary/10 rounded-t-sm relative group h-[70%] hover:bg-primary transition-colors"></div>
+<div class="w-full bg-primary/10 rounded-t-sm relative group h-[85%] hover:bg-primary transition-colors"></div>
+<div class="w-full bg-secondary-container rounded-t-sm relative group h-[95%] hover:bg-secondary-container/80 transition-colors">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-100 bg-secondary-container text-white text-[10px] px-1 rounded">94</div>
+</div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-bold">
+<span>JAN</span>
+<span>MAR</span>
+<span>MAY</span>
+<span>JUN</span>
+</div>
+</div>
+</div>
+<!-- Heatmap Section -->
+<div class="col-span-12 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Submission Frequency Heatmap</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Geographic distribution vs Reporting compliance frequency</p>
+</div>
+<div class="flex gap-1 items-center font-label-sm text-label-sm">
+<span>Low</span>
+<div class="flex gap-0.5">
+<div class="w-4 h-4 bg-primary/10"></div>
+<div class="w-4 h-4 bg-primary/40"></div>
+<div class="w-4 h-4 bg-primary/70"></div>
+<div class="w-4 h-4 bg-primary"></div>
+</div>
+<span>High</span>
+</div>
+</div>
+<div class="grid grid-cols-8 gap-1">
+<!-- Heatmap headers -->
+<div class="col-span-1"></div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Koshi</div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Madhesh</div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Bagmati</div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Gandaki</div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Lumbini</div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Karnali</div>
+<div class="col-span-1 text-center text-[10px] font-bold text-on-surface-variant">Sudur.</div>
+<!-- Row 1 -->
+<div class="text-[10px] font-bold flex items-center pr-2">GBV Services</div>
+<div class="h-12 bg-primary/70 rounded"></div>
+<div class="h-12 bg-primary rounded"></div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<div class="h-12 bg-primary/70 rounded"></div>
+<div class="h-12 bg-primary rounded"></div>
+<div class="h-12 bg-primary/10 rounded border border-error/30"></div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<!-- Row 2 -->
+<div class="text-[10px] font-bold flex items-center pr-2">SRH Mobile</div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<div class="h-12 bg-primary/70 rounded"></div>
+<div class="h-12 bg-primary rounded"></div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<div class="h-12 bg-primary/10 rounded"></div>
+<div class="h-12 bg-primary/10 rounded"></div>
+<div class="h-12 bg-primary/70 rounded"></div>
+<!-- Row 3 -->
+<div class="text-[10px] font-bold flex items-center pr-2">Youth Mobil.</div>
+<div class="h-12 bg-primary/10 rounded border border-error/30"></div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<div class="h-12 bg-primary/70 rounded"></div>
+<div class="h-12 bg-primary rounded"></div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<div class="h-12 bg-primary/40 rounded"></div>
+<div class="h-12 bg-primary/10 rounded"></div>
+</div>
+</div>
+<!-- Missing Evidence Table -->
+<div class="col-span-12 bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Activities Requiring Evidence Verification</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Detailed breakdown of 28 activities with pending document uploads.</p>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="pl-9 pr-4 py-2 bg-surface-container rounded-lg border-none text-sm w-64 focus:ring-2 focus:ring-primary" placeholder="Search Activity or IP..." type="text"/>
+</div>
+</div>
+<table class="w-full text-left">
+<thead class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<tr>
+<th class="px-6 py-4">Activity Name</th>
+<th class="px-6 py-4">Implementing Partner</th>
+<th class="px-6 py-4">Expected Date</th>
+<th class="px-6 py-4">Evidence Type</th>
+<th class="px-6 py-4">Days Overdue</th>
+<th class="px-6 py-4">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-md text-body-md font-bold">Community Outreach - SRHR Awareness</td>
+<td class="px-6 py-4 font-body-md text-body-md">Rural Development Centre</td>
+<td class="px-6 py-4 font-body-md text-body-md">12 May 2024</td>
+<td class="px-6 py-4 font-body-md text-body-md">Participant List / Photos</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded">14 Days</span>
+</td>
+<td class="px-6 py-4">
+<button class="px-3 py-1.5 border border-primary text-primary rounded font-bold text-[10px] hover:bg-primary hover:text-white transition-all uppercase">Follow Up</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-md text-body-md font-bold">Training of Health Service Providers</td>
+<td class="px-6 py-4 font-body-md text-body-md">FPAN Nepal</td>
+<td class="px-6 py-4 font-body-md text-body-md">18 May 2024</td>
+<td class="px-6 py-4 font-body-md text-body-md">Pre/Post Test Analysis</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded">8 Days</span>
+</td>
+<td class="px-6 py-4">
+<button class="px-3 py-1.5 border border-primary text-primary rounded font-bold text-[10px] hover:bg-primary hover:text-white transition-all uppercase">Follow Up</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group border-l-4 border-l-error">
+<td class="px-6 py-4 font-body-md text-body-md font-bold">GBV Case Management Workshop</td>
+<td class="px-6 py-4 font-body-md text-body-md">WOREC Nepal</td>
+<td class="px-6 py-4 font-body-md text-body-md">05 May 2024</td>
+<td class="px-6 py-4 font-body-md text-body-md">Workshop Report / Invoice</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-error text-white text-[10px] font-bold rounded">21 Days</span>
+</td>
+<td class="px-6 py-4">
+<button class="px-3 py-1.5 bg-secondary-container text-on-secondary-container rounded font-bold text-[10px] hover:brightness-110 transition-all uppercase">Escalate to HQ</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-body-md text-body-md font-bold">District Coordination Meeting</td>
+<td class="px-6 py-4 font-body-md text-body-md">VSO International</td>
+<td class="px-6 py-4 font-body-md text-body-md">22 May 2024</td>
+<td class="px-6 py-4 font-body-md text-body-md">Minutes of Meeting</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded">4 Days</span>
+</td>
+<td class="px-6 py-4">
+<button class="px-3 py-1.5 border border-primary text-primary rounded font-bold text-[10px] hover:bg-primary hover:text-white transition-all uppercase">Follow Up</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-surface-container-low flex justify-center">
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+                            View All 28 Missing Evidence Records <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Shell -->
+<footer class="w-full py-6 px-grid-gutter flex justify-between items-center border-t border-outline-variant bg-surface-container-lowest mt-12">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">© 2024 UNFPA Nepal. Data freshness: Updated 24h ago. Privacy Suppressed for sensitive indicators.</span>
+<div class="flex gap-4">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary underline" href="#">Methodology</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary underline" href="#">Contact Support</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary underline" href="#">Privacy Policy</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center opacity-50 grayscale contrast-150">
+<img alt="UNFPA" class="w-4 h-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT22umTWTqgdEJj0QhdFvx-cNDFh0dwb49pht5rH6Xc2dG9rlBxEiQWnpbQDcoZmDeHyJFcwkNs50bQu0rC3-KKk5gPHoxBNAlxviJPvGBv_DTGUdIoo7PxoLtvvwCgN-cWY2hEuFui0LeAx_c9y3_fL78wtxvO6BsePatMBVCqo8t7AfMuQRZwFQAusxMuEKELcIZXitUdm5lcxCp20y1UDZO950l6xwqPOQkGE_pGHewTcRj1d5Mpp50bngXJ3eKMIRK4ThpIQ"/>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant bg-surface-container-high px-2 py-1 rounded">AUDIT TRAIL ACTIVE</span>
+</div>
+</footer>
+</main>
+<script>
+        // Micro-interactions for hovering heatmap cells
+        document.querySelectorAll('.h-12.rounded').forEach(cell => {
+            cell.addEventListener('mouseenter', () => {
+                cell.style.transform = 'scale(1.05)';
+                cell.style.zIndex = '10';
+                cell.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            });
+            cell.addEventListener('mouseleave', () => {
+                cell.style.transform = 'scale(1)';
+                cell.style.zIndex = '1';
+                cell.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body></html>

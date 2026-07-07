@@ -1,0 +1,17 @@
+{
+  "registry_version": "0.1.0-draft",
+  "generated_at": "2026-06-11T07:46:20.907451Z",
+  "generated_by": "Codex registry normalization",
+  "source_documents_count": 0,
+  "ip_count": 15,
+  "activity_count": 575,
+  "indicator_count": 217,
+  "target_count": 170,
+  "crosswalk_count": 878,
+  "evidence_count": 878,
+  "validation_status": "pending_me_validation",
+  "approval_status": "not_approved_for_dashboard_connection",
+  "approved_by": null,
+  "approved_date": null,
+  "next_required_action": "M&E validation and approval"
+}

@@ -1,0 +1,1 @@
+﻿Visual QA Description: Executive Overview loading correctly. Aggregate KPIs (Total Events, Reach, etc.) rendering. Programme Progress, Indicator Status, and Participant Sex charts present and interactive. AI Insights panel populated.

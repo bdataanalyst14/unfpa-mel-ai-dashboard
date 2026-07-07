@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UNFPA Nepal: Strategic Management Portal - Executive Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#9dcaff",
+                      "surface-tint": "#0062a2",
+                      "on-primary-container": "#ecf3ff",
+                      "surface-variant": "#e1e3e4",
+                      "primary-fixed-dim": "#9dcaff",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-tertiary-fixed-variant": "#7c2e00",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f0f1f2",
+                      "inverse-surface": "#2e3132",
+                      "secondary": "#3a5f94",
+                      "surface-container": "#edeeef",
+                      "primary-container": "#0072bc",
+                      "on-secondary-fixed-variant": "#1f477b",
+                      "on-primary-fixed-variant": "#00497c",
+                      "secondary-fixed": "#d5e3ff",
+                      "on-surface": "#191c1d",
+                      "on-background": "#191c1d",
+                      "on-tertiary-container": "#ffefea",
+                      "on-surface-variant": "#404751",
+                      "surface-container-low": "#f3f4f5",
+                      "on-secondary-fixed": "#001b3c",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "tertiary": "#953900",
+                      "surface-dim": "#d9dadb",
+                      "secondary-container": "#9fc2fe",
+                      "surface-bright": "#f8f9fa",
+                      "outline": "#717882",
+                      "surface-container-high": "#e7e8e9",
+                      "tertiary-container": "#bd4a00",
+                      "surface": "#f8f9fa",
+                      "primary": "#005994",
+                      "on-secondary-container": "#294f83",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "background": "#f8f9fa",
+                      "primary-fixed": "#d1e4ff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#a7c8ff",
+                      "on-primary-fixed": "#001d35",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c0c7d3",
+                      "tertiary-fixed-dim": "#ffb596"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "0.5rem",
+                      "stack-md": "1rem",
+                      "stack-lg": "2rem",
+                      "margin-page": "2rem",
+                      "sidebar-width": "260px",
+                      "gutter-grid": "1.5rem",
+                      "ai-panel-width": "380px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "kpi-value": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "kpi-value": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-md": ["22px", {"lineHeight": "30px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid theme('colors.surface-container-high'); }
+        .kpi-card { background-color: theme('colors.surface-container-lowest'); border: 1px solid theme('colors.surface-container-high'); border-radius: theme('borderRadius.DEFAULT'); box-shadow: 0 4px 8px rgba(0,0,0,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+        .kpi-card::before { content: ''; display: block; height: 4px; width: 100%; border-top-left-radius: theme('borderRadius.DEFAULT'); border-top-right-radius: theme('borderRadius.DEFAULT'); }
+        .kpi-blue::before { background-color: theme('colors.primary'); }
+        .kpi-green::before { background-color: #2e7d32; }
+        .kpi-amber::before { background-color: #f57f17; }
+        .kpi-red::before { background-color: theme('colors.error'); }
+        
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: theme('colors.outline-variant'); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.outline'); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-page h-16 fixed top-0 z-50 bg-surface shadow-sm">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">UNFPA Nepal: Strategic Management Portal</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2 text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface w-48 outline-none" placeholder="Search..." type="text"/>
+</div>
+<button aria-label="Notifications" class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center h-10 w-10 opacity-80 scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button aria-label="Help" class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center h-10 w-10 opacity-80 scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>
+</button>
+<button aria-label="Account" class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center h-10 w-10 opacity-80 scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 pt-16">
+<!-- SideNavBar -->
+<nav class="hidden lg:flex flex-col h-[calc(100vh-4rem)] py-stack-lg fixed left-0 w-sidebar-width bg-surface-container border-r border-outline-variant overflow-y-auto no-shadow z-40">
+<div class="px-margin-page mb-8">
+<h2 class="font-headline-sm text-headline-sm font-black text-on-surface">UNFPA Nepal</h2>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">Executive Portal</p>
+</div>
+<ul class="flex flex-col flex-1 gap-1 px-4">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-4 border-primary-container font-bold scale-98 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                        Overview
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+                        Activity Progress
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">groups</span>
+                        Participant Profile
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                        Indicator Progress
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">speed</span>
+                        IP Performance
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">map</span>
+                        Geographic Coverage
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+                        GBV Services
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+                        Data Quality
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">psychology</span>
+                        Decision Centre
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+                        Activity Detail
+                    </a>
+</li>
+</ul>
+<div class="mt-auto px-4 border-t border-outline-variant pt-4">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+                            Settings
+                        </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+                            Support
+                        </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 lg:ml-[260px] xl:mr-[380px] p-margin-page bg-surface-bright min-h-[calc(100vh-4rem)]">
+<div class="flex justify-between items-end mb-stack-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface hidden md:block">Executive Overview</h1>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:hidden">Executive Overview</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Q3 2024 Performance Summary</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface px-4 py-2 rounded font-label-md text-label-md hover:bg-surface-container-low flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">download</span> Export
+                    </button>
+</div>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter-grid mb-stack-lg">
+<div class="kpi-card kpi-blue p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Total Events</span>
+<span class="material-symbols-outlined text-primary text-[20px]">event</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">1,248</div>
+<div class="font-label-md text-label-md text-primary mt-1">+12% vs last Q</div>
+</div>
+</div>
+<div class="kpi-card kpi-green p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Reportable Participants</span>
+<span class="material-symbols-outlined text-[#2e7d32] text-[20px]">group</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">45.2K</div>
+<div class="font-label-md text-label-md text-[#2e7d32] mt-1">+5.4% vs last Q</div>
+</div>
+</div>
+<div class="kpi-card kpi-blue p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Female Participants</span>
+<span class="material-symbols-outlined text-primary text-[20px]">female</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">62%</div>
+<div class="font-label-md text-label-md text-on-surface-variant mt-1">Target: 60%</div>
+</div>
+</div>
+<div class="kpi-card kpi-blue p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Districts Covered</span>
+<span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">42</div>
+<div class="font-label-md text-label-md text-on-surface-variant mt-1">of 77 total</div>
+</div>
+</div>
+<div class="kpi-card kpi-amber p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">IPs Reporting</span>
+<span class="material-symbols-outlined text-[#f57f17] text-[20px]">assignment</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">85%</div>
+<div class="font-label-md text-label-md text-[#f57f17] mt-1">5 late submissions</div>
+</div>
+</div>
+<div class="kpi-card kpi-green p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">CPD Indicators On Track</span>
+<span class="material-symbols-outlined text-[#2e7d32] text-[20px]">check_circle</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">78%</div>
+<div class="font-label-md text-label-md text-on-surface-variant mt-1">22 of 28 indicators</div>
+</div>
+</div>
+<div class="kpi-card kpi-red p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Missing Evidence</span>
+<span class="material-symbols-outlined text-error text-[20px]">warning</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">14</div>
+<div class="font-label-md text-label-md text-error mt-1">Critical items pending</div>
+</div>
+</div>
+<div class="kpi-card kpi-green p-4 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Data Quality Score</span>
+<span class="material-symbols-outlined text-[#2e7d32] text-[20px]">verified</span>
+</div>
+<div>
+<div class="font-kpi-value text-kpi-value text-on-surface">92/100</div>
+<div class="font-label-md text-label-md text-[#2e7d32] mt-1">Excellent</div>
+</div>
+</div>
+</div>
+<!-- Charts & Data Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-grid mb-stack-lg">
+<!-- Programme Progress -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-6 shadow-sm flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Programme Progress by Project</h3>
+<div class="flex-1 relative min-h-[250px] w-full bg-surface-container-low rounded flex items-end p-4 gap-4 justify-around border-b border-l border-outline-variant">
+<!-- Abstract Bar Chart Representation -->
+<div class="w-12 bg-primary rounded-t" style="height: 80%;"></div>
+<div class="w-12 bg-primary-container rounded-t" style="height: 65%;"></div>
+<div class="w-12 bg-secondary rounded-t" style="height: 90%;"></div>
+<div class="w-12 bg-[#2e7d32] rounded-t" style="height: 45%;"></div>
+<div class="w-12 bg-[#f57f17] rounded-t" style="height: 30%;"></div>
+<div class="absolute bottom-1 left-0 w-full flex justify-around text-label-md text-on-surface-variant px-4">
+<span>GBV</span>
+<span>SRH</span>
+<span>Youth</span>
+<span>Pop Dev</span>
+<span>Emerg</span>
+</div>
+</div>
+</div>
+<!-- Indicator Status -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-6 shadow-sm flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Indicator Status Summary</h3>
+<div class="flex-1 flex items-center justify-center relative min-h-[250px]">
+<!-- Abstract Donut Chart Representation -->
+<div class="w-48 h-48 rounded-full border-[16px] border-surface-container-low relative flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[16px] border-[#2e7d32] border-r-transparent border-b-transparent border-l-transparent rotate-45"></div>
+<div class="absolute inset-0 rounded-full border-[16px] border-primary border-t-transparent border-b-transparent border-l-transparent rotate-12"></div>
+<div class="absolute inset-0 rounded-full border-[16px] border-[#f57f17] border-t-transparent border-r-transparent border-l-transparent rotate-0"></div>
+<div class="absolute inset-0 rounded-full border-[16px] border-error border-t-transparent border-r-transparent border-b-transparent -rotate-45"></div>
+<div class="font-headline-md text-headline-md font-bold text-on-surface">28</div>
+</div>
+<div class="ml-8 flex flex-col gap-2">
+<div class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant"><div class="w-3 h-3 rounded-full bg-[#2e7d32]"></div> Achieved (5)</div>
+<div class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant"><div class="w-3 h-3 rounded-full bg-primary"></div> On Track (17)</div>
+<div class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant"><div class="w-3 h-3 rounded-full bg-[#f57f17]"></div> Watch (4)</div>
+<div class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant"><div class="w-3 h-3 rounded-full bg-error"></div> Off Track (2)</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Lower Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter-grid mb-stack-lg">
+<!-- Map -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-6 shadow-sm col-span-1 lg:col-span-1 flex flex-col h-[350px]">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Geographic Coverage</h3>
+<div class="flex-1 bg-surface-container-low rounded flex items-center justify-center overflow-hidden border border-outline-variant relative">
+<img alt="Nepal Map Placeholder" class="object-cover w-full h-full opacity-80" data-alt="A stylized, minimalist topographical map illustration of Nepal. The map uses a subtle color palette of light greys and white, representing the mountainous terrain. It is illuminated by clean, high-key studio lighting, creating a modern, data-driven aesthetic. Subtle, glowing primary blue dots indicate coverage areas across the region. The overall mood is precise, geographic, and professional." data-location="Nepal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAWTeNPbGozbbRbIcC1Vr7ssmRiCyxkojHLFfees4CXidbKZn8LiDbnG22m7Qi-JzL1WxqFSeJY5tSn0NCyBpuGTD5nLK170qbYLgRXk9uT3UiRdPVDdOvW_MB17hX02uG8pingVHVfehIKMCUS6nQwxBJ2pZbIeEPkqZdjbECka9g_Esf31zGUu_W5aM7tbEiaAUOEUBIBUE2aG7Y_mUtJUBy6CKm0VjoYdF87vsroxY2wVGU0v12dz3J9iEEGnzfD1lTlJ9WmQ"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-3 h-3 bg-primary rounded-full absolute top-[40%] left-[30%] shadow-[0_0_10px_rgba(0,89,148,0.8)]"></div>
+<div class="w-3 h-3 bg-primary rounded-full absolute top-[50%] left-[60%] shadow-[0_0_10px_rgba(0,89,148,0.8)]"></div>
+<div class="w-3 h-3 bg-[#f57f17] rounded-full absolute top-[60%] left-[45%] shadow-[0_0_10px_rgba(245,127,23,0.8)]"></div>
+</div>
+</div>
+</div>
+<!-- IPs Needing Attention -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-6 shadow-sm col-span-1 lg:col-span-2 flex flex-col h-[350px]">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Top 5 IPs Needing Attention</h3>
+<div class="overflow-auto border border-outline-variant rounded">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant">
+<th class="p-3 font-label-md text-label-md text-on-surface-variant font-bold">Partner Name</th>
+<th class="p-3 font-label-md text-label-md text-on-surface-variant font-bold">Issue Area</th>
+<th class="p-3 font-label-md text-label-md text-on-surface-variant font-bold">Severity</th>
+<th class="p-3 font-label-md text-label-md text-on-surface-variant font-bold">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-surface-container">
+<td class="p-3 font-body-md text-body-md text-on-surface font-semibold">WOREC Nepal</td>
+<td class="p-3 font-body-md text-body-md text-on-surface">Data Reporting Delay</td>
+<td class="p-3"><span class="px-2 py-1 bg-error-container text-on-error-container text-label-md font-label-md rounded-full">High</span></td>
+<td class="p-3"><button class="text-primary hover:underline font-label-md text-label-md">Review</button></td>
+</tr>
+<tr class="border-b border-surface-container">
+<td class="p-3 font-body-md text-body-md text-on-surface font-semibold">FPAN</td>
+<td class="p-3 font-body-md text-body-md text-on-surface">Budget Utilization (Low)</td>
+<td class="p-3"><span class="px-2 py-1 bg-[#fff8e1] text-[#f57f17] text-label-md font-label-md rounded-full">Medium</span></td>
+<td class="p-3"><button class="text-primary hover:underline font-label-md text-label-md">Review</button></td>
+</tr>
+<tr class="border-b border-surface-container">
+<td class="p-3 font-body-md text-body-md text-on-surface font-semibold">CMC Nepal</td>
+<td class="p-3 font-body-md text-body-md text-on-surface">Missing Evidence Files</td>
+<td class="p-3"><span class="px-2 py-1 bg-error-container text-on-error-container text-label-md font-label-md rounded-full">High</span></td>
+<td class="p-3"><button class="text-primary hover:underline font-label-md text-label-md">Review</button></td>
+</tr>
+<tr class="border-b border-surface-container">
+<td class="p-3 font-body-md text-body-md text-on-surface font-semibold">Saath-Saath</td>
+<td class="p-3 font-body-md text-body-md text-on-surface">Participant Verification</td>
+<td class="p-3"><span class="px-2 py-1 bg-[#fff8e1] text-[#f57f17] text-label-md font-label-md rounded-full">Medium</span></td>
+<td class="p-3"><button class="text-primary hover:underline font-label-md text-label-md">Review</button></td>
+</tr>
+<tr>
+<td class="p-3 font-body-md text-body-md text-on-surface font-semibold">TPO Nepal</td>
+<td class="p-3 font-body-md text-body-md text-on-surface">Geographic Coverage Gap</td>
+<td class="p-3"><span class="px-2 py-1 bg-[#e8f5e9] text-[#2e7d32] text-label-md font-label-md rounded-full">Low</span></td>
+<td class="p-3"><button class="text-primary hover:underline font-label-md text-label-md">Review</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="flex justify-between items-center px-margin-page py-4 w-full bg-surface-container-lowest border-t border-outline-variant mt-auto">
+<p class="font-label-md text-label-md text-on-surface-variant">Last synced: Today, 08:30 AM | Source: IP Reporting Portal | Validation caveat: Unverified data present | Privacy note: Internal use only</p>
+<div class="flex gap-4">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<!-- AI Advisor Panel (Right Side) -->
+<aside class="hidden xl:flex flex-col w-ai-panel-width fixed right-0 top-16 h-[calc(100vh-4rem)] bg-surface border-l border-outline-variant shadow-sm z-40 overflow-y-auto">
+<div class="p-6 border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-10 flex items-center gap-3">
+<span class="material-symbols-outlined text-[#ff6600] text-[24px]">auto_awesome</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Management Assistant</h2>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">Strategic Insights Engine</p>
+</div>
+</div>
+<div class="p-6 flex flex-col gap-6">
+<!-- Insight 1 -->
+<div class="bg-[#fff3e0] border border-[#ffe0b2] rounded p-4 relative">
+<div class="absolute -left-2 -top-2 w-6 h-6 bg-[#ff6600] rounded-full flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+</div>
+<h4 class="font-label-md text-label-md text-[#e65100] mb-2 font-bold uppercase tracking-wider">Alert: Missing Evidence</h4>
+<p class="font-body-md text-body-md text-on-surface mb-3">
+                        14 critical evidence files are pending, primarily from WOREC Nepal and CMC Nepal. This threatens the Q3 validation process.
+                    </p>
+<button class="bg-[#ff6600] text-white px-3 py-1.5 rounded font-label-md text-label-md hover:bg-[#e65100] transition-colors w-full">
+                        Trigger Follow-up Workflow
+                    </button>
+</div>
+<!-- Insight 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-4">
+<h4 class="font-label-md text-label-md text-primary mb-2 font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">query_stats</span> What changed this quarter?
+                    </h4>
+<p class="font-body-md text-body-md text-on-surface mb-2">
+                        Female participation in GBV programs increased by 8% in Province 2, correlating with the new outreach initiative launched in August.
+                    </p>
+<p class="font-body-md text-body-md text-on-surface">
+                        However, budget utilization in the SRH sector has slowed down by 12% compared to Q2.
+                    </p>
+</div>
+<!-- Insight 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-4">
+<h4 class="font-label-md text-label-md text-primary mb-2 font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">lightbulb</span> Recommended Actions
+                    </h4>
+<ul class="font-body-md text-body-md text-on-surface space-y-2 pl-4 list-disc marker:text-primary">
+<li>Schedule a check-in with FPAN regarding the low budget utilization in SRH.</li>
+<li>Approve the re-allocation of funds from Emergency response to ongoing GBV services in Province 2.</li>
+<li>Review the 2 indicators currently 'Off Track' before the steering committee meeting on Thursday.</li>
+</ul>
+</div>
+</div>
+<div class="mt-auto p-4 border-t border-outline-variant bg-surface-container-lowest sticky bottom-0">
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-2 pl-4 pr-10 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary" placeholder="Ask the AI Advisor..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

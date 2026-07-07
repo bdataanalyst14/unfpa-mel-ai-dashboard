@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Indicator Progress | MEL Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c3c6d1;
+            border-radius: 10px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#360f00",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#a7c8ff",
+                      "on-surface-variant": "#43474f",
+                      "background": "#f8f9fa",
+                      "on-secondary-fixed-variant": "#7c2e00",
+                      "surface": "#f8f9fa",
+                      "primary-fixed": "#d5e3ff",
+                      "on-primary-container": "#799dd6",
+                      "on-secondary-container": "#541d00",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#a5c8ff",
+                      "tertiary-fixed": "#d4e3ff",
+                      "outline-variant": "#c3c6d1",
+                      "on-tertiary-container": "#4f9efd",
+                      "secondary": "#a33e00",
+                      "surface-container-low": "#f3f4f5",
+                      "secondary-fixed": "#ffdbcd",
+                      "outline": "#737780",
+                      "on-primary-fixed-variant": "#1f477b",
+                      "surface-container": "#edeeef",
+                      "on-background": "#191c1d",
+                      "on-tertiary-fixed-variant": "#004785",
+                      "secondary-container": "#fe6500",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-primary": "#ffffff",
+                      "surface": "#ffffff",
+                      "primary": "#001e40",
+                      "surface-dim": "#d9dadb",
+                      "surface-container-high": "#e7e8e9",
+                      "on-tertiary-fixed": "#001c3a",
+                      "surface-tint": "#3a5f94",
+                      "tertiary": "#001f3f",
+                      "on-surface": "#191c1d",
+                      "primary-fixed-dim": "#a7c8ff",
+                      "error-container": "#ffdad6",
+                      "tertiary-container": "#003463",
+                      "inverse-surface": "#2e3132",
+                      "secondary-fixed-dim": "#ffb596",
+                      "primary-container": "#003366",
+                      "on-primary-fixed": "#001b3c",
+                      "surface-variant": "#e1e3e4",
+                      "surface-bright": "#f8f9fa",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "12px",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "grid-gutter": "24px",
+                      "sidebar-width-collapsed": "72px",
+                      "sidebar-width-expanded": "260px",
+                      "canvas-aspect-ratio": "16:9",
+                      "component-gap": "16px",
+                      "container-padding": "32px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["44px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Component -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-primary dark:bg-primary docked left-0 h-screen w-sidebar-width-expanded shadow-sm">
+<div class="p-6">
+<div class="font-headline-md text-headline-md font-bold text-on-primary">UNFPA Nepal</div>
+<div class="text-on-primary opacity-60 text-label-sm font-label-sm uppercase tracking-wider">MEL Intelligence</div>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<!-- Executive Overview -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Executive Overview</span>
+</a>
+<!-- Activity Progress -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-body-md text-body-md">Activity Progress</span>
+</a>
+<!-- Participant Profile -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-body-md text-body-md">Participant &amp; Reach Profile</span>
+</a>
+<!-- Indicator Progress (ACTIVE) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 border-secondary-container bg-primary-container text-on-primary-container font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Indicator Progress</span>
+</a>
+<!-- IP Performance -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+<span class="font-body-md text-body-md">IP / Partner Performance</span>
+</a>
+<!-- Geographic Coverage -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-body-md text-body-md">Geographic Coverage</span>
+</a>
+<!-- GBV / OCMC -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md text-body-md">GBV / OCMC Service Summary</span>
+</a>
+<!-- Data Quality -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-body-md text-body-md">Data Quality &amp; Evidence</span>
+</a>
+<!-- Decision Centre -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-body-md text-body-md">Management Decision Centre</span>
+</a>
+<!-- Activity Detail -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-body-md text-body-md">Activity Detail</span>
+</a>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-sidebar-width-expanded min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-sidebar-width-expanded z-30 flex items-center h-16 px-grid-gutter bg-surface/95 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-6">
+<h1 class="font-headline-md text-headline-md text-primary">Indicator Progress</h1>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<div class="flex gap-4">
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-primary font-bold border-b-2 border-primary py-4">Year</button>
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors py-4">Quarter</button>
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors py-4">Project</button>
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors py-4">Outcome</button>
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors py-4">Output</button>
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors py-4">IP/Partner</button>
+</div>
+</div>
+<div class="ml-auto flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX1vidtF0dB7WE_0K6Mm_yRkaAoL37kLaqKPIiaaCWlrAMjKb55IqVQCi1hnUn27F8JwUltdFVm0lhKoWMGm8nkcSaas_Wnp7tVGX3zOxwYIuVMYCFUyCb9LWm11yqScOT-XrD7aNujueVAW3iXe6u9PsyhgGVngnH-qccegyqmBGFuNxbg-ePwwvjLlW1GsoREENmPx6s894CAgZ8O4eZAzADhGwos7XHKqeY-C_yLxb4DXQFDMVR0PCChVNSC_Ly9rV225k46Q"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-8 flex-1">
+<!-- Executive Summary KPI Bento Grid -->
+<div class="grid grid-cols-6 gap-6 mb-8">
+<!-- Total Indicators -->
+<div class="col-span-1 bg-surface p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Total</span>
+</div>
+<div class="font-display-lg text-display-lg text-primary">45</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Indicator Set</div>
+</div>
+<!-- Achieved -->
+<div class="col-span-1 bg-surface p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-[#2E7D32]" data-icon="check_circle">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Achieved</span>
+</div>
+<div class="font-display-lg text-display-lg text-[#2E7D32]">12</div>
+<div class="text-label-sm font-label-sm text-[#2E7D32] bg-[#E8F5E9] px-2 py-0.5 rounded-full inline-block">27% Total</div>
+</div>
+<!-- On Track -->
+<div class="col-span-1 bg-surface p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="trending_up">trending_up</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">On Track</span>
+</div>
+<div class="font-display-lg text-display-lg text-primary-container">28</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Normal Progress</div>
+</div>
+<!-- Watch -->
+<div class="col-span-1 bg-surface p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-secondary" data-icon="visibility">visibility</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Watch</span>
+</div>
+<div class="font-display-lg text-display-lg text-secondary">3</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Needs Attention</div>
+</div>
+<!-- Off Track -->
+<div class="col-span-1 bg-surface p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Off Track</span>
+</div>
+<div class="font-display-lg text-display-lg text-error">2</div>
+<div class="font-body-md text-body-md text-on-surface-variant">At Risk</div>
+</div>
+<!-- No Data -->
+<div class="col-span-1 bg-surface p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-outline" data-icon="data_off">mobiledata_off</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">No Data</span>
+</div>
+<div class="font-display-lg text-display-lg text-outline">0</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Reporting Pending</div>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-8">
+<!-- Target vs Actual Chart Area -->
+<div class="col-span-8 space-y-8">
+<div class="bg-surface p-6 rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-md text-headline-md text-primary">Target vs Actual Performance</h2>
+<button class="text-primary hover:underline text-label-sm font-label-sm">View Full CPD Report</button>
+</div>
+<div class="space-y-6">
+<!-- Indicator Item 1 -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<div class="max-w-md">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Output 1.1</p>
+<h3 class="font-body-lg text-body-lg font-medium">Proportion of births attended by skilled health personnel</h3>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-primary">82%</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">/ 85% Target</span>
+</div>
+</div>
+<div class="relative h-4 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full transition-all duration-1000" style="width: 82%;"></div>
+<div class="absolute top-0 h-full w-[2px] bg-secondary-container z-10" style="left: 85%;" title="Target: 85%"></div>
+</div>
+</div>
+<!-- Indicator Item 2 -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<div class="max-w-md">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Output 2.3</p>
+<h3 class="font-body-lg text-body-lg font-medium">Couples receiving family planning services in remote districts</h3>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-[#2E7D32]">105%</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">/ 100% Target</span>
+</div>
+</div>
+<div class="relative h-4 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-[#2E7D32] rounded-full transition-all duration-1000" style="width: 100%;"></div>
+<div class="absolute top-0 h-full w-[2px] bg-secondary-container z-10" style="left: 95%;" title="Target: 100%"></div>
+</div>
+</div>
+<!-- Indicator Item 3 -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<div class="max-w-md">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Output 4.2</p>
+<h3 class="font-body-lg text-body-lg font-medium">Policy frameworks updated for SRHR integration</h3>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-error">45%</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">/ 70% Target</span>
+</div>
+</div>
+<div class="relative h-4 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-error rounded-full transition-all duration-1000" style="width: 45%;"></div>
+<div class="absolute top-0 h-full w-[2px] bg-secondary-container z-10" style="left: 70%;" title="Target: 70%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Progress by Output (Grouped Bars Concept) -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline-md text-headline-md text-primary">Progress by Output Cluster</h2>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-primary rounded-full"></div>
+<span class="text-label-sm font-label-sm">Planned</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-primary-container rounded-full"></div>
+<span class="text-label-sm font-label-sm">Actual</span>
+</div>
+</div>
+</div>
+<div class="flex items-end justify-between h-48 px-4 border-b border-outline-variant">
+<!-- Output 1 -->
+<div class="flex flex-col items-center gap-2 w-16">
+<div class="flex gap-1 items-end h-32">
+<div class="w-5 bg-primary/20 h-full rounded-t"></div>
+<div class="w-5 bg-primary h-[90%] rounded-t"></div>
+</div>
+<span class="text-label-sm font-label-sm whitespace-nowrap">Output 1</span>
+</div>
+<!-- Output 2 -->
+<div class="flex flex-col items-center gap-2 w-16">
+<div class="flex gap-1 items-end h-32">
+<div class="w-5 bg-primary/20 h-[80%] rounded-t"></div>
+<div class="w-5 bg-primary h-[85%] rounded-t"></div>
+</div>
+<span class="text-label-sm font-label-sm whitespace-nowrap">Output 2</span>
+</div>
+<!-- Output 3 -->
+<div class="flex flex-col items-center gap-2 w-16">
+<div class="flex gap-1 items-end h-32">
+<div class="w-5 bg-primary/20 h-full rounded-t"></div>
+<div class="w-5 bg-primary h-[60%] rounded-t"></div>
+</div>
+<span class="text-label-sm font-label-sm whitespace-nowrap">Output 3</span>
+</div>
+<!-- Output 4 -->
+<div class="flex flex-col items-center gap-2 w-16">
+<div class="flex gap-1 items-end h-32">
+<div class="w-5 bg-primary/20 h-full rounded-t"></div>
+<div class="w-5 bg-primary h-[40%] rounded-t"></div>
+</div>
+<span class="text-label-sm font-label-sm whitespace-nowrap">Output 4</span>
+</div>
+<!-- Output 5 -->
+<div class="flex flex-col items-center gap-2 w-16">
+<div class="flex gap-1 items-end h-32">
+<div class="w-5 bg-primary/20 h-[70%] rounded-t"></div>
+<div class="w-5 bg-primary h-[70%] rounded-t"></div>
+</div>
+<span class="text-label-sm font-label-sm whitespace-nowrap">Output 5</span>
+</div>
+</div>
+<p class="mt-4 text-label-sm font-label-sm text-on-surface-variant italic">Data suppressed for privacy for indicators involving minority outreach in Zone C.</p>
+</div>
+</div>
+<!-- Insight Panel & Milestone Tracker -->
+<div class="col-span-4 space-y-8">
+<!-- Management Summary Recessed Panel -->
+<div class="bg-[#F0F7FF] p-6 rounded-xl border border-blue-100 shadow-sm">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+<h2 class="font-headline-md text-headline-md text-primary">MEL Insights</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">
+                            Performance in <span class="font-bold text-primary">Family Planning services</span> is exceeding annual targets by 5%. However, <strong>Outcome 4</strong> indicators are lagging due to delayed policy approvals.
+                        </p>
+<button class="w-full py-3 rounded-lg border border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">Download Executive Brief</button>
+</div>
+<!-- Milestone Tracker -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant shadow-sm">
+<h2 class="font-headline-md text-headline-md text-primary mb-6">Milestone Tracker</h2>
+<div class="space-y-6 relative before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant">
+<!-- Milestone 1 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-[#2E7D32] border-4 border-white shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings: 'wght' 700">check</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-body-md text-body-md font-bold">Mid-Term Review Completion</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Target Date: June 2024</p>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#2E7D32] bg-[#E8F5E9] px-2 py-0.5 rounded">Met</span>
+</div>
+</div>
+<!-- Milestone 2 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary border-4 border-white shadow-sm animate-pulse"></div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-body-md text-body-md font-bold">District Health Mapping</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Target Date: Sep 2024</p>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary-container bg-primary-fixed-dim/20 px-2 py-0.5 rounded">Pending</span>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-outline-variant border-4 border-white shadow-sm"></div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-body-md text-body-md font-bold">Annual Data Synthesis</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Target Date: Dec 2024</p>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Upcoming</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity-to-Indicator Contribution Table -->
+<div class="mt-8 bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-primary">Activity Contribution Matrix</h2>
+<div class="flex gap-2">
+<span class="font-label-sm text-label-sm px-3 py-1 bg-surface-container-low rounded-full border border-outline-variant">Updated 24h ago</span>
+</div>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Indicator Code</th>
+<th class="px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Strategic Indicator</th>
+<th class="px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Linked Activities</th>
+<th class="px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Contribution Weight</th>
+<th class="px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-label-sm text-label-sm font-bold">IND-1.1.2</td>
+<td class="px-6 py-4 font-body-md text-body-md">Maternal mortality surveillance system strengthening</td>
+<td class="px-6 py-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary-fixed-dim flex items-center justify-center text-[10px] font-bold">AC</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-tertiary-fixed-dim flex items-center justify-center text-[10px] font-bold">BK</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-secondary-fixed-dim flex items-center justify-center text-[10px] font-bold">+4</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 75%;"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[#2E7D32]">
+<span class="w-2 h-2 rounded-full bg-[#2E7D32]"></span>
+                                        Achieved
+                                    </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-label-sm text-label-sm font-bold">IND-2.4.1</td>
+<td class="px-6 py-4 font-body-md text-body-md">Youth outreach for menstrual health in Karnali</td>
+<td class="px-6 py-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary-fixed flex items-center justify-center text-[10px] font-bold">MP</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-secondary-fixed flex items-center justify-center text-[10px] font-bold">+12</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 40%;"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-primary-container">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                                        On Track
+                                    </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-label-sm text-label-sm font-bold">IND-4.2.0</td>
+<td class="px-6 py-4 font-body-md text-body-md">Federal-level Gender Equality Act Implementation</td>
+<td class="px-6 py-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-error-container flex items-center justify-center text-[10px] font-bold">UN</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 15%;"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-error">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+                                        Off Track
+                                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="w-full py-4 px-grid-gutter flex justify-between items-center bg-surface-container-lowest border-t border-outline-variant">
+<div class="font-label-sm text-label-sm text-on-surface-variant">
+                © 2024 UNFPA Nepal. Data freshness: Updated 24h ago. Privacy Suppressed for sensitive indicators.
+            </div>
+<div class="flex gap-6">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-colors" href="#">Methodology</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-colors" href="#">Contact Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-colors" href="#">Privacy Policy</a>
+</div>
+</footer>
+</main>
+<!-- Contextual FAB - suppressed for details/dashboard focused views as per instructions, but available for actions -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="bg-secondary-container text-on-secondary-container shadow-xl h-14 px-6 rounded-full flex items-center gap-3 hover:scale-105 transition-transform active:scale-95">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+<span class="font-bold">Export Report</span>
+</button>
+</div>
+<!-- Decorative Background Visual -->
+<div class="fixed top-0 right-0 -z-10 w-1/3 h-1/2 opacity-5 pointer-events-none">
+<img class="w-full h-full object-cover" data-alt="A sophisticated corporate background featuring soft, flowing blue gradients and abstract geometric patterns. The lighting is bright and high-key, reflecting a professional and transparent United Nations institutional atmosphere. The overall aesthetic is clean, minimalist, and digital-first, using a palette of deep navy and light azure tones to create a sense of order and intelligence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlMQ6XMn4IuhIR8ajfDA6nHEoatQEVpqW67Wwr44_eSZqsLpzb1qjJ_s3BF_GQVRPJ0UBU6v_h26Pdc0s_ddDrY0NmRSGVtl6y1_9GQNqvuga2lUzzxM2WX2I5B8_M_X8-BRLK_NF3sPiqw2CznIKnOgMnBGUW5UHA0b_4qYcVxCsW3Ab4r5aFc3NKytOakB-NK-KM1gWQ0LGB6s6RqgdiZNSeDkC0kkbgzPxhPF9H15tkBlmHlx-qUo0MoPcL-748sBGMaCL2Fg"/>
+</div>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                if(el.getAttribute('href') === '#') e.preventDefault();
+            });
+        });
+    </script>
+</body></html>
