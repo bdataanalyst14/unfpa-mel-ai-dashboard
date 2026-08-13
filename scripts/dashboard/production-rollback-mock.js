@@ -1,3 +1,4 @@
+// Historical/optional Ubuntu tooling. Not used or invoked by Vercel.
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');

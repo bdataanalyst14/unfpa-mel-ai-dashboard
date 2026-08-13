@@ -1,5 +1,7 @@
 # UNFPA Nepal MEL Dashboard - BigQuery Activation Checklist
 
+> Historical/optional Ubuntu checklist. It is not part of the current Vercel deployment path.
+
 This checklist defines the steps required to transition the UNFPA MEL Dashboard from safe mock fallback mode to live BigQuery-backed data.
 
 ## Phase 1: Prerequisites

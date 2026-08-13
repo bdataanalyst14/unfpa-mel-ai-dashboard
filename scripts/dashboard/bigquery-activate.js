@@ -1,3 +1,4 @@
+// Historical/optional Ubuntu tooling. Not used or invoked by Vercel.
 const { activationPlan, paths } = require('./bigquery-readonly');
 
 try {

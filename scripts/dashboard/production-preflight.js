@@ -141,15 +141,17 @@ async function main() {
     }
     log('Privacy suppression configuration is enabled.');
 
-    // 10. Rollback configuration exists
+    // 10. Vercel runtime must not expose server-filesystem mutation commands
     const pkgPath = path.join(__dirname, '../../package.json');
     if (fs.existsSync(pkgPath)) {
       const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-      if (!pkg.scripts || !pkg.scripts['production:rollback-mock']) {
-        logError('Rollback npm script "production:rollback-mock" is not defined.');
+      if (pkg.scripts?.['production:activate-bigquery']
+        || pkg.scripts?.['production:rollback-mock']
+        || pkg.scripts?.['dashboard:bigquery-activate']) {
+        logError('Server-filesystem activation commands must not be exposed by the Vercel runtime.');
         process.exit(1);
       }
-      log('Rollback configuration is present in package.json.');
+      log('Vercel runtime exposes no server-filesystem activation commands.');
     } else {
       logError('package.json not found.');
       process.exit(1);

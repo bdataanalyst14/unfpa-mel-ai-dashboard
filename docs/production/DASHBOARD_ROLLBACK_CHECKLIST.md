@@ -1,5 +1,7 @@
 # UNFPA Nepal MEL Dashboard - Rollback Checklist
 
+> Historical/optional Ubuntu checklist. Vercel rollback is a separate deployment checkpoint.
+
 Follow these steps if the live BigQuery connection encounters errors, schema mismatches, billing limits, or latency issues, to safely revert the dashboard to the mock fallback.
 
 ## Step 1: Assess Incident Severity

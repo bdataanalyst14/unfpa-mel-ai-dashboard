@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Historical/optional Ubuntu tooling. Pipeline configuration is separate from Vercel.
 set -euo pipefail
 
 arguments=("$@")

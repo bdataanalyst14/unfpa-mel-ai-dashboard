@@ -1,5 +1,7 @@
 # UNFPA Nepal MEL Dashboard - Ubuntu UAT Deployment Runbook
 
+> Historical/optional Ubuntu tooling. The current production architecture uses Vercel and does not invoke these commands.
+
 This document describes the steps to build, package, extract, configure, and verify dashboard updates inside the restricted UAT environment.
 
 ## 1. Directory Structure

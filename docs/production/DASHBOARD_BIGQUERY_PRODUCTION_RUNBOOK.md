@@ -1,6 +1,6 @@
 # UNFPA Nepal MEL Dashboard - BigQuery Production Runbook
 
-This runbook provides the instructions for configuring, managing, and troubleshooting the GCP BigQuery production connection for the UNFPA MEL Dashboard.
+Current production path: users → Vercel → server-side Next.js → four read-only BigQuery aggregate views. Pipeline recovery, KoBo ingestion, and Ubuntu operations are separate from Vercel.
 
 ## 1. System Architecture
 The dashboard connects to Google Cloud BigQuery using a service account credentials key file and aggregates reporting data from four approved tables/views:
@@ -12,14 +12,14 @@ The dashboard connects to Google Cloud BigQuery using a service account credenti
 No raw patient-level, beneficiary-level, or PII table (such as `participants_flat`) is queried by the dashboard runtime.
 
 ## 2. Environment Configuration
-The application reads its environment variables from `/etc/unfpa-mel/dashboard.env`.
+Vercel supplies server-only environment variables. Credential provisioning is a separate deployment checkpoint and is not performed by this PR.
 
 | Variable Name | Approved Production Value | Description |
 |---|---|---|
 | `DATA_MODE` | `bigquery` | Primary runtime data driver |
 | `DASHBOARD_DATA_MODE` | `bigquery` | Dashboard runtime data driver |
 | `BIGQUERY_PROJECT_ID` | `unfpadatabase` | Google Cloud project ID (must match exactly) |
-| `BIGQUERY_DATASET_ID` | `reporting` | Target dataset ID |
+| `BIGQUERY_DATASET_ID` | `unfpadatabase` | Target dataset ID |
 | `BIGQUERY_LOCATION` | `asia-south1` | Processing location (must match exactly) |
 | `GOOGLE_CLIENT_EMAIL` | `<readonly-service-account-email>` | Service account client email |
 | `GOOGLE_PRIVATE_KEY_FILE` | `/etc/unfpa-mel/secrets/google-private-key.pem` | Path to private key file |
@@ -28,7 +28,9 @@ The application reads its environment variables from `/etc/unfpa-mel/dashboard.e
 | `BIGQUERY_MAX_BYTES_BILLED` | `10000000` | Query bytes billing limit (optional) |
 | `BIGQUERY_CACHE_TTL_SECONDS`| `300` | Results cache duration (seconds) |
 
-## 3. Deployment Directory Structure
+## 3. Historical optional Ubuntu layout
+
+The following layout is not required or invoked by Vercel:
 - Application Root: `/opt/unfpa-mel-dashboard`
 - Active Release Link: `/opt/unfpa-mel-dashboard/current`
 - Configuration Directory: `/etc/unfpa-mel`
@@ -50,13 +52,13 @@ Run read-only schema checks, column verifications, and PII protection tests (req
 npm run production:bigquery-preflight
 ```
 
-### Activate BigQuery Mode
+### Historical Ubuntu activation only
 Switch the dashboard from mock mode to BigQuery (requires evidence file and approval reference):
 ```bash
 npm run production:activate-bigquery -- --approval <ref> --apply
 ```
 
-### Rollback to Mock Mode
+### Historical Ubuntu rollback only
 In case of database failure or schema corruption, revert to safe mock mode:
 ```bash
 npm run production:rollback-mock -- --apply --reason "Database connection timeout"
