@@ -83,7 +83,7 @@ export default function ActivityDetailTable({ data }: ActivityDetailTableProps) 
           ) : (
             <TableRow>
               <TableCell colSpan={6} className="h-24 text-center text-gray-500 font-medium">
-                No activities found matching filters.
+                No data available for the selected filters
               </TableCell>
             </TableRow>
           )}

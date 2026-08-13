@@ -53,7 +53,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 md:ml-64 flex flex-col min-h-screen">
+      <main className="min-w-0 flex-1 md:ml-64 flex flex-col min-h-screen">
         {/* Mobile top bar with hamburger */}
         <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-[#082A4D] text-white sticky top-0 z-10">
           <button
@@ -70,7 +70,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto p-4 md:p-6 space-y-6">
+        <div className="min-w-0 flex-1 overflow-auto p-4 md:p-6 space-y-6">
           {children}
         </div>
         <DataFreshnessFooter />

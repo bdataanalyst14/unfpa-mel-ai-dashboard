@@ -2,6 +2,7 @@ import 'server-only';
 
 export type SuppressionReason =
   | 'small_cell'
+  | 'complementary_cell'
   | 'invalid_count'
   | 'invalid_denominator';
 
@@ -14,13 +15,12 @@ export type SuppressionResult = {
 
 export type SuppressRecordPrimitive = string | boolean | null | undefined;
 
-export interface SuppressedRecordArray
-  extends Array<
+export type SuppressedRecordArray = Array<
     | SuppressionResult
     | SuppressedRecord
     | SuppressedRecordArray
     | SuppressRecordPrimitive
-  > {}
+  >;
 
 export interface SuppressedRecord {
   [key: string]:
@@ -71,6 +71,15 @@ export function suppressCount(count: unknown): SuppressionResult {
     displayValue: String(parsed),
     value: parsed,
     suppressed: false,
+  };
+}
+
+export function suppressComplementaryValue(): SuppressionResult {
+  return {
+    displayValue: 'Suppressed',
+    value: null,
+    suppressed: true,
+    suppression_reason: 'complementary_cell',
   };
 }
 

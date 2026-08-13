@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const ts = require('typescript');
 
 const repoRoot = path.resolve(__dirname, '..');
 const suppressionPath = path.join(repoRoot, 'src', 'lib', 'server', 'suppression.ts');
@@ -11,6 +12,46 @@ const servicePath = path.join(
   'server',
   'bigquery-dashboard-service.ts',
 );
+const gbvMockDataPath = path.join(repoRoot, 'src', 'data', 'mock', 'gbv-services.ts');
+const gbvSafeServicePath = path.join(
+  repoRoot,
+  'src',
+  'lib',
+  'server',
+  'gbv-mock-dashboard-service.ts',
+);
+const gbvPagePath = path.join(
+  repoRoot,
+  'src',
+  'app',
+  'dashboard',
+  'gbv-ocmc-summary',
+  'page.tsx',
+);
+const gbvChartPath = path.join(
+  repoRoot,
+  'src',
+  'components',
+  'charts',
+  'gbv-summary-chart.tsx',
+);
+const chartCardPath = path.join(
+  repoRoot,
+  'src',
+  'components',
+  'dashboard',
+  'chart-card.tsx',
+);
+const healthPath = path.join(repoRoot, 'src', 'app', 'api', 'health', 'route.ts');
+const activityDetailPath = path.join(
+  repoRoot,
+  'src',
+  'app',
+  'dashboard',
+  'activity-detail',
+  'page.tsx',
+);
+const csvExportPath = path.join(repoRoot, 'src', 'lib', 'csv-export.ts');
 
 const checks = [];
 
@@ -20,33 +61,20 @@ function check(name, fn) {
 
 function loadSuppressionModule() {
   const source = fs.readFileSync(suppressionPath, 'utf8');
-  const functionStart = source.indexOf('function toFiniteNumber');
-  if (functionStart === -1) {
-    throw new Error('Could not locate suppression utility implementation.');
-  }
-
-  const executableSource = `${source
-    .slice(functionStart)
-    .replace(
-      'function toFiniteNumber(value: unknown): number | null',
-      'function toFiniteNumber(value)',
-    )
-    .replace('function isUnsafeCount(value: unknown): boolean', 'function isUnsafeCount(value)')
-    .replace('export function suppressCount(count: unknown): SuppressionResult', 'function suppressCount(count)')
-    .replace(
-      /export function suppressPercentage\(\s*numerator: unknown,\s*denominator: unknown,\s*\): SuppressionResult/,
-      'function suppressPercentage(numerator, denominator)',
-    )
-    .replace(
-      'export function suppressRecord(payload: unknown): SuppressRecordValue',
-      'function suppressRecord(payload)',
-    )
-    .replace('const output: SuppressedRecord = {};', 'const output = {};')
-    .replace('return payload as SuppressRecordValue;', 'return payload;')}
-
-return { suppressCount, suppressPercentage, suppressRecord };`;
-
-  return Function(executableSource)();
+  const output = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2020,
+    },
+    fileName: suppressionPath,
+  }).outputText;
+  const loadedModule = { exports: {} };
+  Function('require', 'module', 'exports', output)(
+    (request) => (request === 'server-only' ? {} : require(request)),
+    loadedModule,
+    loadedModule.exports,
+  );
+  return loadedModule.exports;
 }
 
 function assertSuppressedSmallCell(result) {
@@ -172,6 +200,70 @@ function main() {
     assert.match(serviceSource, /Numeric compatibility fields use 0/);
   });
 
+  check('GBV mock records are restricted to server-only imports', () => {
+    const source = fs.readFileSync(gbvMockDataPath, 'utf8');
+    assert.match(source, /import ['"]server-only['"]/);
+  });
+
+  check('GBV page does not import raw mock records into a client component', () => {
+    const source = fs.readFileSync(gbvPagePath, 'utf8');
+    assert.doesNotMatch(source, /^['"]use client['"]/);
+    assert.doesNotMatch(source, /\bgbvServiceData\b/);
+    assert.match(source, /\bgetSafeGbvMockDashboardData\b/);
+  });
+
+  check('GBV safe transport applies count suppression before chart serialization', () => {
+    const source = fs.readFileSync(gbvSafeServicePath, 'utf8');
+    assert.match(source, /safeCountSeries\(provinceCategories,\s*totalResult\)/);
+    assert.match(source, /applyComplementarySuppression/);
+    assert.match(source, /chartValue:\s*result\.value\s*\?\?\s*0/);
+  });
+
+  check('GBV derived under-15 share and referral rate use percentage suppression', () => {
+    const source = fs.readFileSync(gbvSafeServicePath, 'utf8');
+    assert.match(
+      source,
+      /under15Share:[\s\S]*suppressPercentage\(row\.under15,\s*row\.totalSurvivors\)/,
+    );
+    assert.match(
+      source,
+      /referralRate:[\s\S]*suppressPercentage\(row\.referralCount,\s*row\.totalSurvivors\)/,
+    );
+  });
+
+  check('GBV chart tooltip and accessibility text use safe display values', () => {
+    const source = fs.readFileSync(gbvChartPath, 'utf8');
+    assert.match(source, /formatSafeGbvTooltipValue\(item\.payload\)/);
+    assert.match(source, /entry\.displayValue/);
+    assert.match(source, /dataKey="chartValue"/);
+    assert.doesNotMatch(source, /suppressSmallCount/);
+  });
+
+  check('GBV dashboard has no export control before privacy-safe export is designed', () => {
+    const pageSource = fs.readFileSync(gbvPagePath, 'utf8');
+    const chartCardSource = fs.readFileSync(chartCardPath, 'utf8');
+    assert.doesNotMatch(pageSource, /Export|Download/);
+    assert.doesNotMatch(chartCardSource, /aria-label="Export chart"/);
+  });
+
+  check('health endpoint exposes only safe static response fields', () => {
+    const source = fs.readFileSync(healthPath, 'utf8');
+    assert.match(source, /status:\s*['"]ok['"]/);
+    assert.match(source, /application:\s*['"]unfpa-mel-dashboard['"]/);
+    assert.match(source, /version:\s*packageJson\.version/);
+    assert.match(source, /Cache-Control['"]:\s*['"]private, no-store['"]/);
+    assert.doesNotMatch(source, /process\.env|BIGQUERY|GOOGLE_|hostname|filesystem/);
+  });
+
+  check('activity CSV export is wired and protects spreadsheet formula cells', () => {
+    const pageSource = fs.readFileSync(activityDetailPath, 'utf8');
+    const csvSource = fs.readFileSync(csvExportPath, 'utf8');
+    assert.match(pageSource, /onClick=\{exportFilteredRows\}/);
+    assert.match(pageSource, /\bcreateCsv\b/);
+    assert.match(csvSource, /\^\[=\+\\-@\]/);
+    assert.match(csvSource, /replace\(\/"\/g,\s*'""'\)/);
+  });
+
   const failures = [];
   for (const item of checks) {
     try {
@@ -192,8 +284,11 @@ function main() {
 
   console.log('Verification passed.');
   console.log(`Checks passed: ${checks.length}`);
-  console.log('Scope: local suppression utilities and service wiring only.');
+  console.log('Scope: local suppression, GBV client-boundary, health-route, and CSV wiring checks.');
   console.log('No BigQuery calls, live routes, refresh scripts, credentials, or .env reads.');
+
+  // Run new production readiness smoke tests
+  require('./test-production-smoke.js');
 }
 
 main();

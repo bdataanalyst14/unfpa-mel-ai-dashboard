@@ -6,6 +6,7 @@ import {
   LayoutDashboard, Activity, Users, Target, Building2, Globe,
   ShieldAlert, FileCheck, Brain, FileSpreadsheet,
 } from 'lucide-react';
+import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
 
 const navItems = [
   { label: 'Executive Overview', href: '/dashboard/executive-overview', icon: LayoutDashboard },
@@ -22,6 +23,7 @@ const navItems = [
 
 export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const { hrefWithFilters } = useDashboardFilters();
   return (
     <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin" aria-label="Dashboard navigation">
       {navItems.map((item) => {
@@ -30,7 +32,8 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
         return (
           <Link
             key={item.href}
-            href={item.href}
+            href={hrefWithFilters(item.href)}
+            prefetch={false}
             onClick={onNavigate}
             className={cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',

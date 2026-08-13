@@ -23,7 +23,10 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: 'Executive Overview data is temporarily unavailable.' },
-      { status: 500 },
+      {
+        status: 500,
+        headers: { 'Cache-Control': 'private, no-store' },
+      },
     );
   }
 }

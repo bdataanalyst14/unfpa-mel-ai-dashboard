@@ -7,6 +7,14 @@ import {
   runSafeBigQuery,
 } from './bigquery-client';
 import { suppressCount } from './suppression';
+import { mainData } from '@/data/mock/main-data';
+import {
+  buildDashboardFilterOptions,
+  filterActivities,
+  parseDashboardFilters,
+  summarizeActivities,
+} from '@/lib/dashboard-filters';
+import type { ExecutiveOverviewFilters } from '@/lib/types';
 
 export type DashboardRouteKey =
   | 'activity-progress'
@@ -92,6 +100,66 @@ function fallbackData(
       suppressionApplied: true,
       validationStatus,
       fallbackReason,
+    },
+  };
+}
+
+const filterOptions = buildDashboardFilterOptions(mainData);
+
+function mockFilteredData(
+  route: DashboardRouteKey,
+  filters: ExecutiveOverviewFilters,
+): DashboardPageData {
+  const validated = parseDashboardFilters(
+    filters as Record<string, string | string[] | undefined>,
+    filterOptions,
+  );
+  const rows = filterActivities(mainData, validated);
+  const summary = summarizeActivities(rows);
+  const common = [
+    metric('Filtered activities', summary.totalActivities),
+    metric('Filtered participants', summary.totalParticipants),
+    metric('Districts', summary.districts),
+    metric('Partners', summary.partners),
+  ];
+  const routeMetrics: Partial<Record<DashboardRouteKey, DashboardPageMetric[]>> = {
+    'participant-reach': [
+      metric('Filtered participants', summary.totalParticipants),
+      metric('Female participants', summary.femaleParticipants),
+      metric('Male participants', summary.maleParticipants),
+      metric(
+        'Female share',
+        summary.femaleShare === null ? 'N/A' : `${summary.femaleShare.toFixed(1)}%`,
+      ),
+    ],
+    'data-quality': [
+      metric('Filtered rows checked', summary.totalActivities),
+      metric('Missing evidence', summary.missingEvidence),
+      metric('Pending validation', summary.pendingValidation),
+    ],
+    'ip-performance': [
+      metric('Partners', summary.partners),
+      metric('Filtered activities', summary.totalActivities),
+      metric('Filtered participants', summary.totalParticipants),
+    ],
+    'geographic-coverage': [
+      metric('Provinces', new Set(rows.map((row) => row.province)).size),
+      metric('Districts', summary.districts),
+      metric('Filtered activities', summary.totalActivities),
+    ],
+  };
+
+  return {
+    route,
+    pageName: pageNames[route],
+    metrics: routeMetrics[route] ?? common,
+    metadata: {
+      dataSource: 'mock',
+      freshnessTimestamp: null,
+      suppressionApplied: route === 'gbv-ocmc',
+      validationStatus: 'mock_fallback_explicit',
+      fallbackReason:
+        'Validated synthetic mock rows only. Live programme data is not enabled.',
     },
   };
 }
@@ -194,7 +262,10 @@ export function normalizeDashboardRoute(route: string | null): DashboardRouteKey
   return 'activity-progress';
 }
 
-export async function getDashboardPageData(routeInput: string | null): Promise<DashboardPageData> {
+export async function getDashboardPageData(
+  routeInput: string | null,
+  filters: ExecutiveOverviewFilters = {},
+): Promise<DashboardPageData> {
   const route = normalizeDashboardRoute(routeInput);
   if (route === 'gbv-ocmc') {
     return fallbackData(
@@ -203,6 +274,13 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
       'blocked_privacy_suppression_not_verified',
     );
   }
+
+  const mode = (
+    process.env.DASHBOARD_DATA_MODE ||
+    process.env.DATA_MODE ||
+    'mock'
+  ).trim().toLowerCase();
+  if (mode !== 'bigquery') return mockFilteredData(route, filters);
 
   const config = getBigQueryConfigStatus();
   if (!config.configured) {
@@ -224,7 +302,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
   try {
     switch (route) {
       case 'activity-progress':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COALESCE(SUM(event_count), 0) AS total_activities,
             COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants,
@@ -234,7 +312,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
           FROM ${combined}
         `);
       case 'activity-detail':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COUNT(1) AS activity_rows,
             COUNT(DISTINCT NULLIF(ip_name, '')) AS partners,
@@ -243,7 +321,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
           FROM ${combined}
         `);
       case 'participant-reach':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants,
             COALESCE(SUM(female), 0) AS female_participants,
@@ -253,7 +331,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
           FROM ${combined}
         `);
       case 'geographic-coverage':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COUNT(DISTINCT NULLIF(province1, '')) AS provinces,
             COUNT(DISTINCT NULLIF(district1, '')) AS districts,
@@ -263,7 +341,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
           FROM ${combined}
         `);
       case 'data-quality':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COALESCE(SUM(total_rows), 0) AS total_rows,
             COALESCE(SUM(records_with_quality_issue), 0) AS records_with_quality_issue,
@@ -275,7 +353,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
           FROM ${quality}
         `);
       case 'ip-performance':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COUNT(DISTINCT NULLIF(ip_name, '')) AS reporting_partners,
             COALESCE(SUM(total_submissions), 0) AS total_submissions,
@@ -284,7 +362,7 @@ export async function getDashboardPageData(routeInput: string | null): Promise<D
           FROM ${ipStatus}
         `);
       case 'indicator-progress':
-        return queryOne(route, `
+        return await queryOne(route, `
           SELECT
             COUNT(1) AS indicator_rows,
             COUNT(DISTINCT NULLIF(indicator1, '')) AS indicators,

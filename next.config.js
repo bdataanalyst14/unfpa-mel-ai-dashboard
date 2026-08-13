@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  outputFileTracingRoot: __dirname,
+  turbopack: {
+    root: __dirname,
+  },
   experimental: {
-    appDir: true,
+    cpus: 1,
+    webpackBuildWorker: false,
+    workerThreads: true,
   },
 };
 

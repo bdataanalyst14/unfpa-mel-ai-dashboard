@@ -1,5 +1,20 @@
 import { redirect } from 'next/navigation';
+import { mainData } from '@/data/mock/main-data';
+import {
+  buildDashboardFilterOptions,
+  parseDashboardFilters,
+  serializeDashboardFilters,
+} from '@/lib/dashboard-filters';
 
-export default function DashboardIndexPage() {
-  redirect('/dashboard/executive-overview');
+export default async function DashboardIndexPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const filters = parseDashboardFilters(
+    await searchParams,
+    buildDashboardFilterOptions(mainData),
+  );
+  const query = serializeDashboardFilters(filters).toString();
+  redirect(`/dashboard/executive-overview${query ? `?${query}` : ''}`);
 }

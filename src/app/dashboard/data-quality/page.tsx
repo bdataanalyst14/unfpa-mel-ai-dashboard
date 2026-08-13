@@ -4,7 +4,6 @@ import KpiCard from '@/components/dashboard/kpi-card';
 import ChartCard from '@/components/dashboard/chart-card';
 import DataQualityChart from '@/components/charts/data-quality-chart';
 import EvidenceCompletionChart from '@/components/charts/evidence-completion-chart';
-import StatusBadge from '@/components/dashboard/status-badge';
 import DataSourceStatusPanel from '@/components/dashboard/data-source-status-panel';
 
 import { combinedSummary } from '@/data/mock/combined-summary';

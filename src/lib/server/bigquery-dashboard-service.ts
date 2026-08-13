@@ -2,6 +2,13 @@ import 'server-only';
 
 import { aiInsights } from '@/data/mock/ai-insights';
 import { combinedSummary } from '@/data/mock/combined-summary';
+import { mainData } from '@/data/mock/main-data';
+import {
+  buildDashboardFilterOptions,
+  filterActivities,
+  parseDashboardFilters,
+  summarizeActivities,
+} from '@/lib/dashboard-filters';
 import type { ExecutiveOverviewData, ExecutiveOverviewFilters } from '@/lib/types';
 import {
   getBigQueryDatasetId,
@@ -54,39 +61,75 @@ function toNumber(value: number | string | null | undefined): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function mockOverview(sourceLabel = 'Mock'): ExecutiveOverviewData {
+const filterOptions = buildDashboardFilterOptions(mainData);
+
+function mockOverview(
+  sourceLabel = 'Mock',
+  filters: ExecutiveOverviewFilters = {},
+): ExecutiveOverviewData {
+  const validated = parseDashboardFilters(
+    filters as Record<string, string | string[] | undefined>,
+    filterOptions,
+  );
+  const rows = filterActivities(mainData, validated);
+  const active = Object.values(validated).some(Boolean);
+  const activitySummary = summarizeActivities(rows);
+  const summary = active
+    ? {
+        ...combinedSummary,
+        totalEvents: activitySummary.totalActivities,
+        reportableParticipants: activitySummary.totalParticipants,
+        femaleParticipants: activitySummary.femaleParticipants,
+        maleParticipants: activitySummary.maleParticipants,
+        otherParticipants: activitySummary.otherParticipants,
+        beneficiaries: activitySummary.beneficiaries,
+        guests: rows.reduce((sum, row) => sum + row.guests, 0),
+        nonReportableParticipants: rows.reduce((sum, row) => sum + row.guests, 0),
+        districtsCovered: activitySummary.districts,
+        ipsReporting: activitySummary.partners,
+        missingEvidence: activitySummary.missingEvidence,
+        pendingValidation: activitySummary.pendingValidation,
+        approvedSubmissions: rows.filter(
+          (row) => row.validationStatus === 'Validated',
+        ).length,
+        lateSubmissions: rows.filter((row) => row.evidenceStatus === 'Pending').length,
+        dataQualityScore:
+          rows.length > 0
+            ? Math.round(
+                (rows.filter((row) => row.evidenceStatus !== 'Missing').length /
+                  rows.length) *
+                  1000,
+              ) / 10
+            : 0,
+      }
+    : combinedSummary;
   return {
-    summary: combinedSummary,
+    summary,
     participantSex: [
-      { name: 'Female', value: combinedSummary.femaleParticipants, color: '#004B87' },
-      { name: 'Male', value: combinedSummary.maleParticipants, color: '#FF6600' },
-      { name: 'Other', value: combinedSummary.otherParticipants, color: '#9CA3AF' },
+      { name: 'Female', value: summary.femaleParticipants, color: '#004B87' },
+      { name: 'Male', value: summary.maleParticipants, color: '#FF6600' },
+      { name: 'Other', value: summary.otherParticipants, color: '#9CA3AF' },
     ],
     insights: aiInsights.slice(0, 3),
     metadata: {
       dataSource: 'mock',
       sourceLabel,
       lastRefreshed: null,
-      note: 'Target/status charts and AI insights remain mock. Evidence, validation, and late-report metrics are also prototype-only pending approved reporting views.',
+      note: active
+        ? `Filtered synthetic mock rows: ${rows.length}. Target/status charts and AI insights remain unfiltered prototype content and are hidden in the filtered route view.`
+        : 'Target/status charts and AI insights remain mock. Evidence, validation, and late-report metrics are also prototype-only pending approved reporting views.',
     },
   };
 }
 
-function cleanFilter(value: string | undefined): string | undefined {
-  const cleaned = value?.trim();
-  if (!cleaned || cleaned.toLowerCase() === 'all') return undefined;
-  return cleaned.slice(0, 100);
-}
-
 function normalizeFilters(filters: ExecutiveOverviewFilters): ExecutiveOverviewFilters {
-  return {
-    year: cleanFilter(filters.year),
-    quarter: cleanFilter(filters.quarter),
-    project: cleanFilter(filters.project),
-    province: cleanFilter(filters.province),
-    district: cleanFilter(filters.district),
-    implementingPartner: cleanFilter(filters.implementingPartner),
-  };
+  const validated = parseDashboardFilters(
+    filters as Record<string, string | string[] | undefined>,
+    filterOptions,
+  );
+  return Object.fromEntries(
+    Object.entries(validated).filter(([, value]) => Boolean(value)),
+  );
 }
 
 function lastRefreshedValue(value: ExecutiveOverviewRow['last_refreshed']): string | null {
@@ -135,7 +178,7 @@ export async function getExecutiveOverviewData(
   filters: ExecutiveOverviewFilters = {},
 ): Promise<ExecutiveOverviewData> {
   const mode = (process.env.DASHBOARD_DATA_MODE || process.env.DATA_MODE || 'mock').trim().toLowerCase();
-  if (mode !== 'bigquery') return mockOverview();
+  if (mode !== 'bigquery') return mockOverview('Mock', filters);
 
   const normalized = normalizeFilters(filters);
   const cacheKey = JSON.stringify(normalized);
@@ -299,6 +342,6 @@ export async function getExecutiveOverviewData(
     cache.set(cacheKey, { expiresAt: Date.now() + ttlSeconds * 1000, data });
     return data;
   } catch {
-    return mockOverview('Mock fallback');
+    return mockOverview('Mock fallback', filters);
   }
 }

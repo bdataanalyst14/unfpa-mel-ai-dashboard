@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo } from 'react';
 import { nepalMapBoundaries } from '@/data/geo/nepal-map-base';
-import { geographicMapMetrics, MapMetric } from '@/data/mock/geographic-map-metrics';
+import { geographicMapMetrics } from '@/data/mock/geographic-map-metrics';
 import { Info, ShieldCheck } from 'lucide-react';
+import type { Activity } from '@/lib/types';
 
 // Constants to match the generation script
 const MIN_LNG = 80.0;
@@ -19,9 +20,35 @@ function project(lng: number, lat: number) {
   return { x, y };
 }
 
-export default function GeographicCoverageMap() {
+export default function GeographicCoverageMap({
+  activities,
+  hideGbv = false,
+}: {
+  activities?: Activity[];
+  hideGbv?: boolean;
+}) {
   const [metricView, setMetricView] = useState<'activity' | 'reach' | 'gbv'>('activity');
   const [viewLevel, setViewLevel] = useState<'district' | 'province' | 'palika'>('district');
+  const mapMetrics = useMemo(() => {
+    if (!activities) return geographicMapMetrics;
+
+    return geographicMapMetrics.flatMap((metric) => {
+      const matching = activities.filter((row) => row.district === metric.district);
+      if (matching.length === 0) return [];
+      const activityCount = matching.length;
+      return [{
+        ...metric,
+        activityCount,
+        reachCount: matching.reduce((sum, row) => sum + row.totalParticipants, 0),
+        density:
+          activityCount >= 8
+            ? 'high' as const
+            : activityCount >= 4
+              ? 'medium' as const
+              : 'low' as const,
+      }];
+    });
+  }, [activities]);
 
   const metricLabel = useMemo(() => {
     switch (metricView) {
@@ -42,22 +69,24 @@ export default function GeographicCoverageMap() {
             <div className="flex bg-gray-50 p-0.5 rounded-md border border-gray-200">
               <button 
                 onClick={() => setMetricView('activity')}
-                className={`px-3 py-1 text-xs rounded-sm transition-all ${metricView === 'activity' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`min-h-11 cursor-pointer px-3 py-1 text-xs rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] ${metricView === 'activity' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Activity
               </button>
               <button 
                 onClick={() => setMetricView('reach')}
-                className={`px-3 py-1 text-xs rounded-sm transition-all ${metricView === 'reach' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`min-h-11 cursor-pointer px-3 py-1 text-xs rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] ${metricView === 'reach' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Reach
               </button>
-              <button 
-                onClick={() => setMetricView('gbv')}
-                className={`px-3 py-1 text-xs rounded-sm transition-all ${metricView === 'gbv' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
-              >
-                GBV
-              </button>
+              {!hideGbv ? (
+                <button
+                  onClick={() => setMetricView('gbv')}
+                  className={`min-h-11 cursor-pointer px-3 py-1 text-xs rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] ${metricView === 'gbv' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  GBV
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -66,13 +95,13 @@ export default function GeographicCoverageMap() {
             <div className="flex bg-gray-50 p-0.5 rounded-md border border-gray-200">
               <button 
                 onClick={() => setViewLevel('district')}
-                className={`px-3 py-1 text-xs rounded-sm transition-all ${viewLevel === 'district' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`min-h-11 cursor-pointer px-3 py-1 text-xs rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] ${viewLevel === 'district' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 District
               </button>
               <button 
                 onClick={() => setViewLevel('province')}
-                className={`px-3 py-1 text-xs rounded-sm transition-all ${viewLevel === 'province' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`min-h-11 cursor-pointer px-3 py-1 text-xs rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] ${viewLevel === 'province' ? 'bg-white text-[#004B87] shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Province
               </button>
@@ -135,7 +164,7 @@ export default function GeographicCoverageMap() {
 
           {/* Data Layer: Metric Bubbles - improved visibility */}
           <g className="map-metrics">
-            {geographicMapMetrics.map((metric) => {
+            {mapMetrics.map((metric) => {
               const { x, y } = project(metric.lng, metric.lat);
               
               // Scale radius based on metric
@@ -189,6 +218,21 @@ export default function GeographicCoverageMap() {
             })}
           </g>
         </svg>
+
+        {activities && mapMetrics.length === 0 ? (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-white/90 p-8 text-center"
+            role="status"
+            data-empty-kind="map"
+          >
+            <div>
+              <p className="text-sm font-semibold text-gray-900">No map data for the selected filters</p>
+              <p className="mt-1 text-xs text-gray-600">
+                Matching activity rows do not include a validated district map point.
+              </p>
+            </div>
+          </div>
+        ) : null}
 
         {/* Privacy Note - bottom left, subtle styling */}
         <div className="absolute bottom-2 left-2 flex items-center gap-1.5 text-[10px] text-gray-500 font-medium">
