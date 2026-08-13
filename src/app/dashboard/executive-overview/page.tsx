@@ -16,9 +16,16 @@ export const dynamic = 'force-dynamic';
 export default async function ExecutiveOverviewPage({
   searchParams,
 }: {
-  searchParams?: ExecutiveOverviewFilters;
+  searchParams?: Promise<ExecutiveOverviewFilters>;
 }) {
-  const overview = await getExecutiveOverviewData(searchParams);
+  const resolvedSearchParams = await searchParams;
+  if (
+    process.env.PLAYWRIGHT_QA === '1' &&
+    (resolvedSearchParams as Record<string, string | undefined> | undefined)?.qaError === 'boundary'
+  ) {
+    throw new Error('Intentional browser-QA error boundary trigger.');
+  }
+  const overview = await getExecutiveOverviewData(resolvedSearchParams);
   const { summary: combinedSummary, insights: activeInsights, metadata } = overview;
   const refreshed = metadata.lastRefreshed
     ? new Date(metadata.lastRefreshed).toLocaleString('en-US', {

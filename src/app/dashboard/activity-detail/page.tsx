@@ -4,25 +4,27 @@ import PageHeader from '@/components/layout/page-header';
 import ActivityDetailTable from '@/components/ActivityDetailTable';
 import DataSourceStatusPanel from '@/components/dashboard/data-source-status-panel';
 
-import { mainData } from '@/data/mock/main-data';
+import { createCsv, downloadCsv } from '@/lib/csv-export';
 import { Search, Download } from 'lucide-react';
+import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
 
 export default function ActivityDetailPage() {
+  const { filteredActivities: globallyFilteredActivities } = useDashboardFilters();
   const [search, setSearch] = useState('');
   const [projectFilter, setProjectFilter] = useState('All');
   const [ipFilter, setIpFilter] = useState('All');
 
   // Compute unique projects & IPs for local page filter dropdowns
   const uniqueProjects = useMemo(() => {
-    return ['All', ...Array.from(new Set(mainData.map(a => a.project)))];
-  }, []);
+    return ['All', ...Array.from(new Set(globallyFilteredActivities.map(a => a.project)))];
+  }, [globallyFilteredActivities]);
 
   const uniqueIps = useMemo(() => {
-    return ['All', ...Array.from(new Set(mainData.map(a => a.ip)))];
-  }, []);
+    return ['All', ...Array.from(new Set(globallyFilteredActivities.map(a => a.ip)))];
+  }, [globallyFilteredActivities]);
 
   const filteredData = useMemo(() => {
-    return mainData.filter((a) => {
+    return globallyFilteredActivities.filter((a) => {
       const matchesSearch =
         a.id.toLowerCase().includes(search.toLowerCase()) ||
         a.activity.toLowerCase().includes(search.toLowerCase()) ||
@@ -31,7 +33,37 @@ export default function ActivityDetailPage() {
       const matchesIp = ipFilter === 'All' || a.ip === ipFilter;
       return matchesSearch && matchesProject && matchesIp;
     });
-  }, [search, projectFilter, ipFilter]);
+  }, [globallyFilteredActivities, search, projectFilter, ipFilter]);
+
+  function exportFilteredRows() {
+    const csv = createCsv(
+      [
+        'Activity ID',
+        'Project',
+        'Implementing Partner',
+        'Activity',
+        'Province',
+        'District',
+        'Palika',
+        'Start Date',
+        'End Date',
+        'Validation Status',
+      ],
+      filteredData.map((row) => [
+        row.id,
+        row.project,
+        row.ip,
+        row.activity,
+        row.province,
+        row.district,
+        row.palika,
+        row.startDate,
+        row.endDate,
+        row.validationStatus,
+      ]),
+    );
+    downloadCsv('unfpa-mel-activity-detail.csv', csv);
+  }
 
   return (
     <div className="space-y-6">
@@ -39,7 +71,12 @@ export default function ActivityDetailPage() {
         title="Activity Detail Log"
         subtitle="Sample activity log for SMT prototype demonstration; synthetic ACT-2025 rows are not official registry activities."
         action={
-          <button className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold rounded-lg shadow-sm transition-colors">
+          <button
+            type="button"
+            onClick={exportFilteredRows}
+            disabled={filteredData.length === 0}
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] disabled:cursor-not-allowed disabled:opacity-50"
+          >
             <Download className="h-3.5 w-3.5" />
             <span>Export CSV</span>
           </button>
@@ -87,7 +124,7 @@ export default function ActivityDetailPage() {
 
       {/* Results Count Bar */}
       <div className="flex items-center justify-between text-xs text-gray-500 font-medium">
-        <span>Showing {filteredData.length} of {mainData.length} records</span>
+        <span>Showing {filteredData.length} of {globallyFilteredActivities.length} filtered records</span>
       </div>
 
       {/* Table Container */}

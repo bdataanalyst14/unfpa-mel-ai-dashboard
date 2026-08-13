@@ -6,8 +6,8 @@ import ParticipantSexChart from '@/components/charts/participant-sex-chart';
 import DataSourceStatusPanel from '@/components/dashboard/data-source-status-panel';
 
 import { combinedSummary } from '@/data/mock/combined-summary';
-import { Users, UserPlus, HelpCircle, Eye, Accessibility, Percent } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, Legend } from 'recharts';
+import { Users, UserPlus, HelpCircle, Accessibility, Percent } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 
 const ageData = [
   { name: 'Youth (< 24)', value: 6491, color: '#004B87' },

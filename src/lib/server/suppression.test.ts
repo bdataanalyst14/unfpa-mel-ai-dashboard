@@ -1,4 +1,5 @@
 import {
+  suppressComplementaryValue,
   suppressCount,
   suppressPercentage,
   suppressRecord,
@@ -37,6 +38,15 @@ describe('server suppression utilities', () => {
       displayValue: '5',
       value: 5,
       suppressed: false,
+    });
+  });
+
+  it('creates a non-numeric complementary suppression value', () => {
+    expect(suppressComplementaryValue()).toEqual({
+      displayValue: 'Suppressed',
+      value: null,
+      suppressed: true,
+      suppression_reason: 'complementary_cell',
     });
   });
 

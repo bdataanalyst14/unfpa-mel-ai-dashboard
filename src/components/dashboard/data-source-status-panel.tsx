@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Database, RefreshCw, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
+import { serializeDashboardFilters } from '@/lib/dashboard-filters';
 
 type Metric = {
   label: string;
@@ -34,28 +36,37 @@ function formatTimestamp(value: string | null): string {
 }
 
 export default function DataSourceStatusPanel({ route }: { route: string }) {
-  const [data, setData] = useState<DashboardPageData | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { filters } = useDashboardFilters();
+  const requestKey = useMemo(() => {
+    const params = serializeDashboardFilters(filters);
+    params.set('route', route);
+    return params.toString();
+  }, [filters, route]);
+  const [result, setResult] = useState<{
+    key: string;
+    data?: DashboardPageData;
+    failed?: boolean;
+  } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/dashboard/page-data?route=${encodeURIComponent(route)}`, {
+    fetch(`/api/dashboard/page-data?${requestKey}`, {
       cache: 'no-store',
     })
       .then((response) => (response.ok ? response.json() : Promise.reject()))
       .then((payload: DashboardPageData) => {
-        if (!cancelled) setData(payload);
+        if (!cancelled) setResult({ key: requestKey, data: payload });
       })
       .catch(() => {
-        if (!cancelled) setFailed(true);
+        if (!cancelled) setResult({ key: requestKey, failed: true });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [route]);
+  }, [requestKey]);
 
-  if (failed) {
+  if (result?.key === requestKey && result.failed) {
     return (
       <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
         BigQuery metadata unavailable. Fallback mode must be verified before final live API/browser QA.
@@ -63,7 +74,7 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
     );
   }
 
-  if (!data) {
+  if (result?.key !== requestKey || !result.data) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-xs text-gray-500">
         Loading data-source metadata...
@@ -71,6 +82,7 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
     );
   }
 
+  const data = result.data;
   const isBigQuery = data.metadata.dataSource === 'bigquery';
 
   return (

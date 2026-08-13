@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type { GbvServiceRecord } from '@/lib/types';
 
 export const gbvServiceData: GbvServiceRecord[] = [

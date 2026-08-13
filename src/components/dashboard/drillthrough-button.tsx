@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
 
 interface DrillthroughButtonProps {
   href: string;
@@ -10,9 +11,10 @@ interface DrillthroughButtonProps {
 }
 
 export default function DrillthroughButton({ href, label = 'View Details', className }: DrillthroughButtonProps) {
+  const { hrefWithFilters } = useDashboardFilters();
   return (
     <Link
-      href={href}
+      href={hrefWithFilters(href)}
       className={cn(
         'inline-flex items-center gap-1.5 text-xs font-semibold text-[#004B87] hover:text-[#003B6B] transition-colors group',
         className
