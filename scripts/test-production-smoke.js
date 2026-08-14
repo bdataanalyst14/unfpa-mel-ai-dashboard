@@ -174,6 +174,9 @@ async function runTests() {
         })
       }
     },
+    '@/lib/server/auth-guard': {
+      requireDashboardApiAccess: async () => ({ allowed: true, status: 401 }),
+    },
     '@/lib/server/bigquery-dashboard-service': {
       getExecutiveOverviewData: async () => {
         throw new Error('Secret SQL Query: SELECT * FROM `unfpa.secrets` -- Credentials: API_KEY_123');

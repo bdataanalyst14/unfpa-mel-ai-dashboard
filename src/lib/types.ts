@@ -2,7 +2,7 @@ export type EvidenceStatus = 'Approved' | 'Pending' | 'Missing';
 export type ValidationStatus = 'Validated' | 'Pending' | 'Rejected';
 export type IndicatorStatus = 'On Track' | 'Watch' | 'Off Track' | 'No Data';
 export type Severity = 'high' | 'medium' | 'low';
-export type UserRole = 'admin' | 'manager' | 'viewer';
+export type UserRole = 'AUTHORIZED_USER' | 'ADMIN';
 
 export interface Activity {
   id: string;

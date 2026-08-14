@@ -3,12 +3,14 @@ import DashboardShell from '@/components/layout/dashboard-shell';
 import TopFilterBar from '@/components/layout/top-filter-bar';
 import { DashboardFilterProvider } from '@/components/dashboard/dashboard-filter-provider';
 import FilteredDashboardScope from '@/components/dashboard/filtered-dashboard-scope';
+import { requireDashboardPageAccess } from '@/lib/server/auth-guard';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await requireDashboardPageAccess();
   return (
     <Suspense
       fallback={
