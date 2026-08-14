@@ -6,11 +6,12 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 
 import { readPrivateKeyFile } from './private-key-file';
+import { createVercelWifAuthClient, type VercelWifConfig } from './vercel-gcp-wif';
 
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9_-]+$/;
 const PRIVATE_KEY_DIRECTORY = '/etc/unfpa-mel/secrets';
 
-let client: BigQuery | undefined;
+let cachedNonWifClient: BigQuery | undefined;
 
 export type BigQueryConfigStatus = {
   dataMode: 'bigquery' | 'mock';
@@ -20,6 +21,10 @@ export type BigQueryConfigStatus = {
   clientEmailPresent: boolean;
   privateKeyPresent: boolean;
   applicationCredentialsPresent: boolean;
+  authMode: 'vercel-wif' | 'adc' | 'pem' | 'none';
+  wifConfigured: boolean;
+  adcConfigured: boolean;
+  pemConfigured: boolean;
   configured: boolean;
 };
 
@@ -92,18 +97,33 @@ function getPrivateKey(): string | undefined {
 }
 
 type BigQueryAuthentication =
+  | { mode: 'vercel-wif'; config: VercelWifConfig }
   | { mode: 'adc'; applicationCredentials: string }
   | { mode: 'pem'; clientEmail: string; privateKey: string; privateKeyFile: string };
 
-function getBigQueryAuthentication(): BigQueryAuthentication {
+export function getBigQueryAuthentication(): BigQueryAuthentication {
   const applicationCredentials = optionalEnv('GOOGLE_APPLICATION_CREDENTIALS');
   const clientEmail = optionalEnv('GOOGLE_CLIENT_EMAIL');
   const privateKeyFile = optionalEnv('GOOGLE_PRIVATE_KEY_FILE');
   const inlinePrivateKey = optionalEnv('GOOGLE_PRIVATE_KEY_BASE64', 'GOOGLE_PRIVATE_KEY');
   const pemConfigured = Boolean(clientEmail || privateKeyFile || inlinePrivateKey);
+  const wifValues = {
+    projectNumber: optionalEnv('GCP_PROJECT_NUMBER'),
+    serviceAccountEmail: optionalEnv('GCP_SERVICE_ACCOUNT_EMAIL'),
+    poolId: optionalEnv('GCP_WORKLOAD_IDENTITY_POOL_ID'),
+    providerId: optionalEnv('GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID'),
+  };
+  const wifConfigured = Object.values(wifValues).some(Boolean);
+  const configuredModes = [wifConfigured, Boolean(applicationCredentials), pemConfigured].filter(Boolean).length;
 
-  if (applicationCredentials && pemConfigured) {
+  if (configuredModes > 1) {
     throw new Error('Conflicting BigQuery authentication configuration.');
+  }
+  if (wifConfigured) {
+    if (Object.values(wifValues).some((value) => !value)) {
+      throw new Error('Incomplete Vercel WIF authentication configuration.');
+    }
+    return { mode: 'vercel-wif', config: wifValues as VercelWifConfig };
   }
   if (applicationCredentials) {
     const credentialPath = path.resolve(applicationCredentials);
@@ -182,6 +202,7 @@ export function getBigQueryConfigStatus(): BigQueryConfigStatus {
     : undefined;
   const dataMode = getDashboardDataMode();
   const location = optionalEnv('BIGQUERY_LOCATION');
+  const authMode = authentication?.mode ?? 'none';
 
   const locationValid = location === 'asia-south1';
 
@@ -237,17 +258,30 @@ export function getBigQueryConfigStatus(): BigQueryConfigStatus {
     clientEmailPresent: Boolean(clientEmail),
     privateKeyPresent: Boolean(privateKey),
     applicationCredentialsPresent: Boolean(applicationCredentials),
+    authMode,
+    wifConfigured: authMode === 'vercel-wif',
+    adcConfigured: authMode === 'adc',
+    pemConfigured: authMode === 'pem',
     configured,
   };
 }
 
-function getBigQueryClient(): BigQuery {
-  if (client) return client;
-
+export function getBigQueryClient(): BigQuery {
   const projectId = getBigQueryProjectId();
   const authentication = getBigQueryAuthentication();
 
-  client = new BigQuery({
+  // WIF is deliberately request-scoped. Its supplier resolves the Vercel OIDC
+  // token lazily in the active request context; no subject token is retained globally.
+  if (authentication.mode === 'vercel-wif') {
+    return new BigQuery({
+      projectId,
+      authClient: createVercelWifAuthClient(authentication.config),
+    });
+  }
+
+  if (cachedNonWifClient) return cachedNonWifClient;
+
+  cachedNonWifClient = new BigQuery({
     projectId,
     ...(authentication.mode === 'adc'
       ? { keyFilename: authentication.applicationCredentials }
@@ -259,7 +293,7 @@ function getBigQueryClient(): BigQuery {
         }),
   });
 
-  return client;
+  return cachedNonWifClient;
 }
 
 export function validateQuerySafety(query: string): void {

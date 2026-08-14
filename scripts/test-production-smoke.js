@@ -43,6 +43,9 @@ async function runTests() {
     },
     './private-key-file': {
       readPrivateKeyFile: () => 'mock-private-key'
+    },
+    './vercel-gcp-wif': {
+      createVercelWifAuthClient: () => ({ kind: 'mock-wif-auth-client' })
     }
   });
 
