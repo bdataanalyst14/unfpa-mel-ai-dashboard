@@ -7,6 +7,7 @@ import * as crypto from 'crypto';
 
 import { readPrivateKeyFile } from './private-key-file';
 import { createVercelWifAuthClient, type VercelWifConfig } from './vercel-gcp-wif';
+import { loadAndValidateManifest } from './readiness-manifest-contract';
 
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9_-]+$/;
 const PRIVATE_KEY_DIRECTORY = '/etc/unfpa-mel/secrets';
@@ -208,7 +209,9 @@ export function getBigQueryConfigStatus(): BigQueryConfigStatus {
 
   let evidenceValid = false;
   if (dataMode === 'bigquery' && projectId && datasetId && locationValid && authentication) {
-    try {
+    if (authentication.mode === 'vercel-wif') {
+      evidenceValid = loadAndValidateManifest(process.env);
+    } else try {
       const evidencePath = getEvidenceFilePath();
       if (fs.existsSync(evidencePath)) {
         const evidenceContent = fs.readFileSync(evidencePath, 'utf8');
@@ -273,6 +276,9 @@ export function getBigQueryClient(): BigQuery {
   // WIF is deliberately request-scoped. Its supplier resolves the Vercel OIDC
   // token lazily in the active request context; no subject token is retained globally.
   if (authentication.mode === 'vercel-wif') {
+    if (!loadAndValidateManifest(process.env)) {
+      throw new Error('Invalid or missing bundled Vercel readiness manifest.');
+    }
     return new BigQuery({
       projectId,
       authClient: createVercelWifAuthClient(authentication.config),

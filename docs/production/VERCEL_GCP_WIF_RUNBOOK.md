@@ -11,3 +11,11 @@ Configure all four server-only WIF variables together: `GCP_PROJECT_NUMBER`, `GC
 Local ADC through an approved external `GOOGLE_APPLICATION_CREDENTIALS` file and the protected PEM mode remain available for controlled local/server validation. Credential modes are mutually exclusive and incomplete or conflicting configuration fails closed.
 
 Pool/provider creation, IAM binding, and Vercel Preview/UAT environment configuration are separate post-merge checkpoints. Production remains mock-backed until separately approved. The dashboard identity must be read-only and limited operationally to the four allowlisted aggregate views; participant and staging objects remain prohibited.
+
+## Readiness evidence contracts
+
+Vercel WIF deployments use an immutable, server-only readiness manifest generated automatically during `npm run build`. The semantic payload is canonicalized and SHA-256 bound to the deployment's data mode, BigQuery resource configuration, WIF identifiers, and exact four-view allowlist. Next.js output tracing explicitly bundles `.vercel-runtime/bigquery-readiness-manifest.json` into server functions. Runtime re-creates the semantic configuration from server environment variables and fails closed before BigQuery client construction if the manifest is missing, malformed, unsupported, or mismatched. The manifest is never placed under `public/` and contains no token, key, or credential content.
+
+Vercel runtime does not depend on `/var/lib`, `/etc`, `/tmp`, or another writable persistent filesystem location for readiness evidence.
+
+Traditional ADC and PEM deployments continue to require the existing externally protected preflight evidence file and its existing configuration-hash and object validation. Bundled evidence is not substituted for either traditional authentication mode.
