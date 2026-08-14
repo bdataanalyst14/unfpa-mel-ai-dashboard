@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
+  outputFileTracingIncludes: {
+    '/*': ['./.vercel-runtime/bigquery-readiness-manifest.json'],
+  },
   turbopack: {
     root: __dirname,
   },

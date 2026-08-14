@@ -75,6 +75,7 @@ async function main() {
   const clientModule = loadTypeScript(path.join(root, 'src/lib/server/bigquery-client.ts'), {
     'server-only': {}, '@google-cloud/bigquery': { BigQuery: MockBigQuery },
     './private-key-file': privateKeyMock, './vercel-gcp-wif': wifAuthMock,
+    './readiness-manifest-contract': { loadAndValidateManifest: () => true },
   });
   const completeWif = {
     GCP_PROJECT_NUMBER: '123456789', GCP_SERVICE_ACCOUNT_EMAIL: 'dashboard@example.iam.gserviceaccount.com',

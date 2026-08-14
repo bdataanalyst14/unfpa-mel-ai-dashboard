@@ -55,6 +55,7 @@ pnpm-debug.log*
 
 # Hosting and editor state
 .vercel/
+.vercel-runtime/
 .idea/
 .vscode/
 .DS_Store

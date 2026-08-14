@@ -46,6 +46,9 @@ async function runTests() {
     },
     './vercel-gcp-wif': {
       createVercelWifAuthClient: () => ({ kind: 'mock-wif-auth-client' })
+    },
+    './readiness-manifest-contract': {
+      loadAndValidateManifest: () => false
     }
   });
 
