@@ -9,35 +9,34 @@ export interface RolePermissions {
 }
 
 const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
-  admin: {
+  ADMIN: {
     canViewGbvData: true,
     canExportData: true,
     canViewManagementCentre: true,
     canEditActivities: true,
     canApproveValidation: true,
   },
-  manager: {
+  AUTHORIZED_USER: {
     canViewGbvData: true,
     canExportData: true,
     canViewManagementCentre: true,
     canEditActivities: false,
     canApproveValidation: true,
   },
-  viewer: {
-    canViewGbvData: false,
-    canExportData: false,
-    canViewManagementCentre: true,
-    canEditActivities: false,
-    canApproveValidation: false,
-  },
 };
 
-export function getCurrentRole(): UserRole {
-  return 'manager'; // stub - replace with auth integration when required
+export function getCurrentRole(): UserRole | null {
+  return null;
 }
 
 export function getRolePermissions(role?: UserRole): RolePermissions {
-  return ROLE_PERMISSIONS[role ?? getCurrentRole()];
+  return role ? ROLE_PERMISSIONS[role] : {
+    canViewGbvData: false,
+    canExportData: false,
+    canViewManagementCentre: false,
+    canEditActivities: false,
+    canApproveValidation: false,
+  };
 }
 
 export function hasPermission(permission: keyof RolePermissions, role?: UserRole): boolean {
