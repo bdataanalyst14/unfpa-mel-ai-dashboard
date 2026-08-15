@@ -19,7 +19,11 @@ export async function getDashboardAuthorization() {
 
 export async function requireDashboardPageAccess(): Promise<void> {
   const authorization = await getDashboardAuthorization();
-  if (!authorization.allowed) redirect('/auth/signin');
+  if (!authorization.allowed) {
+    redirect(authorization.reason === 'unauthenticated' || authorization.reason === 'authentication_not_configured'
+      ? '/auth/signin'
+      : '/auth/unauthorized');
+  }
 }
 
 export async function requireDashboardApiAccess(): Promise<{ allowed: boolean; status: 401 | 403 }> {

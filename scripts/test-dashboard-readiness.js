@@ -155,6 +155,9 @@ async function main() {
 
   let capturedFilters;
   const pageApi = load('src/app/api/dashboard/page-data/route.ts', {
+    '@/lib/server/auth-guard': {
+      requireDashboardApiAccess: async () => ({ allowed: true, status: 401 }),
+    },
     '@/lib/server/dashboard-page-data-service': {
       getDashboardPageData: async (route, input) => {
         capturedFilters = input;
