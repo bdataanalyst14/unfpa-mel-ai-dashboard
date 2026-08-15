@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import SidebarNav from './sidebar-nav';
 import DataFreshnessFooter from '../dashboard/data-freshness-footer';
 
@@ -48,6 +49,13 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         </div>
         <SidebarNav onNavigate={() => setSidebarOpen(false)} />
         <div className="px-5 py-3 border-t border-white/10">
+          <button
+            type="button"
+            className="mb-2 text-xs text-white/70 hover:text-white"
+            onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+          >
+            Sign out
+          </button>
           <p className="text-[10px] text-white/40">Prototype v0.1.0</p>
         </div>
       </aside>
