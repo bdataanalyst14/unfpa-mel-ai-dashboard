@@ -1,4 +1,4 @@
-﻿# Production URL Validation Record
+# Production URL Validation Record
 
 ## Overview
 This document records the technical validation of the proposed Production application base URL for the UNFPA MEL AI Dashboard.
@@ -30,3 +30,27 @@ Once formally approved, the Production URL will be used for:
 - **NEXTAUTH_URL**: https://unfpa-mel-ai-dashboard.vercel.app
 
 *Note: No secrets, credentials, or actual OAuth clients have been configured during this URL validation gate.*
+
+## Production URL Approval
+
+Status: APPROVED
+
+Approved production URL:
+https://unfpa-mel-ai-dashboard.vercel.app
+
+Approved OAuth callback:
+https://unfpa-mel-ai-dashboard.vercel.app/api/auth/callback/google
+
+Approval authority:
+Designated dashboard technical/project owner
+
+Approval date:
+25 August 2026
+
+Approval scope:
+Production application URL only.
+
+Remaining production gates:
+Production user allowlist, Production Google OAuth, Production WIF,
+Production BigQuery live access, DATA_MODE activation, and final Production
+deployment.
