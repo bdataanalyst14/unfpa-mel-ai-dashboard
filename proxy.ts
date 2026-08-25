@@ -17,7 +17,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   }
   const signIn = new URL('/auth/signin', request.url);
-  signIn.searchParams.set('callbackUrl', request.nextUrl.href);
+  signIn.searchParams.set('callbackUrl', request.nextUrl.pathname + request.nextUrl.search);
   return NextResponse.redirect(signIn);
 }
 
