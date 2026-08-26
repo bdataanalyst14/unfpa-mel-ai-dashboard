@@ -69,19 +69,26 @@ async function main() {
   assert.equal(incompleteAuth.authConfigurationComplete, false);
   assert.equal(incompleteAuth.authOptions.providers.length, 0);
 
-  const redirectFor = async (sessionValue) => {
+  const redirectFor = async (sessionValue, currentPath) => {
     const guard = loadTs('src/lib/server/auth-guard.ts', {
       'next-auth': { getServerSession: async () => sessionValue },
       'next/navigation': { redirect: (location) => { throw new Error(`redirect:${location}`); } },
       '@/auth': { authOptions: { secret: 'fixture', providers: [{}] } },
       '@/lib/server/auth-policy': { authenticationRequired: () => true, authorizeSession: policy.authorizeSession },
     });
-    await assert.rejects(() => guard.requireDashboardPageAccess(), /redirect:/);
-    try { await guard.requireDashboardPageAccess(); } catch (error) { return error.message; }
+    await assert.rejects(() => guard.requireDashboardPageAccess(currentPath), /redirect:/);
+    try { await guard.requireDashboardPageAccess(currentPath); } catch (error) { return error.message; }
     return '';
   };
   assert.equal(await redirectFor(null), 'redirect:/auth/signin');
+  assert.equal(await redirectFor(null, '/dashboard/executive-overview'), 'redirect:/auth/signin?callbackUrl=%2Fdashboard%2Fexecutive-overview');
   assert.equal(await redirectFor({ user: { id: 'google-3', emailVerified: true, email: 'unknown@example.org', role: null } }), 'redirect:/auth/unauthorized');
+
+  const signinPage = fs.readFileSync(path.join(root, 'src/app/auth/signin/page.tsx'), 'utf8');
+  assert.match(signinPage, /useSearchParams/);
+  assert.match(signinPage, /rawCallbackUrl\.startsWith\('\/'\)/);
+  assert.match(signinPage, /!rawCallbackUrl\.startsWith\('\/\/'\)/);
+  assert.match(signinPage, /signIn\('google', \{ callbackUrl \}\)/);
 
   const response = { json: (data, init) => ({ status: init?.status ?? 200, data }) };
   let bigQueryCalls = 0;

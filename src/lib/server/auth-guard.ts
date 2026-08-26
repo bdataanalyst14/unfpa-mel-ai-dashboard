@@ -17,12 +17,15 @@ export async function getDashboardAuthorization() {
   }
 }
 
-export async function requireDashboardPageAccess(): Promise<void> {
+export async function requireDashboardPageAccess(currentPath?: string): Promise<void> {
   const authorization = await getDashboardAuthorization();
   if (!authorization.allowed) {
-    redirect(authorization.reason === 'unauthenticated' || authorization.reason === 'authentication_not_configured'
-      ? '/auth/signin'
-      : '/auth/unauthorized');
+    if (authorization.reason === 'unauthenticated' || authorization.reason === 'authentication_not_configured') {
+      const callbackQuery = currentPath ? `?callbackUrl=${encodeURIComponent(currentPath)}` : '';
+      redirect(`/auth/signin${callbackQuery}`);
+    } else {
+      redirect('/auth/unauthorized');
+    }
   }
 }
 

@@ -3,6 +3,7 @@ import DashboardShell from '@/components/layout/dashboard-shell';
 import TopFilterBar from '@/components/layout/top-filter-bar';
 import { DashboardFilterProvider } from '@/components/dashboard/dashboard-filter-provider';
 import FilteredDashboardScope from '@/components/dashboard/filtered-dashboard-scope';
+import { headers } from 'next/headers';
 import { requireDashboardPageAccess } from '@/lib/server/auth-guard';
 
 export default async function DashboardLayout({
@@ -10,7 +11,9 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireDashboardPageAccess();
+  const headersList = await headers();
+  const currentPath = headersList.get('x-invoke-path') || '/dashboard';
+  await requireDashboardPageAccess(currentPath);
   return (
     <Suspense
       fallback={
