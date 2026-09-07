@@ -34,3 +34,9 @@ Evidence date: 7 September 2026. Branch: release/production-v1-hardening. Base/H
 - [ ] Separately authorized production DATA_MODE/WIF activation and final Production UAT. No production environment, OAuth configuration, IAM, DNS, KoBo or BigQuery state changed.
 
 Decision: local implementation checks pass; NOT READY for live UAT sign-off or production readiness certification. The deferred three metrics cannot be certified from repository schema names alone. Explicitly labeled mock review remains possible.
+
+## Final Deployment Status
+- [x] Vercel CLI Authenticated as: bdataanalyst14
+- [x] Deployed commit SHA: fe72b42c8b6da46bd7bc11e0561db07c040bfb72
+- [x] Production URL: https://unfpa-mel-ai-dashboard.vercel.app
+- [ ] Authenticated UAT: Pending interactively by user due to Google OAuth.
