@@ -8,6 +8,7 @@ import * as crypto from 'crypto';
 import { readPrivateKeyFile } from './private-key-file';
 import { createVercelWifAuthClient, type VercelWifConfig } from './vercel-gcp-wif';
 import { loadAndValidateManifest } from './readiness-manifest-contract';
+import { resolveDashboardDataMode } from '@/lib/dashboard-mode';
 
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9_-]+$/;
 const PRIVATE_KEY_DIRECTORY = '/etc/unfpa-mel/secrets';
@@ -16,6 +17,7 @@ let cachedNonWifClient: BigQuery | undefined;
 
 export type BigQueryConfigStatus = {
   dataMode: 'bigquery' | 'mock';
+  dataModeConfigurationValid: boolean;
   projectIdPresent: boolean;
   datasetPresent: boolean;
   locationPresent: boolean;
@@ -60,8 +62,7 @@ function optionalEnv(...names: string[]): string | undefined {
 }
 
 export function getDashboardDataMode(): 'bigquery' | 'mock' {
-  const mode = optionalEnv('DASHBOARD_DATA_MODE', 'DATA_MODE')?.toLowerCase();
-  return mode === 'bigquery' ? 'bigquery' : 'mock';
+  return resolveDashboardDataMode().mode;
 }
 
 export function getBigQueryProjectId(): string {
@@ -201,7 +202,8 @@ export function getBigQueryConfigStatus(): BigQueryConfigStatus {
   const applicationCredentials = authentication?.mode === 'adc'
     ? authentication.applicationCredentials
     : undefined;
-  const dataMode = getDashboardDataMode();
+  const dataModeResolution = resolveDashboardDataMode();
+  const dataMode = dataModeResolution.mode;
   const location = optionalEnv('BIGQUERY_LOCATION');
   const authMode = authentication?.mode ?? 'none';
 
@@ -250,11 +252,13 @@ export function getBigQueryConfigStatus(): BigQueryConfigStatus {
   }
 
   const configured =
+    dataModeResolution.valid &&
     dataMode === 'bigquery' &&
     Boolean(projectId && datasetId && locationValid && authentication && evidenceValid);
 
   return {
     dataMode,
+    dataModeConfigurationValid: dataModeResolution.valid,
     projectIdPresent: Boolean(projectId),
     datasetPresent: Boolean(datasetId),
     locationPresent: locationValid,
@@ -311,6 +315,13 @@ export function validateQuerySafety(query: string): void {
   // Remove extra whitespaces/newlines for easier regex matching
   cleanQuery = cleanQuery.replace(/\s+/g, ' ').trim();
 
+  if (!/^(select|with)\b/i.test(cleanQuery) || /\b(export|call|execute|external_query)\b/i.test(cleanQuery)) {
+    throw new Error('Only aggregate SELECT queries are permitted; other operations are prohibited.');
+  }
+  if (/\b(?:from|join)\s+`?[\w.{}$-]+`?(?:\s+(?:as\s+)?[a-z_]+)?\s*,/i.test(cleanQuery)) {
+    throw new Error('Comma table sources are prohibited.');
+  }
+
   // 2. Reject multiple statements (semi-colon injection)
   if (cleanQuery.includes(';')) {
     const parts = cleanQuery.split(';').map(p => p.trim()).filter(Boolean);
@@ -345,7 +356,7 @@ export function validateQuerySafety(query: string): void {
   }
 
   // 6. Extract all table references in FROM and JOIN clauses
-  const tableRefRegex = /(?:from|join)\s+`?([a-zA-Z0-9_\-\.\$\{\}]+)`?/gi;
+  const tableRefRegex = /(?:from|join)\s+(?:`([^`]+)`|([a-zA-Z0-9_\-.]+))/gi;
   let match;
   let hasReferences = false;
 
@@ -354,14 +365,17 @@ export function validateQuerySafety(query: string): void {
 
   while ((match = tableRefRegex.exec(cleanQuery)) !== null) {
     hasReferences = true;
-    const fullPath = match[1] || '';
+    const fullPath = match[1] || match[2] || '';
+    if (!/^[a-zA-Z0-9_.-]+$/.test(fullPath)) {
+      throw new Error('Wildcard and decorated table references are prohibited.');
+    }
     const segments = fullPath.replace(/`/g, '').split('.');
 
     if (segments.length === 3) {
       const [proj, ds, tbl] = segments.map(s => s.toLowerCase());
 
       // If project is specified, it must match configured project
-      if (configuredProject && proj !== configuredProject && proj !== '${projectid}' && proj !== 'unfpadatabase') {
+      if (configuredProject && proj !== configuredProject && proj !== '${projectid}') {
         throw new Error(`Access to unapproved project "${proj}" is prohibited.`);
       }
 
@@ -371,7 +385,7 @@ export function validateQuerySafety(query: string): void {
       }
 
       const cleanTable = tbl.replace(/[^a-z0-9_-]/g, '');
-      if (!APPROVED_OBJECTS.includes(cleanTable) && !cteNames.includes(cleanTable)) {
+      if (!APPROVED_OBJECTS.includes(cleanTable)) {
         throw new Error(`Access to table "${cleanTable}" is prohibited.`);
       }
     } else if (segments.length === 2) {
@@ -383,7 +397,7 @@ export function validateQuerySafety(query: string): void {
       }
 
       const cleanTable = tbl.replace(/[^a-z0-9_-]/g, '');
-      if (!APPROVED_OBJECTS.includes(cleanTable) && !cteNames.includes(cleanTable)) {
+      if (!APPROVED_OBJECTS.includes(cleanTable)) {
         throw new Error(`Access to table "${cleanTable}" is prohibited.`);
       }
     } else if (segments.length === 1) {

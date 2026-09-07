@@ -62,6 +62,7 @@ export interface ExecutiveOverviewFilters {
   project?: string;
   province?: string;
   district?: string;
+  municipality?: string;
   implementingPartner?: string;
 }
 

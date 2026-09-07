@@ -38,15 +38,15 @@ function client({ missing, empty } = {}) {
   const queries = [];
   const fieldsMap = {
     combined_activity_summary: [
-      'event_count', 'total_reportable_participants', 'female', 'male', 'other',
+      'event_count', 'total_participants', 'withdisability', 'palika1', 'total_reportable_participants', 'female', 'male', 'other',
       'repeat_beneficiary_total', 'repeat_guest_total', 'repeat_nonreportable_total',
       'district1', 'ip_name', 'reporting_year1', 'report_quarter1', 'project1', 'province1'
     ].map(name => ({ name })),
     indicator_progress_summary: [
-      'indicator1', 'activity1', 'ip_name', 'reporting_year1'
+      'indicator1', 'activity1', 'reporting_year1'
     ].map(name => ({ name })),
     data_quality_summary: [
-      'total_rows', 'records_with_quality_issue', 'run_timestamp', 'ip_name'
+      'total_rows', 'records_with_quality_issue', 'run_timestamp'
     ].map(name => ({ name })),
     ip_submission_status: [
       'ip_name', 'total_submissions', 'total_events', 'latest_sync_time'
@@ -78,6 +78,10 @@ function client({ missing, empty } = {}) {
     async query(options) {
       const q = options.query || options.ipQuery || '';
       queries.push(q);
+      const queriedObject = APPROVED_OBJECTS.find((object) => q.includes(`.${object}`));
+      if (queriedObject && q.includes('ip_name')) {
+        assert.ok(fieldsMap[queriedObject].some((field) => field.name === 'ip_name'), 'Query must not request an absent partner column');
+      }
       if (q.includes('AS organization_count')) {
         return [[{ organization_count: 15 }]];
       }

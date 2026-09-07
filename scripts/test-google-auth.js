@@ -25,7 +25,7 @@ function env(values) {
 
 async function main() {
   env({ DASHBOARD_AUTH_REQUIRED: 'true', DASHBOARD_AUTHORIZED_EMAILS: ' User@Example.org ', DASHBOARD_ADMIN_EMAILS: 'Admin@Example.org' });
-  const policy = loadTs('src/lib/server/auth-policy.ts');
+  const policy = loadTs('src/lib/server/auth-policy.ts', { '@/lib/dashboard-mode': loadTs('src/lib/dashboard-mode.ts') });
   assert.equal(policy.resolveConfiguredRole('user@example.org'), 'AUTHORIZED_USER');
   assert.equal(policy.resolveConfiguredRole('ADMIN@example.org'), 'ADMIN');
   assert.equal(policy.resolveConfiguredRole('unknown@example.org'), null);
@@ -92,7 +92,7 @@ async function main() {
 
   const response = { json: (data, init) => ({ status: init?.status ?? 200, data }) };
   let bigQueryCalls = 0;
-  const request = { nextUrl: { searchParams: { get: () => null } } };
+  const request = { nextUrl: { searchParams: new URLSearchParams() } };
   for (const status of [401, 403]) {
     const route = loadTs('src/app/api/dashboard/page-data/route.ts', {
       'next/server': { NextResponse: response },

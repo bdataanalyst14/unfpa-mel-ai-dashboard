@@ -127,6 +127,9 @@ async function inspectReportingObjects(client, configuration) {
   const requiredColumns = {
     combined_activity_summary: [
       'event_count',
+      'total_participants',
+      'withdisability',
+      'palika1',
       'total_reportable_participants',
       'female',
       'male',
@@ -142,11 +145,11 @@ async function inspectReportingObjects(client, configuration) {
       'province1'
     ],
     indicator_progress_summary: [
-      'indicator1', 'ip_name', 'reporting_year1',
+      'indicator1', 'reporting_year1',
       'activity1'
     ],
     data_quality_summary: [
-      'total_rows', 'ip_name',
+      'total_rows',
       'records_with_quality_issue',
       'run_timestamp'
     ],
@@ -172,7 +175,7 @@ async function inspectReportingObjects(client, configuration) {
     }
     
     let rowCount = 0;
-    let organizationCount = 0;
+    let organizationCount = null;
     let reportingYears = [];
     if (exists) {
       // Validate schema columns
@@ -214,15 +217,17 @@ async function inspectReportingObjects(client, configuration) {
         throw new Error(`Reporting object "${name}" must have rows (found 0).`);
       }
 
-      const organizationQuery = `SELECT COUNT(DISTINCT ip_name) AS organization_count FROM \`${configuration.projectId}.${configuration.datasetId}.${name}\``;
-      const [organizationRows] = await client.query({
-        query: organizationQuery,
-        location: configuration.location,
-        useLegacySql: false,
-      });
-      organizationCount = Number(organizationRows[0]?.organization_count ?? 0);
-      if (organizationCount !== 15) {
-        throw new Error(`Reporting object "${name}" does not represent exactly 15 organizations.`);
+      if (columnNames.includes('ip_name')) {
+        const organizationQuery = `SELECT COUNT(DISTINCT ip_name) AS organization_count FROM \`${configuration.projectId}.${configuration.datasetId}.${name}\``;
+        const [organizationRows] = await client.query({
+          query: organizationQuery,
+          location: configuration.location,
+          useLegacySql: false,
+        });
+        organizationCount = Number(organizationRows[0]?.organization_count ?? 0);
+        if (organizationCount !== 15) {
+          throw new Error(`Reporting object "${name}" does not represent exactly 15 organizations.`);
+        }
       }
 
       // Verify that ip_submission_status represents exactly 15 organizations

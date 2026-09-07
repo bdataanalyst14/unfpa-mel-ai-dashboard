@@ -1,11 +1,10 @@
 import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { dashboardAuthenticationRequired } from '@/lib/dashboard-mode';
 
 function authRequired() {
-  return process.env.DASHBOARD_AUTH_REQUIRED === 'true'
-    || process.env.DATA_MODE === 'bigquery'
-    || process.env.DASHBOARD_DATA_MODE === 'bigquery';
+  return dashboardAuthenticationRequired();
 }
 
 export async function proxy(request: NextRequest) {

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { Filter, X } from 'lucide-react';
 
 import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
@@ -15,11 +16,28 @@ const labels: Record<DashboardFilterKey, string> = {
   project: 'Project',
   implementingPartner: 'Implementing Partner',
   province: 'Province',
+  district: 'District',
+  municipality: 'Municipality',
 };
 
 export default function TopFilterBar() {
-  const { filters, options, setFilter, clearFilters } = useDashboardFilters();
+  const {
+    dataMode,
+    filters,
+    filtersAvailable,
+    filterMessage,
+    options,
+    setFilter,
+    clearFilters,
+  } = useDashboardFilters();
   const active = hasActiveDashboardFilters(filters);
+  const route = usePathname().split('/').pop();
+  const supportsFilter = (key: DashboardFilterKey) => {
+    if (dataMode !== 'bigquery') return true;
+    if (route === 'ip-performance') return key === 'implementingPartner';
+    return ['executive-overview', 'activity-progress', 'participant-reach', 'geographic-coverage'].includes(route ?? '')
+      && !['district', 'municipality'].includes(key);
+  };
 
   return (
     <section
@@ -37,8 +55,12 @@ export default function TopFilterBar() {
           value={filters[key]}
           aria-label={labels[key]}
           onChange={(event) => setFilter(key, event.target.value)}
+          disabled={!filtersAvailable || !supportsFilter(key) || (dataMode === 'bigquery' && options[key].length === 0)}
         >
           <option value="">{labels[key]}: All</option>
+          {filters[key] && !options[key].includes(filters[key]) ? (
+            <option value={filters[key]}>{labels[key]}: Unsupported selection</option>
+          ) : null}
           {options[key].map((option) => (
             <option key={option} value={option}>
               {labels[key]}: {option}
@@ -49,14 +71,15 @@ export default function TopFilterBar() {
       <button
         type="button"
         onClick={clearFilters}
-        disabled={!active}
+        disabled={!active || !filtersAvailable}
         className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
         <X className="h-4 w-4" aria-hidden="true" />
         Clear
       </button>
       <p className="basis-full text-xs text-gray-600">
-        Filters apply to validated synthetic mock rows and are preserved in the URL. No live data is enabled.
+        {filterMessage}
+        {dataMode === 'bigquery' ? ' Filters unsupported by this page are disabled. Clear an existing unsupported selection to view available metrics.' : ''}
       </p>
     </section>
   );

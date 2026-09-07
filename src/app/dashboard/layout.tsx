@@ -5,6 +5,7 @@ import { DashboardFilterProvider } from '@/components/dashboard/dashboard-filter
 import FilteredDashboardScope from '@/components/dashboard/filtered-dashboard-scope';
 import { headers } from 'next/headers';
 import { requireDashboardPageAccess } from '@/lib/server/auth-guard';
+import { getDashboardRuntime } from '@/lib/server/dashboard-runtime';
 
 export default async function DashboardLayout({
   children,
@@ -14,6 +15,7 @@ export default async function DashboardLayout({
   const headersList = await headers();
   const currentPath = headersList.get('x-invoke-path') || '/dashboard';
   await requireDashboardPageAccess(currentPath);
+  const runtime = await getDashboardRuntime();
   return (
     <Suspense
       fallback={
@@ -22,8 +24,13 @@ export default async function DashboardLayout({
         </div>
       }
     >
-      <DashboardFilterProvider>
-        <DashboardShell>
+      <DashboardFilterProvider
+        dataMode={runtime.dataMode}
+        liveOptions={runtime.filterOptions}
+        filtersAvailable={runtime.filtersAvailable}
+        filterMessage={runtime.filterMessage}
+      >
+        <DashboardShell dataMode={runtime.dataMode}>
           <TopFilterBar />
           <FilteredDashboardScope>{children}</FilteredDashboardScope>
         </DashboardShell>

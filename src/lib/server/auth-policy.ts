@@ -1,3 +1,5 @@
+import { dashboardAuthenticationRequired } from '@/lib/dashboard-mode';
+
 export const DASHBOARD_ROLES = ['AUTHORIZED_USER', 'ADMIN'] as const;
 export type DashboardRole = (typeof DASHBOARD_ROLES)[number];
 
@@ -17,8 +19,7 @@ export function resolveConfiguredRole(email: unknown): DashboardRole | null {
 }
 
 export function authenticationRequired(): boolean {
-  if (process.env.DASHBOARD_AUTH_REQUIRED === 'true') return true;
-  return process.env.DATA_MODE === 'bigquery' || process.env.DASHBOARD_DATA_MODE === 'bigquery';
+  return dashboardAuthenticationRequired();
 }
 
 export type SessionLike = {

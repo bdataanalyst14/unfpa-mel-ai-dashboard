@@ -22,6 +22,7 @@ function load(relativePath, overrides = {}) {
     if (Object.prototype.hasOwnProperty.call(overrides, request)) {
       return overrides[request];
     }
+    if (request === '@/lib/dashboard-mode') return load('src/lib/dashboard-mode.ts');
     return require(request);
   };
   Function('require', 'module', 'exports', output)(
@@ -105,6 +106,11 @@ async function runTests() {
   // Unknown aggregate table
   assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.reporting.unknown_table`'), /prohibited/);
 
+  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM combined_activity_summary, secret_records'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.reporting.combined_activity_summary*`'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('WITH secret_records AS (SELECT 1) SELECT * FROM `unfpadatabase.reporting.secret_records`'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('EXPORT DATA OPTIONS(uri="fixture") AS SELECT * FROM combined_activity_summary'), /prohibited/);
+
   // Verify allowed queries (positive tests)
   assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM combined_activity_summary'));
   assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM indicator_progress_summary'));
@@ -177,6 +183,8 @@ async function runTests() {
     '@/lib/server/auth-guard': {
       requireDashboardApiAccess: async () => ({ allowed: true, status: 401 }),
     },
+    '@/lib/server/bigquery-client': { getDashboardDataMode: () => 'mock' },
+    '@/lib/server/dashboard-page-data-service': {},
     '@/lib/server/bigquery-dashboard-service': {
       getExecutiveOverviewData: async () => {
         throw new Error('Secret SQL Query: SELECT * FROM `unfpa.secrets` -- Credentials: API_KEY_123');

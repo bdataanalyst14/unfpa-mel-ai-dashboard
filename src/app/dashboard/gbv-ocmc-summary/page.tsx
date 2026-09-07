@@ -1,3 +1,5 @@
+import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
+import { getDashboardDataMode } from '@/lib/server/bigquery-client';
 import { EyeOff, HeartHandshake, Layers, PhoneCall, ShieldCheck } from 'lucide-react';
 
 import GbvSummaryChart from '@/components/charts/gbv-summary-chart';
@@ -19,6 +21,9 @@ export default async function GbvOcmcSummaryPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  if (getDashboardDataMode() === 'bigquery') {
+    return <BigQueryRouteView route='gbv-ocmc' searchParams={await searchParams} />;
+  }
   const filters = parseDashboardFilters(
     await searchParams,
     buildDashboardFilterOptions(mainData),

@@ -5,7 +5,13 @@ import { signOut } from 'next-auth/react';
 import SidebarNav from './sidebar-nav';
 import DataFreshnessFooter from '../dashboard/data-freshness-footer';
 
-export default function DashboardShell({ children }: { children: React.ReactNode }) {
+export default function DashboardShell({
+  children,
+  dataMode,
+}: {
+  children: React.ReactNode;
+  dataMode: 'bigquery' | 'mock';
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -56,7 +62,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           >
             Sign out
           </button>
-          <p className="text-[10px] text-white/40">Prototype v0.1.0</p>
+          <p className="text-[10px] text-white/40">{dataMode === 'bigquery' ? 'Production V1 aggregate mode' : 'Demo / mock data'}</p>
         </div>
       </aside>
 
@@ -81,7 +87,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         <div className="min-w-0 flex-1 overflow-auto p-4 md:p-6 space-y-6">
           {children}
         </div>
-        <DataFreshnessFooter />
+        <DataFreshnessFooter dataMode={dataMode} />
       </main>
     </div>
   );

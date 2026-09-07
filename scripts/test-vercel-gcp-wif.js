@@ -13,6 +13,7 @@ function loadTypeScript(file, mocks) {
   const loadedModule = { exports: {} };
   const localRequire = (id) => {
     if (Object.prototype.hasOwnProperty.call(mocks, id)) return mocks[id];
+    if (id === '@/lib/dashboard-mode') return loadTypeScript(path.join(root, 'src/lib/dashboard-mode.ts'), {});
     return require(id);
   };
   Function('require', 'module', 'exports', '__filename', '__dirname', output)(

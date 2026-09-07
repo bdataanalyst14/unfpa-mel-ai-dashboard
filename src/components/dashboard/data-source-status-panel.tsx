@@ -69,7 +69,7 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
   if (result?.key === requestKey && result.failed) {
     return (
       <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        BigQuery metadata unavailable. Fallback mode must be verified before final live API/browser QA.
+        Data-source metadata is unavailable.
       </div>
     );
   }
@@ -100,7 +100,7 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
             <AlertTriangle className="h-4 w-4 text-amber-700" />
           )}
           <span>
-            Data source: {isBigQuery ? 'BigQuery' : 'Mock/prototype fallback'}
+            Data source: {isBigQuery ? 'BigQuery' : 'Demo / mock data'}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-gray-600">

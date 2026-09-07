@@ -31,7 +31,7 @@ export default function FilteredDashboardScope({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { filters, filteredActivities } = useDashboardFilters();
+  const { dataMode, filters, filteredActivities } = useDashboardFilters();
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -39,7 +39,7 @@ export default function FilteredDashboardScope({
   );
   const active = hasActiveDashboardFilters(filters);
 
-  if (!mounted) return children;
+  if (dataMode === 'bigquery' || !mounted) return children;
   if (!active || pathname.includes('/gbv-ocmc')) return children;
 
   const exportRows = () => {
