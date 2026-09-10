@@ -1,86 +1,38 @@
-'use client';
+﻿'use client';
 
-import { usePathname } from 'next/navigation';
-import { Filter, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Filter } from 'lucide-react';
 
-import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
-import {
-  DASHBOARD_FILTER_KEYS,
-  hasActiveDashboardFilters,
-  type DashboardFilterKey,
-} from '@/lib/dashboard-filters';
-
-const labels: Record<DashboardFilterKey, string> = {
-  year: 'Year',
-  quarter: 'Quarter',
-  project: 'Project',
-  implementingPartner: 'Implementing Partner',
-  province: 'Province',
-  district: 'District',
-  municipality: 'Municipality',
-};
+const labels = { year: 'Year', quarter: 'Quarter', project: 'Project', implementingPartner: 'IP/Partner', province: 'Province', district: 'District' };
 
 export default function TopFilterBar() {
-  const {
-    dataMode,
-    filters,
-    filtersAvailable,
-    filterMessage,
-    options,
-    setFilter,
-    clearFilters,
-  } = useDashboardFilters();
-  const active = hasActiveDashboardFilters(filters);
-  const route = usePathname().split('/').pop();
-  const supportsFilter = (key: DashboardFilterKey) => {
-    if (dataMode !== 'bigquery') return true;
-    if (route === 'ip-performance') return key === 'implementingPartner';
-    return ['executive-overview', 'activity-progress', 'participant-reach', 'geographic-coverage'].includes(route ?? '')
-      && !['district', 'municipality'].includes(key);
-  };
-
-  return (
-    <section
-      className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm"
-      aria-label="Global filters"
-    >
-      <div className="flex items-center gap-1.5 text-sm font-medium text-gray-500">
-        <Filter className="h-4 w-4" />
-        <span>Filters</span>
-      </div>
-      {DASHBOARD_FILTER_KEYS.map((key) => (
-        <select
-          key={key}
-          className="min-h-11 w-full min-w-0 cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] sm:w-auto"
-          value={filters[key]}
-          aria-label={labels[key]}
-          onChange={(event) => setFilter(key, event.target.value)}
-          disabled={!filtersAvailable || !supportsFilter(key) || (dataMode === 'bigquery' && options[key].length === 0)}
-        >
-          <option value="">{labels[key]}: All</option>
-          {filters[key] && !options[key].includes(filters[key]) ? (
-            <option value={filters[key]}>{labels[key]}: Unsupported selection</option>
-          ) : null}
-          {options[key].map((option) => (
-            <option key={option} value={option}>
-              {labels[key]}: {option}
-            </option>
-          ))}
-        </select>
-      ))}
-      <button
-        type="button"
-        onClick={clearFilters}
-        disabled={!active || !filtersAvailable}
-        className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#004B87] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-      >
-        <X className="h-4 w-4" aria-hidden="true" />
-        Clear
-      </button>
-      <p className="basis-full text-xs text-gray-600">
-        {filterMessage}
-        {dataMode === 'bigquery' ? ' Filters unsupported by this page are disabled. Clear an existing unsupported selection to view available metrics.' : ''}
-      </p>
-    </section>
-  );
+  const router = useRouter();
+  const pathname = usePathname();
+  const search = useSearchParams();
+  const [options, setOptions] = useState<Record<string, string[]>>({});
+  const [unavailable, setUnavailable] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/dashboard/participants?options=1', { signal: controller.signal, cache: 'no-store' })
+      .then(response => response.ok ? response.json() : Promise.reject())
+      .then(setOptions).catch(() => { if (!controller.signal.aborted) setUnavailable(true); });
+    return () => controller.abort();
+  }, []);
+  return <div className="flex items-center gap-3 flex-wrap bg-white rounded-xl px-4 py-3 border">
+    <Filter className="h-4 w-4" /><span className="text-sm">Participant filters</span>
+    {Object.entries(labels).map(([key, label]) => {
+      const selected = search.get(key) ?? (key === 'implementingPartner' ? search.get('ip') : null) ?? '';
+      const values = Array.from(new Set([...(options[key] ?? []), ...(selected ? [selected] : [])]));
+      return <select key={key} aria-label={label} value={selected} className="text-sm border rounded-lg px-3 py-1.5" onChange={event => {
+        const params = new URLSearchParams(search.toString());
+        if (event.target.value) params.set(key, event.target.value); else params.delete(key);
+        if (key === 'implementingPartner') params.delete('ip');
+        if (key === 'province') params.delete('district');
+        router.replace(pathname + '?' + params.toString(), { scroll: false });
+      }}><option value="">{label}: All</option>{values.map(value => <option key={value} value={value}>{label}: {value}</option>)}</select>;
+    })}
+    {unavailable && <span className="text-xs text-amber-700">Live filter options unavailable</span>}
+  </div>;
 }
+

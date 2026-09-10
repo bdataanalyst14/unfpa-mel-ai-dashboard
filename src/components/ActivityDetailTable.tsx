@@ -26,7 +26,6 @@ export default function ActivityDetailTable({ data }: ActivityDetailTableProps) 
             <TableHead className="w-[100px] text-[10px] font-bold uppercase text-gray-500">ID</TableHead>
             <TableHead className="text-[10px] font-bold uppercase text-gray-500">Activity & Partner</TableHead>
             <TableHead className="text-[10px] font-bold uppercase text-gray-500">Location</TableHead>
-            <TableHead className="text-[10px] font-bold uppercase text-gray-500 text-center">Reach</TableHead>
             <TableHead className="text-[10px] font-bold uppercase text-gray-500">Evidence</TableHead>
             <TableHead className="text-[10px] font-bold uppercase text-gray-500">Status</TableHead>
           </TableRow>
@@ -48,14 +47,6 @@ export default function ActivityDetailTable({ data }: ActivityDetailTableProps) 
                   <div className="flex flex-col">
                     <span className="text-xs font-semibold text-gray-800">{item.district}</span>
                     <span className="text-[10px] text-gray-500">{item.province}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="text-center">
-                  <div className="flex flex-col items-center">
-                    <span className="text-sm font-bold text-gray-900">{item.totalParticipants}</span>
-                    <span className="text-[10px] text-gray-500 font-medium">
-                      F:{item.femaleParticipants} | M:{item.maleParticipants}
-                    </span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -82,8 +73,8 @@ export default function ActivityDetailTable({ data }: ActivityDetailTableProps) 
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={6} className="h-24 text-center text-gray-500 font-medium">
-                No data available for the selected filters
+              <TableCell colSpan={5} className="h-24 text-center text-gray-500 font-medium">
+                No activities found matching filters.
               </TableCell>
             </TableRow>
           )}

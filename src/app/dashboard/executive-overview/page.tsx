@@ -1,5 +1,4 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
-import { getDashboardDataMode } from '@/lib/server/bigquery-client';
+import ParticipantMetricsPanel from '@/components/dashboard/participant-metrics-panel';
 import PageHeader from '@/components/layout/page-header';
 import KpiCard from '@/components/dashboard/kpi-card';
 import ChartCard from '@/components/dashboard/chart-card';
@@ -18,19 +17,9 @@ export const dynamic = 'force-dynamic';
 export default async function ExecutiveOverviewPage({
   searchParams,
 }: {
-  searchParams?: Promise<ExecutiveOverviewFilters>;
+  searchParams?: ExecutiveOverviewFilters;
 }) {
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route='executive-overview' searchParams={await searchParams} />;
-  }
-  const resolvedSearchParams = await searchParams;
-  if (
-    process.env.PLAYWRIGHT_QA === '1' &&
-    (resolvedSearchParams as Record<string, string | undefined> | undefined)?.qaError === 'boundary'
-  ) {
-    throw new Error('Intentional browser-QA error boundary trigger.');
-  }
-  const overview = await getExecutiveOverviewData(resolvedSearchParams);
+  const overview = await getExecutiveOverviewData(searchParams);
   const { summary: combinedSummary, insights: activeInsights, metadata } = overview;
   const refreshed = metadata.lastRefreshed
     ? new Date(metadata.lastRefreshed).toLocaleString('en-US', {
@@ -69,13 +58,6 @@ export default async function ExecutiveOverviewPage({
           icon={Calendar}
         />
         <KpiCard
-          label="Reportable Participants"
-          value={combinedSummary.reportableParticipants}
-          change="+8% from last quarter"
-          changeType="positive"
-          icon={Users}
-        />
-        <KpiCard
           label="Districts Covered"
           value={`${combinedSummary.districtsCovered} / 77`}
           change="Core project areas active"
@@ -91,6 +73,8 @@ export default async function ExecutiveOverviewPage({
         />
       </div>
 
+      <ParticipantMetricsPanel />
+
       {/* Main Grid: Charts & AI insights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -99,13 +83,7 @@ export default async function ExecutiveOverviewPage({
             subtitle="Planned vs. completed activities"
             action={<DrillthroughButton href="/dashboard/activity-progress" />}
           >
-            {metadata.dataSource === 'bigquery' ? (
-              <div className="flex h-72 items-center justify-center text-sm text-gray-500 text-center px-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                Disabled pending approved aggregates for planned/completed values.
-              </div>
-            ) : (
-              <ProgrammeProgressChart />
-            )}
+            <ProgrammeProgressChart />
           </ChartCard>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -114,13 +92,7 @@ export default async function ExecutiveOverviewPage({
               subtitle="CPD Q2 output indicator distribution"
               action={<DrillthroughButton href="/dashboard/indicator-progress" />}
             >
-              {metadata.dataSource === 'bigquery' ? (
-                <div className="flex h-64 items-center justify-center text-sm text-gray-500 text-center px-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                  Disabled pending an approved target registry and status-rule validation.
-                </div>
-              ) : (
-                <IndicatorStatusChart />
-              )}
+              <IndicatorStatusChart />
             </ChartCard>
 
             <ChartCard
@@ -128,21 +100,13 @@ export default async function ExecutiveOverviewPage({
               subtitle="Aggregated attendee distribution"
               action={<DrillthroughButton href="/dashboard/participant-reach" />}
             >
-              <ParticipantSexChart data={overview.participantSex} />
+              <ParticipantSexChart  />
             </ChartCard>
           </div>
         </div>
 
         <div className="space-y-6">
-          {metadata.dataSource === 'bigquery' ? (
-             <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col h-full items-center justify-center text-center">
-               <Database className="h-8 w-8 text-gray-300 mb-2" />
-               <p className="text-sm font-medium text-gray-600">AI Executive Insights</p>
-               <p className="text-xs text-gray-400 mt-1 max-w-[200px]">Disabled in BigQuery mode. Prototype AI models are not approved for Production V1.</p>
-             </div>
-          ) : (
-            <AIInsightPanel insights={activeInsights} className="h-full" />
-          )}
+          <AIInsightPanel insights={activeInsights} className="h-full" />
           
           <div className="bg-[#082A4D] rounded-xl p-5 text-white shadow-sm border border-blue-900">
             <div className="flex items-center gap-2 mb-3">
@@ -150,7 +114,7 @@ export default async function ExecutiveOverviewPage({
               <h3 className="font-semibold">IP / Partner Summary</h3>
             </div>
             <p className="text-xs text-white/80 leading-relaxed mb-4">
-              Currently, {combinedSummary.ipsReporting} implementing partners are reporting operational activities. Q2 reviews indicate {combinedSummary.approvedSubmissions} submissions validated.
+              Currently, {combinedSummary.ipsReporting} implementing partners are reporting operational activities across 7 provinces. Q2 reviews indicate {combinedSummary.approvedSubmissions} submissions validated.
             </p>
             <DrillthroughButton href="/dashboard/ip-performance" label="Review IP Performance" className="text-[#FF6600] hover:text-[#ff8533]" />
           </div>

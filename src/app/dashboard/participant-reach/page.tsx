@@ -1,13 +1,10 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
-import { getDashboardDataMode } from '@/lib/server/bigquery-client';
-import type { ExecutiveOverviewFilters } from '@/lib/types';
-import MockPage from './mock-page';
+﻿import PageHeader from '@/components/layout/page-header';
+import ParticipantMetricsPanel from '@/components/dashboard/participant-metrics-panel';
 
-export default async function Page({ searchParams }: {
-  searchParams?: Promise<ExecutiveOverviewFilters>;
-}) {
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route='participant-reach' searchParams={await searchParams} />;
-  }
-  return <MockPage />;
+export default function ParticipantReachPage() {
+  return <div className="space-y-6">
+    <PageHeader title="Participant Reach & Inclusion" subtitle="Live attendance counts and demographic categories from the locked reporting view" />
+    <ParticipantMetricsPanel details />
+  </div>;
 }
+
