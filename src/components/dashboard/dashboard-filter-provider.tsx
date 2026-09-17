@@ -91,7 +91,13 @@ export function DashboardFilterProvider({
 
   const setFilter = useCallback(
     (key: DashboardFilterKey, value: string) => {
-      replaceFilters({ ...filters, [key]: options[key].includes(value) ? value : '' });
+      const next = { ...filters, [key]: options[key].includes(value) ? value : '' };
+      if (key === 'province') {
+        next.district = '';
+        next.municipality = '';
+      }
+      if (key === 'district') next.municipality = '';
+      replaceFilters(next);
     },
     [filters, replaceFilters, options],
   );

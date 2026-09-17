@@ -29,8 +29,8 @@ async function main() {
   let fail = false;
   let empty = false;
   let invalid = false;
-  const dimensions = { reporting_year1: '2029', report_quarter1: 'Q4', project1: 'Live only project', ip_name: 'Live partner', province1: 'Live province' };
-  const totals = { matched_rows: 2, total_participants: 137, reportable_participants: 111, total_events: 9, female_participants: 70, male_participants: 63, other_participants: 4, participants_with_disability: 8, projects: 6, partners: 7, provinces: 5, districts: 8, palikas: 12, freshness_timestamp: '2026-09-07T00:00:00Z', total_rows: 200, records_with_quality_issue: 20, reporting_partners: 7, total_submissions: 10 };
+  const dimensions = { reporting_year1: '2029', report_quarter1: 'Q4', project1: 'Live only project', ip_name: 'Live partner', province1: 'Live province', district1: 'Live district', palika1: 'Live palika' };
+  const totals = { activity: 'Approved activity', indicators: 5, matched_rows: 2, total_participants: 137, reportable_participants: 111, total_events: 9, female_participants: 70, male_participants: 63, other_participants: 4, participants_with_disability: 8, projects: 6, partners: 7, provinces: 5, districts: 8, palikas: 12, freshness_timestamp: '2026-09-07T00:00:00Z', total_rows: 200, records_with_quality_issue: 20, reporting_partners: 7, total_submissions: 10 };
   const service = load('src/lib/server/dashboard-page-data-service.ts', {
     'server-only': {},
     '@/data/mock/main-data': { mainData: [] },
@@ -54,9 +54,10 @@ async function main() {
   });
   const options = await service.getLiveDashboardFilterOptions();
   assert.deepEqual(options.year, ['2029']);
-  assert.deepEqual(options.district, []);
-  const selected = { year: '2029', quarter: 'Q4', project: 'Live only project', implementingPartner: 'Live partner', province: 'Live province' };
-  const columns = { year: 'reporting_year1', quarter: 'report_quarter1', project: 'project1', implementingPartner: 'ip_name', province: 'province1' };
+  assert.deepEqual(options.district, ['Live district']);
+  assert.deepEqual(options.municipality, ['Live palika']);
+  const selected = { year: '2029', quarter: 'Q4', project: 'Live only project', implementingPartner: 'Live partner', province: 'Live province', district: 'Live district', municipality: 'Live palika' };
+  const columns = { year: 'reporting_year1', quarter: 'report_quarter1', project: 'project1', implementingPartner: 'ip_name', province: 'province1', district: 'district1', municipality: 'palika1' };
   for (const filters of [...Object.entries(selected).map(([key, value]) => ({ [key]: value })), selected, { ip: 'Live partner' }]) {
     const result = await service.getDashboardPageData('executive-overview', filters);
     assert.equal(result.metadata.componentState, 'live_bigquery');
@@ -70,7 +71,7 @@ async function main() {
     assert.match(calls.at(-1).sql, /SUM\(total_participants\)/);
     assert.match(calls.at(-1).sql, /SUM\(total_reportable_participants\)/);
   }
-  for (const route of ['activity-progress', 'participant-reach', 'geographic-coverage', 'data-quality', 'ip-performance']) {
+  for (const route of ['activity-progress', 'activity-detail', 'indicator-progress', 'participant-reach', 'geographic-coverage', 'data-quality', 'ip-performance']) {
     assert.equal((await service.getDashboardPageData(route)).metadata.componentState, 'live_bigquery');
     fail = true;
     const failed = await service.getDashboardPageData(route);
@@ -86,11 +87,13 @@ async function main() {
   for (const route of ['data-quality', 'ip-performance']) {
     assert.equal((await service.getDashboardPageData(route, selected)).metadata.responseStatus, 422);
   }
-  for (const route of ['indicator-progress', 'activity-detail', 'management-decision-centre', 'gbv-ocmc']) {
+  for (const route of ['management-decision-centre', 'gbv-ocmc']) {
     const count = calls.length;
     assert.equal((await service.getDashboardPageData(route)).metadata.responseStatus, 409);
     assert.equal(calls.length, count);
   }
+  assert.equal((await service.getDashboardPageData('indicator-progress', { implementingPartner: 'Live partner' })).metadata.responseStatus, 422);
+  assert.equal((await service.getDashboardPageData('ip-performance', { implementingPartner: 'Live partner' })).metadata.responseStatus, 200);
   empty = true;
   assert.equal((await service.getDashboardPageData('executive-overview', selected)).metadata.componentState, 'no_data');
   empty = false;
@@ -111,7 +114,7 @@ async function main() {
     const page = load(`src/app/dashboard/${route}/page.tsx`, {
       '@/lib/server/bigquery-client': { getDashboardDataMode: () => 'bigquery' },
       '@/components/dashboard/bigquery-route-view': { default: marker, __esModule: true },
-      fallback: (id) => id.startsWith('@/') || id === './mock-page'
+      fallback: (id) => id.startsWith('@/') || id.startsWith('./')
         ? new Proxy({}, { get: (_, key) => key === '__esModule' ? true : assert.fail(`Prototype dependency accessed in live route: ${id}`) })
         : require(id),
     });
@@ -137,6 +140,43 @@ async function main() {
       assert.equal(reads - before, allowed ? 1 : 0);
     }
   }
-  console.log('Production V1 regression checks passed: participant sums, five live filters, route guards, disabled contracts, no-data/failure states, API statuses and unauthorized reads. Offline fixtures only.');
+  for (const status of [401, 403]) {
+    for (const params of ['', 'options=1']) {
+      const api = load('src/app/api/dashboard/participants/route.ts', {
+        'next/server': { NextResponse: { json: (body, init) => ({ body, ...init }) } },
+        '@/lib/server/auth-guard': { requireDashboardApiAccess: async () => ({ allowed: false, status }) },
+        '@/lib/participant-contract': { filtersFromParams: () => assert.fail('Unauthorized filter access') },
+        '@/lib/server/participant-metrics': {
+          getParticipantMetrics: () => assert.fail('Unauthorized participant query'),
+          getParticipantFilterOptions: () => assert.fail('Unauthorized option query'),
+        },
+      });
+      const result = await api.GET({ nextUrl: { searchParams: new URLSearchParams(params) } });
+      assert.equal(result.status, status);
+      assert.equal(result.headers['Cache-Control'], 'private, no-store');
+    }
+  }
+  const participantContract = load('src/lib/participant-contract.ts');
+  let participantInput;
+  const participantApi = load('src/app/api/dashboard/participants/route.ts', {
+    'next/server': { NextResponse: { json: (body, init) => ({ body, ...init }) } },
+    '@/lib/server/auth-guard': { requireDashboardApiAccess: async () => ({ allowed: true, status: 401 }) },
+    '@/lib/participant-contract': participantContract,
+    '@/lib/server/participant-metrics': {
+      getParticipantMetrics: async input => { participantInput = input; return { metadata: { dataSource: 'bigquery' } }; },
+      getParticipantFilterOptions: async () => ({}),
+    },
+  });
+  const filteredParticipants = await participantApi.GET({ nextUrl: { searchParams: new URLSearchParams({ municipality: 'Live palika' }) } });
+  assert.equal(filteredParticipants.status, 200);
+  assert.deepEqual(participantInput, { municipality: 'Live palika' });
+  assert.equal(participantContract.participantFilterColumns.municipality, 'palika1');
+  for (const input of ['year=2025&year=2026', 'municipality=A&municipality=B', 'ip=A&implementingPartner=B']) {
+    participantInput = null;
+    const result = await participantApi.GET({ nextUrl: { searchParams: new URLSearchParams(input) } });
+    assert.equal(result.status, 422);
+    assert.equal(participantInput, null);
+  }
+  console.log('Production V1 regression checks passed: participant sums, seven live filters, route guards, disabled contracts, no-data/failure states, API statuses and unauthorized reads. Offline fixtures only.');
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });

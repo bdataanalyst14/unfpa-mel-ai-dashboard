@@ -21,7 +21,7 @@ function prepare() {
   fs.writeFileSync(targetPaths.privateKeyFile, 'fixture-private-key\n');
   fs.writeFileSync(targetPaths.environmentFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${targetPaths.privateKeyFile}`,
@@ -78,6 +78,8 @@ function client({ missing, empty } = {}) {
     async query(options) {
       const q = options.query || options.ipQuery || '';
       queries.push(q);
+      assert.equal(options.maximumBytesBilled, '1000000');
+      assert.equal(options.location, 'asia-south1');
       const queriedObject = APPROVED_OBJECTS.find((object) => q.includes(`.${object}`));
       if (queriedObject && q.includes('ip_name')) {
         assert.ok(fieldsMap[queriedObject].some((field) => field.name === 'ip_name'), 'Query must not request an absent partner column');
@@ -117,7 +119,7 @@ async function main() {
     fs.writeFileSync(adcFile, '{"fixture":"credential-contents-must-not-be-read"}\n');
     fs.writeFileSync(targetPaths.environmentFile, [
       'BIGQUERY_PROJECT_ID=unfpadatabase',
-      'BIGQUERY_DATASET_ID=reporting',
+      'BIGQUERY_DATASET_ID=unfpadatabase',
       'BIGQUERY_LOCATION=asia-south1',
       `GOOGLE_APPLICATION_CREDENTIALS=${adcFile}`,
       'BIGQUERY_MAX_BYTES_BILLED=1000000',
@@ -142,7 +144,7 @@ async function main() {
     assert.throws(() => loadConfiguration(targetPaths), /bigquery_authentication_mode_conflict/);
     fs.writeFileSync(targetPaths.environmentFile, [
       'BIGQUERY_PROJECT_ID=unfpadatabase',
-      'BIGQUERY_DATASET_ID=reporting',
+      'BIGQUERY_DATASET_ID=unfpadatabase',
       'BIGQUERY_LOCATION=asia-south1',
       'GOOGLE_CLIENT_EMAIL=incomplete@example.com',
       'DASHBOARD_DATA_MODE=mock',

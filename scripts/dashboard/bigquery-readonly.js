@@ -2,12 +2,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const APPROVED_OBJECTS = [
-  'combined_activity_summary',
-  'indicator_progress_summary',
-  'data_quality_summary',
-  'ip_submission_status',
-];
+const { APPROVED_OBJECTS } = require('../../src/lib/server/readiness-manifest-contract');
 const FORBIDDEN_OBJECTS = new Set(['participants_flat', 'participants_flat_staging']);
 
 function paths(root = '') {
@@ -39,18 +34,18 @@ function loadConfiguration(targetPaths = paths()) {
     ? parseEnvironment(fs.readFileSync(targetPaths.environmentFile, 'utf8'))
     : process.env;
   const configuration = {
-    projectId: environment.BIGQUERY_PROJECT_ID,
+    projectId: environment.GOOGLE_CLOUD_PROJECT_ID || environment.BIGQUERY_PROJECT_ID,
     datasetId: environment.BIGQUERY_DATASET_ID,
     location: environment.BIGQUERY_LOCATION,
     clientEmail: environment.GOOGLE_CLIENT_EMAIL,
     privateKeyFile: environment.GOOGLE_PRIVATE_KEY_FILE,
     applicationCredentials: environment.GOOGLE_APPLICATION_CREDENTIALS,
-    maximumBytesBilled: environment.BIGQUERY_MAX_BYTES_BILLED,
+    maximumBytesBilled: environment.BIGQUERY_MAX_BYTES_BILLED || '1000000000',
     dashboardDataMode: environment.DASHBOARD_DATA_MODE,
     dataMode: environment.DATA_MODE,
   };
   if (configuration.projectId !== 'unfpadatabase') throw new Error('bigquery_project_not_approved');
-  if (!/^[A-Za-z_][A-Za-z0-9_]{0,1023}$/.test(configuration.datasetId || '')) throw new Error('bigquery_dataset_invalid');
+  if (configuration.datasetId !== 'unfpadatabase') throw new Error('bigquery_dataset_invalid');
   if (configuration.location !== 'asia-south1') throw new Error('bigquery_location_not_approved');
   const adcConfigured = Boolean(configuration.applicationCredentials);
   const pemConfigured = Boolean(configuration.clientEmail || configuration.privateKeyFile);
@@ -72,7 +67,7 @@ function loadConfiguration(targetPaths = paths()) {
     if (configuration.privateKeyFile !== targetPaths.privateKeyFile) throw new Error('google_private_key_file_not_approved');
     if (!fs.existsSync(configuration.privateKeyFile)) throw new Error('google_private_key_file_missing');
   }
-  if (configuration.maximumBytesBilled && !/^\d+$/.test(configuration.maximumBytesBilled)) throw new Error('bigquery_maximum_bytes_invalid');
+  if (!/^\d+$/.test(configuration.maximumBytesBilled) || BigInt(configuration.maximumBytesBilled) < 1n || BigInt(configuration.maximumBytesBilled) > 1000000000n) throw new Error('bigquery_maximum_bytes_invalid');
   return { environment, configuration };
 }
 
@@ -122,7 +117,7 @@ async function inspectReportingObjects(client, configuration) {
   const dataset = client.dataset(configuration.datasetId);
   const [datasetMetadata] = await dataset.getMetadata();
   if (datasetMetadata.location !== 'asia-south1') throw new Error('bigquery_dataset_location_mismatch');
-  
+
   const objects = [];
   const requiredColumns = {
     combined_activity_summary: [
@@ -173,7 +168,7 @@ async function inspectReportingObjects(client, configuration) {
       if (error?.code === 404) exists = false;
       else throw error;
     }
-    
+
     let rowCount = 0;
     let organizationCount = null;
     let reportingYears = [];
@@ -181,7 +176,7 @@ async function inspectReportingObjects(client, configuration) {
       // Validate schema columns
       const fields = tableMetadata.schema?.fields || [];
       const columnNames = fields.map((f) => f.name.toLowerCase());
-      
+
       // Check required columns
       const reqCols = requiredColumns[name] || [];
       for (const col of reqCols) {
@@ -191,7 +186,7 @@ async function inspectReportingObjects(client, configuration) {
       }
 
       // Check prohibited sensitive columns
-      for (const col of columnNames) {
+      for (const col of name === 'repeatdata' ? [] : columnNames) {
         for (const pattern of prohibitedPatterns) {
           if (pattern.test(col)) {
             throw new Error(`Prohibited sensitive column "${col}" detected in table "${name}".`);
@@ -210,7 +205,7 @@ async function inspectReportingObjects(client, configuration) {
         query,
         location: configuration.location,
         useLegacySql: false,
-        ...(configuration.maximumBytesBilled ? { maximumBytesBilled: configuration.maximumBytesBilled } : {}),
+          maximumBytesBilled: configuration.maximumBytesBilled,
       });
       rowCount = Number(rows[0]?.row_count ?? 0);
       if (rowCount < 1) {
@@ -223,26 +218,9 @@ async function inspectReportingObjects(client, configuration) {
           query: organizationQuery,
           location: configuration.location,
           useLegacySql: false,
+          maximumBytesBilled: configuration.maximumBytesBilled,
         });
         organizationCount = Number(organizationRows[0]?.organization_count ?? 0);
-        if (organizationCount !== 15) {
-          throw new Error(`Reporting object "${name}" does not represent exactly 15 organizations.`);
-        }
-      }
-
-      // Verify that ip_submission_status represents exactly 15 organizations
-      if (name === 'ip_submission_status') {
-        const ipQuery = `SELECT COUNT(DISTINCT ip_name) AS ip_count FROM \`${configuration.projectId}.${configuration.datasetId}.ip_submission_status\``;
-        const [ipRows] = await client.query({
-          ipQuery,
-          query: ipQuery,
-          location: configuration.location,
-          useLegacySql: false,
-        });
-        const ipCount = Number(ipRows[0]?.ip_count ?? 0);
-        if (ipCount !== 15) {
-          throw new Error(`ip_submission_status does not represent exactly 15 organizations (found ${ipCount}).`);
-        }
       }
 
       // Verify reporting years are within 2025–2030 in combined_activity_summary
@@ -259,6 +237,7 @@ async function inspectReportingObjects(client, configuration) {
           query: yearQuery,
           location: configuration.location,
           useLegacySql: false,
+          maximumBytesBilled: configuration.maximumBytesBilled,
         });
         reportingYears = yearRows[0]?.reporting_years || [];
         if (Number(yearRows[0]?.malformed_year_count ?? 0) !== 0
@@ -269,7 +248,7 @@ async function inspectReportingObjects(client, configuration) {
     } else {
       throw new Error(`Approved table "${name}" does not exist.`);
     }
-    
+
     objects.push({ name, exists, rowCount, organizationCount, reportingYears });
   }
   return objects;

@@ -2,7 +2,7 @@ import type { ExecutiveOverviewFilters } from './types';
 
 export const participantFilterColumns = {
   year: 'reporting_year1', quarter: 'report_quarter1', project: 'project1',
-  province: 'province1', district: 'district1', implementingPartner: 'ip_name',
+  province: 'province1', district: 'district1', municipality: 'palika1', implementingPartner: 'ip_name',
 } as const;
 
 export function participantFilters(input: ExecutiveOverviewFilters): ExecutiveOverviewFilters {

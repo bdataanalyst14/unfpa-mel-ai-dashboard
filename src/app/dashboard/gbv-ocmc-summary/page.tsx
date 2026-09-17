@@ -1,6 +1,8 @@
 import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
 import { getDashboardDataMode } from '@/lib/server/bigquery-client';
+import { getDashboardPageData } from '@/lib/server/dashboard-page-data-service';
 import { EyeOff, HeartHandshake, Layers, PhoneCall, ShieldCheck } from 'lucide-react';
+import AwaitingDataOverlay from '@/components/dashboard/awaiting-data-overlay';
 
 import GbvSummaryChart from '@/components/charts/gbv-summary-chart';
 import ChartCard from '@/components/dashboard/chart-card';
@@ -21,9 +23,12 @@ export default async function GbvOcmcSummaryPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const resolvedParams = searchParams ? await searchParams : {};
   if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route='gbv-ocmc' searchParams={await searchParams} />;
+    return <BigQueryRouteView route="gbv-ocmc" searchParams={resolvedParams} />;
   }
+  const pageData = await getDashboardPageData('gbv-ocmc', resolvedParams);
+  const live = pageData.metadata.componentState !== 'mock_demo';
   const filters = parseDashboardFilters(
     await searchParams,
     buildDashboardFilterOptions(mainData),
@@ -48,7 +53,7 @@ export default async function GbvOcmcSummaryPage({
       {unsupportedForGbv ? (
         <EmptyState detail="The selected Year, Quarter, Project, or Implementing Partner is not present in the approved GBV mock contract. Clear those filters; live GBV data remains blocked." />
       ) : (
-      <>
+      <AwaitingDataOverlay active={live} message={pageData.metadata.message}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KpiCard
           label="Survivors Reached"
@@ -79,7 +84,7 @@ export default async function GbvOcmcSummaryPage({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 mt-6">
         <ChartCard
           title="GBV Caseload Trends by Province (Aggregated)"
           subtitle="Visits by OCMC province locations (non-zero values below 5 suppressed)"
@@ -95,7 +100,7 @@ export default async function GbvOcmcSummaryPage({
         </ChartCard>
       </div>
 
-      <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+      <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm mt-6">
         <div className="mb-4 flex items-center gap-2">
           <EyeOff className="h-5 w-5 text-[#FF6600]" />
           <div>
@@ -135,7 +140,7 @@ export default async function GbvOcmcSummaryPage({
           </table>
         </div>
       </section>
-      </>
+      </AwaitingDataOverlay>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export default async function BigQueryRouteView({
   route: DashboardRouteKey;
   searchParams?: ExecutiveOverviewFilters;
 }) {
-  await requireDashboardPageAccess(`/dashboard/${route}`);
+  await requireDashboardPageAccess(`/dashboard/${route === 'gbv-ocmc' ? 'gbv-ocmc-summary' : route}`);
   const data = await getDashboardPageData(route, searchParams);
   const live = data.metadata.componentState === 'live_bigquery';
   const noData = data.metadata.componentState === 'no_data';
@@ -53,7 +53,7 @@ export default async function BigQueryRouteView({
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-center gap-2 font-semibold">
             {unavailable ? <AlertTriangle className="h-4 w-4" /> : <Database className="h-4 w-4" />}
-            Data source: BigQuery
+            Data source: BigQuery{live ? ' - live' : ' - ' + (noData ? 'no data' : unavailable ? 'temporarily unavailable' : route === 'gbv-ocmc' ? 'privacy blocked' : 'unsupported')}
           </span>
           <span>Freshness: {formatTimestamp(data.metadata.freshnessTimestamp)}</span>
         </div>
@@ -88,7 +88,7 @@ export default async function BigQueryRouteView({
         </>
       ) : (
         <EmptyState
-          title={noData ? 'No approved aggregate data matches the selected filters' : unavailable ? 'BigQuery data is unavailable' : 'Component disabled pending validation'}
+          title={noData ? 'No approved aggregate data matches the selected filters' : unavailable ? 'Temporarily unavailable' : route === 'gbv-ocmc' ? 'Privacy blocked' : 'Not supported'}
           detail={data.metadata.message}
         />
       )}

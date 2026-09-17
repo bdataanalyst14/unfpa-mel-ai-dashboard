@@ -36,7 +36,7 @@ function load(relativePath, overrides = {}) {
 async function runTests() {
   console.log('Running offline production readiness integration tests...');
 
-  // 1. Test four-object contract & participants_flat prohibition
+  // 1. Test six-object contract & participants_flat prohibition
   const bqClient = load('src/lib/server/bigquery-client.ts', {
     'server-only': {},
     '@google-cloud/bigquery': {
@@ -49,17 +49,20 @@ async function runTests() {
       createVercelWifAuthClient: () => ({ kind: 'mock-wif-auth-client' })
     },
     './readiness-manifest-contract': {
+      ...require('../src/lib/server/readiness-manifest-contract'),
       loadAndValidateManifest: () => false
     }
   });
 
   assert.deepEqual(bqClient.APPROVED_OBJECTS, [
+    'repeatdata',
+    'activity_summary',
     'combined_activity_summary',
     'indicator_progress_summary',
     'data_quality_summary',
     'ip_submission_status'
   ]);
-  console.log('  - APPROVED_OBJECTS matches the four-object contract exactly.');
+  console.log('  - APPROVED_OBJECTS matches the six-object contract exactly.');
 
   // Verify query safety guards
   // Case changes check
@@ -67,7 +70,7 @@ async function runTests() {
   // Backtick check
   assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `participants_flat`'), /prohibited/);
   // Fully qualified check
-  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.reporting.participants_flat`'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.unfpadatabase.participants_flat`'), /prohibited/);
   // Join check
   assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM combined_activity_summary JOIN participants_flat ON c.id = p.id'), /prohibited/);
   // Staging check
@@ -99,16 +102,16 @@ async function runTests() {
 
   // Unapproved project or dataset
   process.env.BIGQUERY_PROJECT_ID = 'unfpadatabase';
-  process.env.BIGQUERY_DATASET_ID = 'reporting';
+  process.env.BIGQUERY_DATASET_ID = 'unfpadatabase';
   assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `otherproject.reporting.combined_activity_summary`'), /unapproved project/);
   assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.otherdataset.combined_activity_summary`'), /unapproved dataset/);
 
   // Unknown aggregate table
-  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.reporting.unknown_table`'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.unfpadatabase.unknown_table`'), /prohibited/);
 
   assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM combined_activity_summary, secret_records'), /prohibited/);
-  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.reporting.combined_activity_summary*`'), /prohibited/);
-  assert.throws(() => bqClient.validateQuerySafety('WITH secret_records AS (SELECT 1) SELECT * FROM `unfpadatabase.reporting.secret_records`'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.unfpadatabase.combined_activity_summary*`'), /prohibited/);
+  assert.throws(() => bqClient.validateQuerySafety('WITH secret_records AS (SELECT 1) SELECT * FROM `unfpadatabase.unfpadatabase.secret_records`'), /prohibited/);
   assert.throws(() => bqClient.validateQuerySafety('EXPORT DATA OPTIONS(uri="fixture") AS SELECT * FROM combined_activity_summary'), /prohibited/);
 
   // Verify allowed queries (positive tests)
@@ -116,7 +119,7 @@ async function runTests() {
   assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM indicator_progress_summary'));
   assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM data_quality_summary'));
   assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM ip_submission_status'));
-  assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.reporting.combined_activity_summary`'));
+  assert.doesNotThrow(() => bqClient.validateQuerySafety('SELECT * FROM `unfpadatabase.unfpadatabase.combined_activity_summary`'));
   assert.doesNotThrow(() => bqClient.validateQuerySafety(`
     WITH filtered AS (SELECT * FROM combined_activity_summary)
     SELECT * FROM filtered
@@ -136,7 +139,7 @@ async function runTests() {
   process.env.DASHBOARD_DATA_MODE = 'bigquery';
   process.env.DATA_MODE = 'bigquery';
   process.env.BIGQUERY_PROJECT_ID = 'unfpadatabase';
-  process.env.BIGQUERY_DATASET = 'reporting';
+  process.env.BIGQUERY_DATASET = 'unfpadatabase';
   process.env.BIGQUERY_LOCATION = 'asia-south1';
   process.env.GOOGLE_CLIENT_EMAIL = 'test@unfpa.org';
   process.env.GOOGLE_PRIVATE_KEY_FILE = 'non-existent-key-file';
@@ -165,7 +168,8 @@ async function runTests() {
   const mockRequest = (paramsObj) => ({
     nextUrl: {
       searchParams: {
-        get: (key) => paramsObj[key] ?? null
+        get: (key) => paramsObj[key] ?? null,
+        getAll: (key) => paramsObj[key] === undefined ? [] : [paramsObj[key]]
       }
     }
   });
@@ -258,7 +262,7 @@ async function runTests() {
   fs.writeFileSync(testKeyFile, 'fixture-private-key\n');
   fs.writeFileSync(testEnvFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${testKeyFile}`,
@@ -293,7 +297,7 @@ async function runTests() {
   // Create valid preflight evidence
   const mockConfigHash = crypto.createHash('sha256').update(JSON.stringify({
     projectId: 'unfpadatabase',
-    datasetId: 'reporting',
+    datasetId: 'unfpadatabase',
     location: 'asia-south1',
     clientEmail: 'readonly@unfpadatabase.iam.gserviceaccount.com',
     privateKeyFile: testKeyFile,
@@ -306,6 +310,8 @@ async function runTests() {
     validatedAt: new Date().toISOString(),
     configurationHash: mockConfigHash,
     objects: [
+      { name: 'repeatdata', exists: true, rowCount: 51794 },
+      { name: 'activity_summary', exists: true, rowCount: 2592 },
       { name: 'combined_activity_summary', exists: true, rowCount: 100 },
       { name: 'indicator_progress_summary', exists: true, rowCount: 50 },
       { name: 'data_quality_summary', exists: true, rowCount: 200 },
@@ -361,10 +367,12 @@ async function runTests() {
   }, /Evidence configuration hash mismatch/);
   console.log('  - production-activate-bigquery.js correctly rejects modified evidence hash.');
 
-  // Test activation check with incomplete four-object result (e.g. rowCount = 0)
+  // Test activation check with incomplete six-object result (e.g. rowCount = 0)
   const incompleteEvidence = {
     ...validEvidence,
     objects: [
+      { name: 'repeatdata', exists: true, rowCount: 51794 },
+      { name: 'activity_summary', exists: true, rowCount: 2592 },
       { name: 'combined_activity_summary', exists: true, rowCount: 100 },
       { name: 'indicator_progress_summary', exists: true, rowCount: 0 }, // 0 rows!
       { name: 'data_quality_summary', exists: true, rowCount: 200 },
@@ -375,7 +383,7 @@ async function runTests() {
   assert.throws(() => {
     execSync('node scripts/dashboard/production-activate-bigquery.js --approval REF-123 --apply', execOptions);
   }, /Reporting object "indicator_progress_summary" is missing or empty/i);
-  console.log('  - production-activate-bigquery.js correctly rejects incomplete four-object result.');
+  console.log('  - production-activate-bigquery.js correctly rejects incomplete six-object result.');
 
   // Test activation check with missing approval reference
   assert.throws(() => {
@@ -386,7 +394,7 @@ async function runTests() {
   // Test activation check with unsafe DATA_MODE (e.g. live)
   fs.writeFileSync(testEnvFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${testKeyFile}`,
@@ -405,7 +413,7 @@ async function runTests() {
   // Test activation check with live GBV enabled
   fs.writeFileSync(testEnvFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${testKeyFile}`,
@@ -425,7 +433,7 @@ async function runTests() {
   // Restore valid env file first
   fs.writeFileSync(testEnvFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${testKeyFile}`,
@@ -453,7 +461,7 @@ async function runTests() {
   fs.mkdirSync(path.dirname(repoEnvFile), { recursive: true });
   fs.writeFileSync(repoEnvFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${testKeyFile}`,

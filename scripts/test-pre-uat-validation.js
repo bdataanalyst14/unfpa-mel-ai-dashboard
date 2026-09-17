@@ -19,6 +19,15 @@ async function main() {
   const output = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
   }).outputText;
+  const clientOutput = ts.transpileModule(fs.readFileSync(path.join(__dirname, '../src/lib/server/bigquery-client.ts'), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+  }).outputText;
+  const clientModule = { exports: {} };
+  Function('require', 'module', 'exports', clientOutput)((id) => {
+    if (id === './readiness-manifest-contract') return require('../src/lib/server/readiness-manifest-contract');
+    if (id === 'fs' || id === 'path' || id === 'crypto') return require(id);
+    return {};
+  }, clientModule, clientModule.exports);
   const mocks = {
     'server-only': {},
     './auth-guard': { getDashboardAuthorization: async () => ({ allowed, role }) },
@@ -29,10 +38,11 @@ async function main() {
       getBigQueryDatasetId: () => 'DO_NOT_DISCLOSE_DATASET',
       runSafeBigQuery: async (sql) => {
         calls.push(sql);
+        clientModule.exports.validateQuerySafety(sql.replaceAll('DO_NOT_DISCLOSE_PROJECT', 'unfpadatabase').replaceAll('DO_NOT_DISCLOSE_DATASET', 'unfpadatabase'));
         assert.doesNotMatch(sql, /participants_flat|staging|\bJOIN\b|\bUNION\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b/i);
         const refs = [...sql.matchAll(/`DO_NOT_DISCLOSE_PROJECT\.DO_NOT_DISCLOSE_DATASET\.([^`]+)`/g)];
         assert.equal(refs.length, 1);
-        assert.ok(['combined_activity_summary', 'indicator_progress_summary', 'data_quality_summary', 'ip_submission_status'].includes(refs[0][1]));
+        assert.ok(['repeatdata', 'activity_summary', 'combined_activity_summary', 'indicator_progress_summary', 'data_quality_summary', 'ip_submission_status'].includes(refs[0][1]));
         if (calls.length === failureAt) throw new Error('DO_NOT_DISCLOSE_TOKEN DO_NOT_DISCLOSE_PARTICIPANT DO_NOT_DISCLOSE_PROJECT');
         return sql.includes('WHERE FALSE LIMIT 0') ? [] : [{ available }];
       },
@@ -68,20 +78,20 @@ async function main() {
     authMode = 'pem';
     await run('BLOCKED_CONFIGURATION', 0);
     authMode = 'vercel-wif';
-    for (const limit of ['', '0', '-1', '100000001', '1e7', 'not-a-number']) {
+    for (const limit of ['', '0', '-1', '1000000001', '1e7', 'not-a-number']) {
       process.env.BIGQUERY_MAX_BYTES_BILLED = limit;
       await run('BLOCKED_COST_LIMIT', 0);
     }
     process.env.BIGQUERY_MAX_BYTES_BILLED = '10000000';
-    assert.equal((await run('PASSED_READ_AND_SCHEMA', 8)).completedViews, 4);
+    assert.equal((await run('PASSED_READ_AND_SCHEMA', 12)).completedViews, 6);
     available = false;
     await run('BLOCKED_EMPTY_VIEW', 2);
     available = true;
-    for (failureAt = 1; failureAt <= 8; failureAt++) await run('FAILED_READ_OR_SCHEMA', failureAt);
+    for (failureAt = 1; failureAt <= 12; failureAt++) await run('FAILED_READ_OR_SCHEMA', failureAt);
   } finally {
     if (originalLimit === undefined) delete process.env.BIGQUERY_MAX_BYTES_BILLED;
     else process.env.BIGQUERY_MAX_BYTES_BILLED = originalLimit;
   }
-  console.log('Offline pre-UAT validator checks passed: authorization/configuration/cost gates, four-view schema/read probes, empty/error redaction. No live requests.');
+  console.log('Offline pre-UAT validator checks passed: authorization/configuration/cost gates, six-view schema/read probes, empty/error redaction. No live requests.');
 }
 main().catch(() => { console.error('Offline pre-UAT validator checks failed.'); process.exitCode = 1; });

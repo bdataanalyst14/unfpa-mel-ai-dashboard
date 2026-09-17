@@ -25,7 +25,7 @@ const demographicColumns = {
 
 export function participantWhere(input: ExecutiveOverviewFilters) {
   const params = { ...participantFilters(input) };
-  const clauses = Object.keys(params).map(key => `${participantFilterColumns[key as keyof ExecutiveOverviewFilters]} = @${key}`);
+  const clauses = Object.keys(params).map(key => `${participantFilterColumns[key as keyof typeof participantFilterColumns]} = @${key}`);
   return { params, where: clauses.length ? `WHERE ${clauses.join(' AND ')}` : '' };
 }
 
@@ -55,7 +55,7 @@ export async function getParticipantMetrics(input: ExecutiveOverviewFilters = {}
     const view = `\`${getBigQueryProjectId()}.${getBigQueryDatasetId()}.combined_activity_summary\``;
     const demographicSql = Object.keys(demographicColumns).map(column => `COALESCE(SUM(${column}), 0) AS ${column}`).join(', ');
     const rows = await runSafeBigQuery<Record<string, unknown>>(`
-      WITH filtered AS (SELECT * FROM ${view} ${where})
+      WITH filtered AS (SELECT total_participants, total_reportable_participants, participant_entry_mode, district1, start_date1, activity1, ${Object.keys(demographicColumns).join(', ')} FROM ${view} ${where})
       SELECT 'total' AS kind, '' AS name, ${participantAggregateSql()}, ${demographicSql} FROM filtered
       UNION ALL
       SELECT 'district', COALESCE(NULLIF(district1, ''), 'Unspecified'), ${participantAggregateSql()}, ${demographicSql}
@@ -66,6 +66,7 @@ export async function getParticipantMetrics(input: ExecutiveOverviewFilters = {}
       UNION ALL
       SELECT 'activity', COALESCE(NULLIF(activity1, ''), 'Unspecified'), ${participantAggregateSql()}, ${demographicSql}
       FROM filtered GROUP BY activity1
+      LIMIT 10000
     `, params);
     const total = rows.find(row => row.kind === 'total');
     if (!total) throw new Error('Missing participant aggregate');
@@ -94,6 +95,6 @@ export async function getParticipantFilterOptions() {
   const view = `\`${getBigQueryProjectId()}.${getBigQueryDatasetId()}.combined_activity_summary\``;
   const rows = await runSafeBigQuery<{ key: string; value: string }>(Object.entries(participantFilterColumns).map(([key, column]) =>
     `SELECT DISTINCT '${key}' AS key, ${column} AS value FROM ${view} WHERE ${column} IS NOT NULL AND TRIM(${column}) != ''`
-  ).join(' UNION ALL '));
+  ).join(' UNION ALL ') + ' LIMIT 10000');
   return Object.fromEntries(Object.keys(participantFilterColumns).map(key => [key, rows.filter(row => row.key === key).map(row => row.value).sort()]));
 }

@@ -288,9 +288,10 @@ function hasUnsupportedRouteFilter(
   route: DashboardRouteKey,
   filters: DashboardFilterState,
 ): boolean {
+  if (route === 'indicator-progress') return Boolean(filters.implementingPartner);
   if (route === 'data-quality') return Object.values(filters).some(Boolean);
   if (route === 'ip-performance') {
-    return Boolean(filters.year || filters.quarter || filters.project || filters.province);
+    return Boolean(filters.year || filters.quarter || filters.project || filters.province || filters.district || filters.municipality);
   }
   return false;
 }
@@ -305,6 +306,8 @@ function buildCombinedWhere(filters: DashboardFilterState): {
     ['project', 'project1'],
     ['implementingPartner', 'ip_name'],
     ['province', 'province1'],
+    ['district', 'district1'],
+    ['municipality', 'palika1'],
   ];
   const clauses: string[] = [];
   const params: Record<string, string> = {};
@@ -344,14 +347,20 @@ export async function getLiveDashboardFilterOptions(): Promise<DashboardFilterOp
     project1: string | null;
     ip_name: string | null;
     province1: string | null;
+    district1: string | null;
+    palika1: string | null;
   }>(`
     SELECT DISTINCT
       reporting_year1,
       report_quarter1,
       project1,
       ip_name,
-      province1
+      province1,
+      district1,
+      palika1
     FROM ${combined}
+    ORDER BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1
+    LIMIT 10000
   `);
   const values = (selector: (row: (typeof rows)[number]) => string | null): string[] =>
     Array.from(new Set(rows.map(selector).filter((value): value is string => Boolean(value?.trim())))).sort(
@@ -363,20 +372,35 @@ export async function getLiveDashboardFilterOptions(): Promise<DashboardFilterOp
     project: values((row) => row.project1),
     implementingPartner: values((row) => row.ip_name),
     province: values((row) => row.province1),
-    district: [],
-    municipality: [],
+    district: values((row) => row.district1),
+    municipality: values((row) => row.palika1),
   };
 }
 
 async function queryCombinedRoute(
   route: Extract<
     DashboardRouteKey,
-    'executive-overview' | 'activity-progress' | 'participant-reach' | 'geographic-coverage'
+    'executive-overview' | 'activity-progress' | 'activity-detail' | 'participant-reach' | 'geographic-coverage'
   >,
   filters: DashboardFilterState,
 ): Promise<DashboardPageData> {
   const { combined, ipStatus } = projectAndDataset();
   const { where, params } = buildCombinedWhere(filters);
+  if (route === 'activity-detail') {
+    const rows = await runSafeBigQuery<CountRow>(`
+      SELECT activity1 AS activity, COUNT(1) AS matched_rows,
+        COALESCE(SUM(event_count), 0) AS total_events,
+        COALESCE(SUM(total_participants), 0) AS total_participants
+      FROM ${combined} ${where}
+      GROUP BY activity1 ORDER BY activity1 LIMIT 100
+    `, params);
+    if (!rows.length) return noData(route, filters, null);
+    return liveData(route, rows.flatMap(row => [
+      countMetric(`${typeof row.activity === 'string' && row.activity ? row.activity : 'Unspecified activity'} - events`, asNumber(row.total_events)),
+      countMetric(`${typeof row.activity === 'string' && row.activity ? row.activity : 'Unspecified activity'} - participants`, asNumber(row.total_participants)),
+    ]), filters, null, 'Aggregated activity totals from the published CombinedSummary. Up to 100 activity groups are shown; participant counts are attendance records, not unique people. Individual records, evidence and exports are unavailable.');
+  }
+
   const [row] = await runSafeBigQuery<CountRow>(`
     SELECT
       COUNT(1) AS matched_rows,
@@ -437,6 +461,26 @@ async function queryCombinedRoute(
     ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
   }
   return liveData(route, common, filters, freshness, 'Live aggregate activity volume is shown. Planned-versus-completed progress, trends, evidence, and delayed-report components are disabled pending approved contracts.');
+}
+
+async function queryIndicators(filters: DashboardFilterState): Promise<DashboardPageData> {
+  const { indicators } = projectAndDataset();
+  const { where, params } = buildCombinedWhere(filters);
+  const [row] = await runSafeBigQuery<CountRow>(`
+    SELECT COUNT(1) AS matched_rows,
+      COUNT(DISTINCT NULLIF(indicator1, '')) AS indicators,
+      COALESCE(SUM(total_events), 0) AS total_events,
+      COALESCE(SUM(total_participants), 0) AS total_participants,
+      COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants
+    FROM ${indicators} ${where}
+  `, params);
+  if (!row || asNumber(row.matched_rows) === 0) return noData('indicator-progress', filters, null);
+  return liveData('indicator-progress', [
+    countMetric('Indicators reported', asNumber(row.indicators)),
+    countMetric('Total events', asNumber(row.total_events)),
+    countMetric('Total participants', asNumber(row.total_participants)),
+    countMetric('Reportable participants', asNumber(row.reportable_participants)),
+  ], filters, null, 'Published indicator aggregates. Participant counts are attendance records, not unique people. Targets, achievement percentages and performance status are unsupported by the frozen reporting contract.');
 }
 
 async function queryDataQuality(): Promise<DashboardPageData> {
@@ -515,16 +559,9 @@ export async function getDashboardPageData(
   if (route === 'gbv-ocmc') {
     return disabledData(route, 'GBV / OCMC is disabled in BigQuery mode pending explicit privacy, reporting, and suppression approval.');
   }
-  if (route === 'indicator-progress') {
-    return disabledData(route, 'Indicator Performance Status is disabled pending an approved target registry, indicator crosswalk, and status-rule validation.');
-  }
   if (route === 'management-decision-centre') {
     return disabledData(route, 'Management Decision Centre is disabled in BigQuery mode. Prototype and AI-generated insights are not approved for Production V1.');
   }
-  if (route === 'activity-detail') {
-    return disabledData(route, 'Activity Detail and exports are disabled in BigQuery mode pending an approved safe aggregate-detail contract.');
-  }
-
   const config = getBigQueryConfigStatus();
   if (!config.dataModeConfigurationValid || !config.configured) {
     return unavailableData(route, 'BigQuery is unavailable or its production-readiness configuration is invalid. No demo or mock data is shown.');
@@ -542,9 +579,12 @@ export async function getDashboardPageData(
     switch (route) {
       case 'executive-overview':
       case 'activity-progress':
+      case 'activity-detail':
       case 'participant-reach':
       case 'geographic-coverage':
         return await queryCombinedRoute(route, validated.filters);
+      case 'indicator-progress':
+        return await queryIndicators(validated.filters);
       case 'data-quality':
         return await queryDataQuality();
       case 'ip-performance':
@@ -552,7 +592,12 @@ export async function getDashboardPageData(
       default:
         return disabledData(route, 'This route is not approved for BigQuery activation.');
     }
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('authorization failure')) {
+      const result = unavailableData(route, 'Authorization failure: the approved dashboard identity cannot read the reporting views.');
+      result.metadata.validationStatus = 'authorization_failure';
+      return result;
+    }
     return unavailableData(route, 'BigQuery is temporarily unavailable or access to an approved aggregate view was denied. No demo or mock data is shown.');
   }
 }

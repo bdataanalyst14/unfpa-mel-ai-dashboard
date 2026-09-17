@@ -6,6 +6,8 @@ const path = require('node:path');
 const CONTRACT_VERSION = 1;
 const MANIFEST_RELATIVE_PATH = '.vercel-runtime/bigquery-readiness-manifest.json';
 const APPROVED_OBJECTS = Object.freeze([
+  'repeatdata',
+  'activity_summary',
   'combined_activity_summary',
   'indicator_progress_summary',
   'data_quality_summary',
@@ -81,18 +83,21 @@ function createSemanticPayload(env) {
   if (authMode === 'NONE') {
     throw new Error('Missing BigQuery authentication configuration for live build.');
   }
-  requireValues(env, ['BIGQUERY_PROJECT_ID', 'BIGQUERY_DATASET_ID', 'BIGQUERY_LOCATION']);
+  if (['GOOGLE_CLOUD_PROJECT_ID', 'BIGQUERY_PROJECT_ID', 'GOOGLE_CLOUD_PROJECT', 'BIGQUERY_DATASET_ID', 'BIGQUERY_DATASET'].some(name => value(env, name) && value(env, name) !== 'unfpadatabase')) throw new Error('Conflicting frozen BigQuery configuration.');
+  const projectId = value(env, 'GOOGLE_CLOUD_PROJECT_ID') || value(env, 'BIGQUERY_PROJECT_ID') || value(env, 'GOOGLE_CLOUD_PROJECT');
+  const datasetId = value(env, 'BIGQUERY_DATASET_ID') || value(env, 'BIGQUERY_DATASET');
+  if (projectId !== 'unfpadatabase' || datasetId !== 'unfpadatabase') throw new Error('Invalid frozen BigQuery project or dataset.');
+  const maximumBytesBilled = value(env, 'BIGQUERY_MAX_BYTES_BILLED') || '1000000000';
+  if (!/^\d+$/.test(maximumBytesBilled) || Number(maximumBytesBilled) < 1 || Number(maximumBytesBilled) > 1000000000) throw new Error('Invalid BigQuery query cost limit.');
   if (value(env, 'BIGQUERY_LOCATION') !== 'asia-south1') {
     throw new Error('Invalid Vercel readiness location; expected asia-south1.');
   }
 
   const bigQuery = {
-    projectId: value(env, 'BIGQUERY_PROJECT_ID'),
-    datasetId: value(env, 'BIGQUERY_DATASET_ID'),
+    projectId,
+    datasetId,
     location: value(env, 'BIGQUERY_LOCATION'),
-    ...(value(env, 'BIGQUERY_MAX_BYTES_BILLED')
-      ? { maximumBytesBilled: value(env, 'BIGQUERY_MAX_BYTES_BILLED') }
-      : {}),
+    maximumBytesBilled,
   };
 
   if (authMode === 'VERCEL_GCP_WIF') {

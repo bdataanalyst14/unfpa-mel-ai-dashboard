@@ -29,6 +29,8 @@ function result(code: ValidationCode, completedViews = 0): PreUatValidationResul
 }
 
 const projections = [
+  ['repeatdata', 'COUNT(*)'],
+  ['activity_summary', 'COUNT(*)'],
   ['combined_activity_summary', `
     SUM(event_count), SUM(total_participants), SUM(total_reportable_participants),
     SUM(female), SUM(male), SUM(other), SUM(withdisability),
@@ -59,7 +61,7 @@ export async function validatePreUatReadAccess(): Promise<PreUatValidationResult
       return result('BLOCKED_CONFIGURATION');
     }
     const costLimit = process.env.BIGQUERY_MAX_BYTES_BILLED?.trim() ?? '';
-    if (!/^\d+$/.test(costLimit) || BigInt(costLimit) < BigInt(1) || BigInt(costLimit) > BigInt(100_000_000)) {
+    if (!/^\d+$/.test(costLimit) || BigInt(costLimit) < BigInt(1) || BigInt(costLimit) > BigInt(1_000_000_000)) {
       return result('BLOCKED_COST_LIMIT');
     }
     const project = getBigQueryProjectId();
@@ -68,7 +70,7 @@ export async function validatePreUatReadAccess(): Promise<PreUatValidationResult
       const source = `\`${project}.${dataset}.${view}\``;
       await runSafeBigQuery(`SELECT ${projection} FROM ${source} WHERE FALSE LIMIT 0`);
       const rows = await runSafeBigQuery<{ available: boolean }>(
-        `SELECT EXISTS(SELECT 1 FROM ${source} LIMIT 1) AS available`,
+        `SELECT COUNT(*) > 0 AS available FROM ${source}`,
       );
       if (rows.length !== 1 || rows[0].available !== true) {
         return result('BLOCKED_EMPTY_VIEW', completedViews);

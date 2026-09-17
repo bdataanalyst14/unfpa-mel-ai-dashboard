@@ -36,33 +36,35 @@ function formatTimestamp(value: string | null): string {
 
 export default function DataSourceStatusPanel({ route }: { route: string }) {
   const query = useSearchParams().toString();
-  const [data, setData] = useState<DashboardPageData | null>(null);
-  const [failed, setFailed] = useState(false);
+  const requestKey = `${route}?${query}`;
+  const [result, setResult] = useState<{ key: string; data: DashboardPageData | null; failed: boolean } | null>(null);
+  const data = result?.key === requestKey ? result.data : null;
+  const failed = result?.key === requestKey && result.failed;
 
   useEffect(() => {
     let cancelled = false;
-    setData(null);
-    setFailed(false);
+
+
     fetch(`/api/dashboard/page-data?route=${encodeURIComponent(route)}&${query}`, {
       cache: 'no-store',
     })
       .then((response) => (response.ok ? response.json() : Promise.reject()))
       .then((payload: DashboardPageData) => {
-        if (!cancelled) setData(payload);
+        if (!cancelled) setResult({ key: requestKey, data: payload, failed: false });
       })
       .catch(() => {
-        if (!cancelled) setFailed(true);
+        if (!cancelled) setResult({ key: requestKey, data: null, failed: true });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [route, query]);
+  }, [route, query, requestKey]);
 
   if (failed) {
     return (
       <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        BigQuery metadata unavailable. Fallback mode must be verified before final live API/browser QA.
+        Data-source metadata is temporarily unavailable.
       </div>
     );
   }
@@ -92,7 +94,7 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
             <AlertTriangle className="h-4 w-4 text-amber-700" />
           )}
           <span>
-            Data source: {isBigQuery ? 'BigQuery' : 'Mock/prototype fallback'}
+            Data source: {isBigQuery ? 'BigQuery' : 'Demo / mock data'}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-gray-600">

@@ -7,7 +7,7 @@ import * as crypto from 'crypto';
 
 import { readPrivateKeyFile } from './private-key-file';
 import { createVercelWifAuthClient, type VercelWifConfig } from './vercel-gcp-wif';
-import { loadAndValidateManifest } from './readiness-manifest-contract';
+import { APPROVED_OBJECTS, loadAndValidateManifest } from './readiness-manifest-contract';
 import { resolveDashboardDataMode } from '@/lib/dashboard-mode';
 
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9_-]+$/;
@@ -37,13 +37,7 @@ type PreflightEvidenceObject = {
   rowCount?: unknown;
 };
 
-// Approved aggregate objects that are strictly allowed
-export const APPROVED_OBJECTS = [
-  'combined_activity_summary',
-  'indicator_progress_summary',
-  'data_quality_summary',
-  'ip_submission_status',
-];
+export { APPROVED_OBJECTS } from './readiness-manifest-contract';
 
 function requiredEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -65,21 +59,30 @@ export function getDashboardDataMode(): 'bigquery' | 'mock' {
   return resolveDashboardDataMode().mode;
 }
 
+function validateFrozenAliases(): void {
+  const names = ['GOOGLE_CLOUD_PROJECT_ID', 'BIGQUERY_PROJECT_ID', 'GOOGLE_CLOUD_PROJECT', 'BIGQUERY_DATASET_ID', 'BIGQUERY_DATASET'];
+  if (names.some(name => optionalEnv(name) && optionalEnv(name) !== 'unfpadatabase')) {
+    throw new Error('Conflicting frozen BigQuery configuration.');
+  }
+}
+
 export function getBigQueryProjectId(): string {
+  validateFrozenAliases();
   const projectId =
-    optionalEnv('BIGQUERY_PROJECT_ID', 'GOOGLE_CLOUD_PROJECT', 'GOOGLE_CLOUD_PROJECT_ID') ??
+    optionalEnv('GOOGLE_CLOUD_PROJECT_ID', 'BIGQUERY_PROJECT_ID', 'GOOGLE_CLOUD_PROJECT') ??
     requiredEnv('BIGQUERY_PROJECT_ID');
-  if (!IDENTIFIER_PATTERN.test(projectId)) {
+  if (!IDENTIFIER_PATTERN.test(projectId) || projectId !== 'unfpadatabase') {
     throw new Error('Invalid BigQuery project configuration.');
   }
   return projectId;
 }
 
 export function getBigQueryDatasetId(): string {
+  validateFrozenAliases();
   const datasetId =
-    optionalEnv('BIGQUERY_DATASET', 'BIGQUERY_DATASET_ID') ??
+    optionalEnv('BIGQUERY_DATASET_ID', 'BIGQUERY_DATASET') ??
     requiredEnv('BIGQUERY_DATASET');
-  if (!IDENTIFIER_PATTERN.test(datasetId)) {
+  if (!IDENTIFIER_PATTERN.test(datasetId) || datasetId !== 'unfpadatabase') {
     throw new Error('Invalid BigQuery dataset configuration.');
   }
   return datasetId;
@@ -186,11 +189,11 @@ function computeConfigurationHash(config: {
 
 export function getBigQueryConfigStatus(): BigQueryConfigStatus {
   const projectId = optionalEnv(
+    'GOOGLE_CLOUD_PROJECT_ID',
     'BIGQUERY_PROJECT_ID',
     'GOOGLE_CLOUD_PROJECT',
-    'GOOGLE_CLOUD_PROJECT_ID',
   );
-  const datasetId = optionalEnv('BIGQUERY_DATASET', 'BIGQUERY_DATASET_ID');
+  const datasetId = optionalEnv('BIGQUERY_DATASET_ID', 'BIGQUERY_DATASET');
   let authentication: BigQueryAuthentication | undefined;
   try {
     authentication = getBigQueryAuthentication();
@@ -251,10 +254,13 @@ export function getBigQueryConfigStatus(): BigQueryConfigStatus {
     }
   }
 
+  let frozenConfigurationValid = true;
+  try { validateFrozenAliases(); } catch { frozenConfigurationValid = false; }
   const configured =
+    frozenConfigurationValid &&
     dataModeResolution.valid &&
     dataMode === 'bigquery' &&
-    Boolean(projectId && datasetId && locationValid && authentication && evidenceValid);
+    Boolean(projectId === 'unfpadatabase' && datasetId === 'unfpadatabase' && locationValid && authentication && evidenceValid);
 
   return {
     dataMode,
@@ -337,7 +343,7 @@ export function validateQuerySafety(query: string): void {
   }
 
   // 4. Reject forbidden substrings anywhere in the raw query (case-insensitive)
-  if (/participants_flat/i.test(query)) {
+  if (/participants_flat|activity_summary_flat|__gen_|unfpa_mel_internal/i.test(query)) {
     throw new Error('Access to participants_flat is prohibited.');
   }
   if (/staging/i.test(query)) {
@@ -345,6 +351,15 @@ export function validateQuerySafety(query: string): void {
   }
   if (/\bparticipants_flat\b|\bparticipants_flat_staging\b/i.test(query)) {
     throw new Error('Access to participant-level tables is prohibited.');
+  }
+
+  if (/\brepeatdata\b/i.test(cleanQuery)) {
+    if (/\bjoin\b|\bwith\b|\bunion\b/i.test(cleanQuery) || !/\b(count|sum|avg|min|max)\s*\(/i.test(cleanQuery) || /select\s+(?:distinct\s+)?\*/i.test(cleanQuery)) {
+      throw new Error('RepeatData is restricted to server-owned aggregate queries.');
+    }
+    if (/\b(participant_name|name|phone|email|address|participant_id|parent_submission_id|event_row_key|unique_key)\b/i.test(cleanQuery)) {
+      throw new Error('Participant identifiers are prohibited.');
+    }
   }
 
   // 5. Extract CTE names defined in the query
@@ -360,8 +375,8 @@ export function validateQuerySafety(query: string): void {
   let match;
   let hasReferences = false;
 
-  const configuredProject = (process.env.BIGQUERY_PROJECT_ID || '').trim().toLowerCase();
-  const configuredDataset = (process.env.BIGQUERY_DATASET_ID || process.env.BIGQUERY_DATASET || '').trim().toLowerCase();
+  const configuredProject = 'unfpadatabase';
+  const configuredDataset = 'unfpadatabase';
 
   while ((match = tableRefRegex.exec(cleanQuery)) !== null) {
     hasReferences = true;
@@ -375,12 +390,12 @@ export function validateQuerySafety(query: string): void {
       const [proj, ds, tbl] = segments.map(s => s.toLowerCase());
 
       // If project is specified, it must match configured project
-      if (configuredProject && proj !== configuredProject && proj !== '${projectid}') {
+      if (configuredProject && proj !== configuredProject) {
         throw new Error(`Access to unapproved project "${proj}" is prohibited.`);
       }
 
       // If dataset is specified, it must match configured dataset
-      if (configuredDataset && ds !== configuredDataset && ds !== '${datasetid}') {
+      if (configuredDataset && ds !== configuredDataset) {
         throw new Error(`Access to unapproved dataset "${ds}" is prohibited.`);
       }
 
@@ -392,7 +407,7 @@ export function validateQuerySafety(query: string): void {
       const [ds, tbl] = segments.map(s => s.toLowerCase());
 
       // If dataset is specified, it must match configured dataset
-      if (configuredDataset && ds !== configuredDataset && ds !== '${datasetid}') {
+      if (configuredDataset && ds !== configuredDataset) {
         throw new Error(`Access to unapproved dataset "${ds}" is prohibited.`);
       }
 
@@ -430,17 +445,23 @@ export async function runSafeBigQuery<T extends Record<string, unknown>>(
   validateQuerySafety(query);
 
   try {
-    const maximumBytesBilled = process.env.BIGQUERY_MAX_BYTES_BILLED?.trim();
+    const maximumBytesBilled = process.env.BIGQUERY_MAX_BYTES_BILLED?.trim() || '1000000000';
+    if (!/^\d+$/.test(maximumBytesBilled) || Number(maximumBytesBilled) < 1 || Number(maximumBytesBilled) > 1000000000) {
+      throw new Error('Invalid BigQuery query cost limit.');
+    }
     const options: Query = {
       query,
       params,
       location: 'asia-south1',
       useLegacySql: false,
-      ...(maximumBytesBilled ? { maximumBytesBilled } : {}),
+      maximumBytesBilled,
     };
     const [rows] = await getBigQueryClient().query(options);
     return rows as T[];
-  } catch {
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error.code === 401 || error.code === 403)) {
+      throw new Error('BigQuery authorization failure. The approved dashboard identity cannot read the reporting views.');
+    }
     throw new Error('BigQuery request failed. Check server configuration and reporting-table access.');
   }
 }
