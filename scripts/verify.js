@@ -49,7 +49,7 @@ const activityDetailPath = path.join(
   'app',
   'dashboard',
   'activity-detail',
-  'page.tsx',
+  'mock-page.tsx',
 );
 const csvExportPath = path.join(repoRoot, 'src', 'lib', 'csv-export.ts');
 
@@ -191,13 +191,11 @@ function main() {
     assertSuppressedSmallCell(suppressRecord(2));
   });
 
-  check('bigquery-dashboard-service imports and uses suppression utilities', () => {
+  check('legacy overview cannot expose prototype payloads in BigQuery mode', () => {
     const serviceSource = fs.readFileSync(servicePath, 'utf8');
-    assert.match(serviceSource, /from ['"]\.\/suppression['"]/);
-    assert.match(serviceSource, /\bsuppressCount\b/);
-    assert.match(serviceSource, /\bsuppressPercentage\b/);
-    assert.match(serviceSource, /metadata:\s*\{[\s\S]*suppression/m);
-    assert.match(serviceSource, /Numeric compatibility fields use 0/);
+    assert.match(serviceSource, /getDashboardDataMode\(\) === 'bigquery'/);
+    assert.match(serviceSource, /throw new Error\('Legacy overview payload/);
+    assert.doesNotMatch(serviceSource, /runSafeBigQuery/);
   });
 
   check('GBV mock records are restricted to server-only imports', () => {

@@ -4,6 +4,7 @@ import {
   getBigQueryConfigStatus,
   getBigQueryDatasetId,
   getBigQueryProjectId,
+  getDashboardDataMode,
   runSafeBigQuery,
 } from './bigquery-client';
 import { suppressCount } from './suppression';
@@ -11,12 +12,14 @@ import { mainData } from '@/data/mock/main-data';
 import {
   buildDashboardFilterOptions,
   filterActivities,
-  parseDashboardFilters,
   summarizeActivities,
+  type DashboardFilterKey,
+  type DashboardFilterState,
 } from '@/lib/dashboard-filters';
 import type { ExecutiveOverviewFilters } from '@/lib/types';
 
 export type DashboardRouteKey =
+  | 'executive-overview'
   | 'activity-progress'
   | 'activity-detail'
   | 'participant-reach'
@@ -26,6 +29,13 @@ export type DashboardRouteKey =
   | 'indicator-progress'
   | 'management-decision-centre'
   | 'gbv-ocmc';
+
+export type DashboardComponentState =
+  | 'live_bigquery'
+  | 'mock_demo'
+  | 'no_data'
+  | 'disabled_pending_validation'
+  | 'unavailable';
 
 export type DashboardPageMetric = {
   label: string;
@@ -37,12 +47,11 @@ export type DashboardPageMetadata = {
   dataSource: 'bigquery' | 'mock';
   freshnessTimestamp: string | null;
   suppressionApplied: boolean;
-  validationStatus:
-    | 'actual_bigquery_backed_dashboard_ready_for_preview_qa'
-    | 'bigquery_env_missing_needs_vercel_configuration'
-    | 'blocked_privacy_suppression_not_verified'
-    | 'mock_fallback_explicit';
-  fallbackReason?: string;
+  componentState: DashboardComponentState;
+  validationStatus: string;
+  message: string;
+  responseStatus: 200 | 409 | 422 | 503;
+  filtersApplied: DashboardFilterState;
 };
 
 export type DashboardPageData = {
@@ -52,23 +61,41 @@ export type DashboardPageData = {
   metadata: DashboardPageMetadata;
 };
 
+export type DashboardFilterOptions = Record<DashboardFilterKey, string[]>;
+
 type CountRow = Record<string, number | string | { value?: string } | null>;
+type QueryFilters = Record<string, string | string[] | undefined>;
 
 const pageNames: Record<DashboardRouteKey, string> = {
+  'executive-overview': 'Executive Overview',
   'activity-progress': 'Activity Progress',
   'activity-detail': 'Activity Detail',
-  'participant-reach': 'Participant Reach',
+  'participant-reach': 'Participant & Reach',
   'geographic-coverage': 'Geographic Coverage',
-  'data-quality': 'Data Quality',
-  'ip-performance': 'IP Performance',
+  'data-quality': 'Data Quality & Evidence',
+  'ip-performance': 'IP / Partner Performance',
   'indicator-progress': 'Indicator Progress',
   'management-decision-centre': 'Management Decision Centre',
-  'gbv-ocmc': 'GBV/OCMC',
+  'gbv-ocmc': 'GBV / OCMC Service Summary',
 };
 
+const emptyFilters: DashboardFilterState = {
+  year: '',
+  quarter: '',
+  project: '',
+  implementingPartner: '',
+  province: '',
+  district: '',
+  municipality: '',
+};
+
+const mockFilterOptions = buildDashboardFilterOptions(mainData);
+
 function asNumber(value: CountRow[string]): number {
-  const parsed = Number(value ?? 0);
-  return Number.isFinite(parsed) ? parsed : 0;
+  if (value === null || value === undefined || value === '') throw new Error('Missing aggregate count.');
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error('Invalid aggregate count.');
+  return parsed;
 }
 
 function asTimestamp(value: CountRow[string]): string | null {
@@ -78,175 +105,436 @@ function asTimestamp(value: CountRow[string]): string | null {
   return null;
 }
 
-function metric(label: string, value: number | string, note?: string): DashboardPageMetric {
-  return { label, value: typeof value === 'number' ? suppressCount(value).displayValue : value, note };
+function countMetric(label: string, value: number, note?: string): DashboardPageMetric {
+  return { label, value: suppressCount(value).displayValue, note };
 }
 
-function fallbackData(
-  route: DashboardRouteKey,
-  fallbackReason: string,
-  validationStatus: DashboardPageMetadata['validationStatus'] = 'mock_fallback_explicit',
-): DashboardPageData {
-  return {
-    route,
-    pageName: pageNames[route],
-    metrics: [
-      metric('Data mode', 'Mock/prototype'),
-      metric('BigQuery status', fallbackReason),
-    ],
-    metadata: {
-      dataSource: 'mock',
-      freshnessTimestamp: null,
-      suppressionApplied: true,
-      validationStatus,
-      fallbackReason,
-    },
-  };
+function textMetric(label: string, value: string, note?: string): DashboardPageMetric {
+  return { label, value, note };
 }
 
-const filterOptions = buildDashboardFilterOptions(mainData);
-
-function mockFilteredData(
+function response(
   route: DashboardRouteKey,
-  filters: ExecutiveOverviewFilters,
+  metrics: DashboardPageMetric[],
+  metadata: DashboardPageMetadata,
 ): DashboardPageData {
-  const validated = parseDashboardFilters(
-    filters as Record<string, string | string[] | undefined>,
-    filterOptions,
-  );
+  return { route, pageName: pageNames[route], metrics, metadata };
+}
+
+function emptyFilterState(): DashboardFilterState {
+  return { ...emptyFilters };
+}
+
+function disabledData(
+  route: DashboardRouteKey,
+  message: string,
+  responseStatus: 409 | 422 = 409,
+): DashboardPageData {
+  return response(route, [], {
+    dataSource: 'bigquery',
+    freshnessTimestamp: null,
+    suppressionApplied: true,
+    componentState: 'disabled_pending_validation',
+    validationStatus: responseStatus === 422 ? 'unsupported_filter' : 'disabled_pending_validation',
+    message,
+    responseStatus,
+    filtersApplied: emptyFilterState(),
+  });
+}
+
+function unavailableData(route: DashboardRouteKey, message: string): DashboardPageData {
+  return response(route, [], {
+    dataSource: 'bigquery',
+    freshnessTimestamp: null,
+    suppressionApplied: true,
+    componentState: 'unavailable',
+    validationStatus: 'bigquery_unavailable',
+    message,
+    responseStatus: 503,
+    filtersApplied: emptyFilterState(),
+  });
+}
+
+function noData(
+  route: DashboardRouteKey,
+  filtersApplied: DashboardFilterState,
+  freshnessTimestamp: string | null,
+): DashboardPageData {
+  return response(route, [], {
+    dataSource: 'bigquery',
+    freshnessTimestamp,
+    suppressionApplied: true,
+    componentState: 'no_data',
+    validationStatus: 'no_matching_aggregate_data',
+    message: 'No approved aggregate data matches the selected filters. No demo or mock data is shown.',
+    responseStatus: 200,
+    filtersApplied,
+  });
+}
+
+function liveData(
+  route: DashboardRouteKey,
+  metrics: DashboardPageMetric[],
+  filtersApplied: DashboardFilterState,
+  freshnessTimestamp: string | null,
+  message: string,
+): DashboardPageData {
+  return response(route, metrics, {
+    dataSource: 'bigquery',
+    freshnessTimestamp,
+    suppressionApplied: true,
+    componentState: 'live_bigquery',
+    validationStatus: 'approved_aggregate_contract',
+    message,
+    responseStatus: 200,
+    filtersApplied,
+  });
+}
+
+function mockData(route: DashboardRouteKey, filters: QueryFilters): DashboardPageData {
+  const validated = validateFilters(filters, mockFilterOptions).filters;
   const rows = filterActivities(mainData, validated);
   const summary = summarizeActivities(rows);
   const common = [
-    metric('Filtered activities', summary.totalActivities),
-    metric('Filtered participants', summary.totalParticipants),
-    metric('Districts', summary.districts),
-    metric('Partners', summary.partners),
+    countMetric('Filtered activities', summary.totalActivities),
+    countMetric('Filtered participants', summary.totalParticipants),
+    countMetric('Districts', summary.districts),
+    countMetric('Implementing partners', summary.partners),
   ];
   const routeMetrics: Partial<Record<DashboardRouteKey, DashboardPageMetric[]>> = {
+    'executive-overview': [
+      countMetric('Total events', summary.totalActivities),
+      countMetric('Reportable participants', summary.totalParticipants),
+      countMetric('Female participants', summary.femaleParticipants),
+      countMetric('Male participants', summary.maleParticipants),
+    ],
     'participant-reach': [
-      metric('Filtered participants', summary.totalParticipants),
-      metric('Female participants', summary.femaleParticipants),
-      metric('Male participants', summary.maleParticipants),
-      metric(
-        'Female share',
-        summary.femaleShare === null ? 'N/A' : `${summary.femaleShare.toFixed(1)}%`,
-      ),
+      countMetric('Filtered participants', summary.totalParticipants),
+      countMetric('Female participants', summary.femaleParticipants),
+      countMetric('Male participants', summary.maleParticipants),
+      countMetric('Other participants', summary.otherParticipants),
     ],
     'data-quality': [
-      metric('Filtered rows checked', summary.totalActivities),
-      metric('Missing evidence', summary.missingEvidence),
-      metric('Pending validation', summary.pendingValidation),
+      countMetric('Filtered rows checked', summary.totalActivities),
+      countMetric('Missing evidence', summary.missingEvidence),
+      countMetric('Pending validation', summary.pendingValidation),
     ],
     'ip-performance': [
-      metric('Partners', summary.partners),
-      metric('Filtered activities', summary.totalActivities),
-      metric('Filtered participants', summary.totalParticipants),
+      countMetric('Implementing partners', summary.partners),
+      countMetric('Filtered activities', summary.totalActivities),
+      countMetric('Filtered participants', summary.totalParticipants),
     ],
     'geographic-coverage': [
-      metric('Provinces', new Set(rows.map((row) => row.province)).size),
-      metric('Districts', summary.districts),
-      metric('Filtered activities', summary.totalActivities),
+      countMetric('Provinces', new Set(rows.map((row) => row.province)).size),
+      countMetric('Districts', summary.districts),
+      countMetric('Filtered activities', summary.totalActivities),
     ],
   };
 
-  return {
-    route,
-    pageName: pageNames[route],
-    metrics: routeMetrics[route] ?? common,
-    metadata: {
-      dataSource: 'mock',
-      freshnessTimestamp: null,
-      suppressionApplied: route === 'gbv-ocmc',
-      validationStatus: 'mock_fallback_explicit',
-      fallbackReason:
-        'Validated synthetic mock rows only. Live programme data is not enabled.',
-    },
-  };
+  return response(route, routeMetrics[route] ?? common, {
+    dataSource: 'mock',
+    freshnessTimestamp: null,
+    suppressionApplied: route === 'gbv-ocmc',
+    componentState: route === 'gbv-ocmc' ? 'disabled_pending_validation' : 'mock_demo',
+    validationStatus: route === 'gbv-ocmc' ? 'live_gbv_disabled' : 'demo_mock_data',
+    message:
+      route === 'gbv-ocmc'
+        ? 'Demo / mock data is privacy-sanitized. Live GBV / OCMC activation is disabled pending explicit approval.'
+        : 'Demo / mock data is shown for development and demonstration only. No live programme data is enabled.',
+    responseStatus: route === 'gbv-ocmc' ? 409 : 200,
+    filtersApplied: validated,
+  });
 }
 
-function fromRow(
-  route: DashboardRouteKey,
-  row: CountRow,
-  metrics: DashboardPageMetric[],
-): DashboardPageData {
-  return {
-    route,
-    pageName: pageNames[route],
-    metrics,
-    metadata: {
-      dataSource: 'bigquery',
-      freshnessTimestamp: asTimestamp(row.freshness_timestamp),
-      suppressionApplied: true,
-      validationStatus: 'actual_bigquery_backed_dashboard_ready_for_preview_qa',
-    },
-  };
+function rawFilterValue(input: QueryFilters, key: DashboardFilterKey): string {
+  const raw = input[key] ?? (key === 'implementingPartner' ? input.ip : undefined);
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value?.trim() ?? '';
 }
 
-async function queryOne(route: DashboardRouteKey, sql: string): Promise<DashboardPageData> {
-  const [row] = await runSafeBigQuery<CountRow>(sql);
-  if (!row) throw new Error('No aggregate row returned.');
-
-  switch (route) {
-    case 'activity-progress':
-      return fromRow(route, row, [
-        metric('Total activities', asNumber(row.total_activities)),
-        metric('Reportable participants', asNumber(row.reportable_participants)),
-        metric('Projects', asNumber(row.projects)),
-        metric('Districts', asNumber(row.districts)),
-      ]);
-    case 'participant-reach':
-      return fromRow(route, row, [
-        metric('Reportable participants', asNumber(row.reportable_participants)),
-        metric('Female participants', asNumber(row.female_participants)),
-        metric('Male participants', asNumber(row.male_participants)),
-        metric('Participants with disability', asNumber(row.participants_with_disability)),
-      ]);
-    case 'geographic-coverage':
-      return fromRow(route, row, [
-        metric('Provinces covered', asNumber(row.provinces)),
-        metric('Districts covered', asNumber(row.districts)),
-        metric('Palikas covered', asNumber(row.palikas)),
-        metric('Activities', asNumber(row.total_activities)),
-      ]);
-    case 'data-quality':
-      return fromRow(route, row, [
-        metric('Total rows checked', asNumber(row.total_rows)),
-        metric('Rows with quality issue', asNumber(row.records_with_quality_issue)),
-        metric('Data quality score', `${asNumber(row.quality_score).toFixed(1)}%`),
-      ]);
-    case 'ip-performance':
-      return fromRow(route, row, [
-        metric('Reporting partners', asNumber(row.reporting_partners)),
-        metric('Total submissions', asNumber(row.total_submissions)),
-        metric('Total events', asNumber(row.total_events)),
-      ]);
-    case 'indicator-progress':
-      return fromRow(route, row, [
-        metric('Indicator rows', asNumber(row.indicator_rows)),
-        metric('Indicators', asNumber(row.indicators)),
-        metric('Activities contributing', asNumber(row.activities)),
-      ]);
-    case 'management-decision-centre':
-      return fromRow(route, row, [
-        metric('Quality issue rows', asNumber(row.records_with_quality_issue)),
-        metric('Reporting partners', asNumber(row.reporting_partners)),
-        metric('Latest synced partners', asNumber(row.reporting_partners)),
-      ]);
-    case 'activity-detail':
-      return fromRow(route, row, [
-        metric('Activity rows available', asNumber(row.activity_rows)),
-        metric('Partners', asNumber(row.partners)),
-        metric('Districts', asNumber(row.districts)),
-      ]);
-    default:
-      return fallbackData(route, 'No BigQuery aggregate contract is enabled for this route.');
+function validateFilters(
+  input: QueryFilters,
+  options: DashboardFilterOptions,
+): { filters: DashboardFilterState; unsupportedKeys: DashboardFilterKey[] } {
+  const filters = emptyFilterState();
+  const unsupportedKeys: DashboardFilterKey[] = [];
+  const keys: DashboardFilterKey[] = [
+    'year',
+    'quarter',
+    'project',
+    'implementingPartner',
+    'province',
+    'district',
+    'municipality',
+  ];
+  for (const key of keys) {
+    const value = rawFilterValue(input, key);
+    const raw = input[key] ?? (key === 'implementingPartner' ? input.ip : undefined);
+    if (Array.isArray(raw) && raw.length > 1) {
+      unsupportedKeys.push(key);
+      continue;
+    }
+    if (!value) continue;
+    if (!options[key].includes(value)) {
+      unsupportedKeys.push(key);
+      continue;
+    }
+    filters[key] = value;
   }
+  return { filters, unsupportedKeys };
+}
+
+function hasUnsupportedRouteFilter(
+  route: DashboardRouteKey,
+  filters: DashboardFilterState,
+): boolean {
+  if (route === 'indicator-progress') return Boolean(filters.implementingPartner);
+  if (route === 'data-quality') return Object.values(filters).some(Boolean);
+  if (route === 'ip-performance') {
+    return Boolean(filters.year || filters.quarter || filters.project || filters.province || filters.district || filters.municipality);
+  }
+  return false;
+}
+
+function buildCombinedWhere(filters: DashboardFilterState): {
+  where: string;
+  params: Record<string, string>;
+} {
+  const fields: Array<[DashboardFilterKey, string]> = [
+    ['year', 'reporting_year1'],
+    ['quarter', 'report_quarter1'],
+    ['project', 'project1'],
+    ['implementingPartner', 'ip_name'],
+    ['province', 'province1'],
+    ['district', 'district1'],
+    ['municipality', 'palika1'],
+  ];
+  const clauses: string[] = [];
+  const params: Record<string, string> = {};
+  for (const [key, column] of fields) {
+    if (!filters[key]) continue;
+    clauses.push(`${column} = @${key}`);
+    params[key] = filters[key];
+  }
+  return { where: clauses.length ? `WHERE ${clauses.join(' AND ')}` : '', params };
+}
+
+function projectAndDataset(): {
+  combined: string;
+  quality: string;
+  ipStatus: string;
+  indicators: string;
+} {
+  const projectId = getBigQueryProjectId();
+  const datasetId = getBigQueryDatasetId();
+  return {
+    combined: `\`${projectId}.${datasetId}.combined_activity_summary\``,
+    quality: `\`${projectId}.${datasetId}.data_quality_summary\``,
+    ipStatus: `\`${projectId}.${datasetId}.ip_submission_status\``,
+    indicators: `\`${projectId}.${datasetId}.indicator_progress_summary\``,
+  };
+}
+
+export async function getLiveDashboardFilterOptions(): Promise<DashboardFilterOptions> {
+  const config = getBigQueryConfigStatus();
+  if (!config.dataModeConfigurationValid || !config.configured) {
+    throw new Error('BigQuery filter options are unavailable.');
+  }
+  const { combined } = projectAndDataset();
+  const rows = await runSafeBigQuery<{
+    reporting_year1: string | null;
+    report_quarter1: string | null;
+    project1: string | null;
+    ip_name: string | null;
+    province1: string | null;
+    district1: string | null;
+    palika1: string | null;
+  }>(`
+    SELECT DISTINCT
+      reporting_year1,
+      report_quarter1,
+      project1,
+      ip_name,
+      province1,
+      district1,
+      palika1
+    FROM ${combined}
+    ORDER BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1
+    LIMIT 10000
+  `);
+  const values = (selector: (row: (typeof rows)[number]) => string | null): string[] =>
+    Array.from(new Set(rows.map(selector).filter((value): value is string => Boolean(value?.trim())))).sort(
+      (left, right) => left.localeCompare(right, undefined, { numeric: true }),
+    );
+  return {
+    year: values((row) => row.reporting_year1),
+    quarter: values((row) => row.report_quarter1),
+    project: values((row) => row.project1),
+    implementingPartner: values((row) => row.ip_name),
+    province: values((row) => row.province1),
+    district: values((row) => row.district1),
+    municipality: values((row) => row.palika1),
+  };
+}
+
+async function queryCombinedRoute(
+  route: Extract<
+    DashboardRouteKey,
+    'executive-overview' | 'activity-progress' | 'activity-detail' | 'participant-reach' | 'geographic-coverage'
+  >,
+  filters: DashboardFilterState,
+): Promise<DashboardPageData> {
+  const { combined, ipStatus } = projectAndDataset();
+  const { where, params } = buildCombinedWhere(filters);
+  if (route === 'activity-detail') {
+    const rows = await runSafeBigQuery<CountRow>(`
+      SELECT activity1 AS activity, COUNT(1) AS matched_rows,
+        COALESCE(SUM(event_count), 0) AS total_events,
+        COALESCE(SUM(total_participants), 0) AS total_participants
+      FROM ${combined} ${where}
+      GROUP BY activity1 ORDER BY activity1 LIMIT 100
+    `, params);
+    if (!rows.length) return noData(route, filters, null);
+    return liveData(route, rows.flatMap(row => [
+      countMetric(`${typeof row.activity === 'string' && row.activity ? row.activity : 'Unspecified activity'} - events`, asNumber(row.total_events)),
+      countMetric(`${typeof row.activity === 'string' && row.activity ? row.activity : 'Unspecified activity'} - participants`, asNumber(row.total_participants)),
+    ]), filters, null, 'Aggregated activity totals from the published CombinedSummary. Up to 100 activity groups are shown; participant counts are attendance records, not unique people. Individual records, evidence and exports are unavailable.');
+  }
+
+  const [row] = await runSafeBigQuery<CountRow>(`
+    SELECT
+      COUNT(1) AS matched_rows,
+      COALESCE(SUM(event_count), 0) AS total_events,
+      COALESCE(SUM(total_participants), 0) AS total_participants,
+      COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants,
+      COALESCE(SUM(female), 0) AS female_participants,
+      COALESCE(SUM(male), 0) AS male_participants,
+      COALESCE(SUM(other), 0) AS other_participants,
+      COALESCE(SUM(withdisability), 0) AS participants_with_disability,
+      COUNT(DISTINCT NULLIF(project1, '')) AS projects,
+      COUNT(DISTINCT NULLIF(ip_name, '')) AS partners,
+      COUNT(DISTINCT NULLIF(province1, '')) AS provinces,
+      COUNT(DISTINCT NULLIF(district1, '')) AS districts,
+      COUNT(DISTINCT IF(NULLIF(palika1, '') IS NOT NULL, TO_JSON_STRING(STRUCT(province1, district1, palika1)), NULL)) AS palikas,
+      (SELECT MAX(latest_sync_time) FROM ${ipStatus}) AS freshness_timestamp
+    FROM ${combined}
+    ${where}
+  `, params);
+  const freshness = row ? asTimestamp(row.freshness_timestamp) : null;
+  if (!row || asNumber(row.matched_rows) === 0) return noData(route, filters, freshness);
+
+  const common = [
+    countMetric('Total events', asNumber(row.total_events)),
+    countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
+      countMetric('Reportable participants', asNumber(row.reportable_participants)),
+    countMetric('Projects', asNumber(row.projects)),
+    countMetric('Implementing partners', asNumber(row.partners)),
+  ];
+  if (route === 'executive-overview') {
+    return liveData(route, [
+      countMetric('Total events', asNumber(row.total_events)),
+      countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
+      countMetric('Reportable participants', asNumber(row.reportable_participants)),
+      countMetric('Districts covered', asNumber(row.districts)),
+      countMetric('Implementing partners', asNumber(row.partners)),
+      countMetric('Female participants', asNumber(row.female_participants)),
+      countMetric('Male participants', asNumber(row.male_participants)),
+      countMetric('Other participants', asNumber(row.other_participants)),
+    ], filters, freshness, 'Live aggregate operational metrics from approved BigQuery views. Trend, target, AI, and prototype narrative components are disabled.');
+  }
+  if (route === 'participant-reach') {
+    return liveData(route, [
+      countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
+      countMetric('Reportable participants', asNumber(row.reportable_participants)),
+      countMetric('Female participants', asNumber(row.female_participants)),
+      countMetric('Male participants', asNumber(row.male_participants)),
+      countMetric('Other participants', asNumber(row.other_participants)),
+      countMetric('Participants with disability', asNumber(row.participants_with_disability)),
+    ], filters, freshness, 'Participant Profile by Sex is derived directly from approved aggregate counts with small-cell suppression. Individual Participant Records, Individual Reportable Participants, and Summary-mode Participants are disabled pending verified upstream aggregate formulas. Unsupported disaggregations are disabled.');
+  }
+  if (route === 'geographic-coverage') {
+    return liveData(route, [
+      countMetric('Provinces covered', asNumber(row.provinces)),
+      countMetric('Districts covered', asNumber(row.districts)),
+      countMetric('Palikas covered', asNumber(row.palikas)),
+      countMetric('Total events', asNumber(row.total_events)),
+    ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
+  }
+  return liveData(route, common, filters, freshness, 'Live aggregate activity volume is shown. Planned-versus-completed progress, trends, evidence, and delayed-report components are disabled pending approved contracts.');
+}
+
+async function queryIndicators(filters: DashboardFilterState): Promise<DashboardPageData> {
+  const { indicators } = projectAndDataset();
+  const { where, params } = buildCombinedWhere(filters);
+  const [row] = await runSafeBigQuery<CountRow>(`
+    SELECT COUNT(1) AS matched_rows,
+      COUNT(DISTINCT NULLIF(indicator1, '')) AS indicators,
+      COALESCE(SUM(total_events), 0) AS total_events,
+      COALESCE(SUM(total_participants), 0) AS total_participants,
+      COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants
+    FROM ${indicators} ${where}
+  `, params);
+  if (!row || asNumber(row.matched_rows) === 0) return noData('indicator-progress', filters, null);
+  return liveData('indicator-progress', [
+    countMetric('Indicators reported', asNumber(row.indicators)),
+    countMetric('Total events', asNumber(row.total_events)),
+    countMetric('Total participants', asNumber(row.total_participants)),
+    countMetric('Reportable participants', asNumber(row.reportable_participants)),
+  ], filters, null, 'Published indicator aggregates. Participant counts are attendance records, not unique people. Targets, achievement percentages and performance status are unsupported by the frozen reporting contract.');
+}
+
+async function queryDataQuality(): Promise<DashboardPageData> {
+  const { quality } = projectAndDataset();
+  const [row] = await runSafeBigQuery<CountRow>(`
+    SELECT
+      COUNT(1) AS matched_rows,
+      COALESCE(SUM(total_rows), 0) AS total_rows,
+      COALESCE(SUM(records_with_quality_issue), 0) AS records_with_quality_issue,
+      MAX(run_timestamp) AS freshness_timestamp
+    FROM ${quality}
+  `);
+  const freshness = row ? asTimestamp(row.freshness_timestamp) : null;
+  if (!row || asNumber(row.matched_rows) === 0) return noData('data-quality', emptyFilterState(), freshness);
+  const totalRows = asNumber(row.total_rows);
+  const issueRows = asNumber(row.records_with_quality_issue);
+  const score = totalRows > 0 ? `${Math.max(0, ((totalRows - issueRows) / totalRows) * 100).toFixed(1)}%` : 'N/A';
+  return liveData('data-quality', [
+    countMetric('Rows checked', totalRows),
+    countMetric('Rows with quality issue', issueRows),
+    textMetric('Data quality score', score, 'Derived as (rows checked - rows with quality issue) / rows checked.'),
+  ], emptyFilterState(), freshness, 'Live aggregate data quality metrics are shown. Evidence, validation, and per-partner prototype components are disabled.');
+}
+
+async function queryIpPerformance(filters: DashboardFilterState): Promise<DashboardPageData> {
+  const { ipStatus } = projectAndDataset();
+  const params: Record<string, string> = {};
+  const where = filters.implementingPartner
+    ? (params.implementingPartner = filters.implementingPartner, 'WHERE ip_name = @implementingPartner')
+    : '';
+  const [row] = await runSafeBigQuery<CountRow>(`
+    SELECT
+      COUNT(1) AS matched_rows,
+      COUNT(DISTINCT NULLIF(ip_name, '')) AS reporting_partners,
+      COALESCE(SUM(total_submissions), 0) AS total_submissions,
+      COALESCE(SUM(total_events), 0) AS total_events,
+      MAX(latest_sync_time) AS freshness_timestamp
+    FROM ${ipStatus}
+    ${where}
+  `, params);
+  const freshness = row ? asTimestamp(row.freshness_timestamp) : null;
+  if (!row || asNumber(row.matched_rows) === 0) return noData('ip-performance', filters, freshness);
+  return liveData('ip-performance', [
+    countMetric('Reporting partners', asNumber(row.reporting_partners)),
+    countMetric('Total submissions', asNumber(row.total_submissions)),
+    countMetric('Total events', asNumber(row.total_events)),
+  ], filters, freshness, 'Live partner submission aggregates are shown. Rankings, quality scores, evidence, timeliness, and management actions are disabled pending approved contracts.');
 }
 
 export function normalizeDashboardRoute(route: string | null): DashboardRouteKey {
   const cleaned = (route ?? '').replace(/^\/?dashboard\//, '').replace(/^\/+/, '');
   if (cleaned === 'gbv-ocmc-summary') return 'gbv-ocmc';
   if (
+    cleaned === 'executive-overview' ||
     cleaned === 'activity-progress' ||
     cleaned === 'activity-detail' ||
     cleaned === 'participant-reach' ||
@@ -259,7 +547,7 @@ export function normalizeDashboardRoute(route: string | null): DashboardRouteKey
   ) {
     return cleaned;
   }
-  return 'activity-progress';
+  return 'executive-overview';
 }
 
 export async function getDashboardPageData(
@@ -267,125 +555,49 @@ export async function getDashboardPageData(
   filters: ExecutiveOverviewFilters = {},
 ): Promise<DashboardPageData> {
   const route = normalizeDashboardRoute(routeInput);
+  if (getDashboardDataMode() !== 'bigquery') return mockData(route, filters as QueryFilters);
   if (route === 'gbv-ocmc') {
-    return fallbackData(
-      route,
-      'GBV/OCMC remains blocked for live activation pending privacy sign-off and final suppression QA.',
-      'blocked_privacy_suppression_not_verified',
-    );
+    return disabledData(route, 'GBV / OCMC is disabled in BigQuery mode pending explicit privacy, reporting, and suppression approval.');
   }
-
-  const mode = (
-    process.env.DASHBOARD_DATA_MODE ||
-    process.env.DATA_MODE ||
-    'mock'
-  ).trim().toLowerCase();
-  if (mode !== 'bigquery') return mockFilteredData(route, filters);
-
+  if (route === 'management-decision-centre') {
+    return disabledData(route, 'Management Decision Centre is disabled in BigQuery mode. Prototype and AI-generated insights are not approved for Production V1.');
+  }
   const config = getBigQueryConfigStatus();
-  if (!config.configured) {
-    return fallbackData(
-      route,
-      'BigQuery environment is not configured. Set DASHBOARD_DATA_MODE=bigquery plus project, dataset, and service account settings.',
-      'bigquery_env_missing_needs_vercel_configuration',
-    );
+  if (!config.dataModeConfigurationValid || !config.configured) {
+    return unavailableData(route, 'BigQuery is unavailable or its production-readiness configuration is invalid. No demo or mock data is shown.');
   }
-
-  const projectId = getBigQueryProjectId();
-  const datasetId = getBigQueryDatasetId();
-  const combined = `\`${projectId}.${datasetId}.combined_activity_summary\``;
-  const quality = `\`${projectId}.${datasetId}.data_quality_summary\``;
-  const ipStatus = `\`${projectId}.${datasetId}.ip_submission_status\``;
-  const indicators = `\`${projectId}.${datasetId}.indicator_progress_summary\``;
-  const freshness = `(SELECT MAX(latest_sync_time) FROM ${ipStatus}) AS freshness_timestamp`;
 
   try {
-    switch (route) {
-      case 'activity-progress':
-        return await queryOne(route, `
-          SELECT
-            COALESCE(SUM(event_count), 0) AS total_activities,
-            COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants,
-            COUNT(DISTINCT NULLIF(project1, '')) AS projects,
-            COUNT(DISTINCT NULLIF(district1, '')) AS districts,
-            ${freshness}
-          FROM ${combined}
-        `);
-      case 'activity-detail':
-        return await queryOne(route, `
-          SELECT
-            COUNT(1) AS activity_rows,
-            COUNT(DISTINCT NULLIF(ip_name, '')) AS partners,
-            COUNT(DISTINCT NULLIF(district1, '')) AS districts,
-            ${freshness}
-          FROM ${combined}
-        `);
-      case 'participant-reach':
-        return await queryOne(route, `
-          SELECT
-            COALESCE(SUM(total_reportable_participants), 0) AS reportable_participants,
-            COALESCE(SUM(female), 0) AS female_participants,
-            COALESCE(SUM(male), 0) AS male_participants,
-            COALESCE(SUM(withdisability), 0) AS participants_with_disability,
-            ${freshness}
-          FROM ${combined}
-        `);
-      case 'geographic-coverage':
-        return await queryOne(route, `
-          SELECT
-            COUNT(DISTINCT NULLIF(province1, '')) AS provinces,
-            COUNT(DISTINCT NULLIF(district1, '')) AS districts,
-            COUNT(DISTINCT NULLIF(palika1, '')) AS palikas,
-            COALESCE(SUM(event_count), 0) AS total_activities,
-            ${freshness}
-          FROM ${combined}
-        `);
-      case 'data-quality':
-        return await queryOne(route, `
-          SELECT
-            COALESCE(SUM(total_rows), 0) AS total_rows,
-            COALESCE(SUM(records_with_quality_issue), 0) AS records_with_quality_issue,
-            SAFE_MULTIPLY(
-              100,
-              SAFE_DIVIDE(SUM(total_rows - records_with_quality_issue), NULLIF(SUM(total_rows), 0))
-            ) AS quality_score,
-            MAX(run_timestamp) AS freshness_timestamp
-          FROM ${quality}
-        `);
-      case 'ip-performance':
-        return await queryOne(route, `
-          SELECT
-            COUNT(DISTINCT NULLIF(ip_name, '')) AS reporting_partners,
-            COALESCE(SUM(total_submissions), 0) AS total_submissions,
-            COALESCE(SUM(total_events), 0) AS total_events,
-            MAX(latest_sync_time) AS freshness_timestamp
-          FROM ${ipStatus}
-        `);
-      case 'indicator-progress':
-        return await queryOne(route, `
-          SELECT
-            COUNT(1) AS indicator_rows,
-            COUNT(DISTINCT NULLIF(indicator1, '')) AS indicators,
-            COUNT(DISTINCT NULLIF(activity1, '')) AS activities,
-            ${freshness}
-          FROM ${indicators}
-        `);
-      case 'management-decision-centre':
-        return queryOne(route, `
-          SELECT
-            COALESCE((SELECT SUM(records_with_quality_issue) FROM ${quality}), 0) AS records_with_quality_issue,
-            COUNT(DISTINCT NULLIF(ip_name, '')) AS reporting_partners,
-            MAX(latest_sync_time) AS freshness_timestamp
-          FROM ${ipStatus}
-        `);
-      default:
-        return fallbackData(route, 'No BigQuery route contract configured.');
+    const options = await getLiveDashboardFilterOptions();
+    const validated = validateFilters(filters as QueryFilters, options);
+    if (validated.unsupportedKeys.length > 0) {
+      return disabledData(route, `The selected filter is not available from the approved live aggregate contract: ${validated.unsupportedKeys.join(', ')}.`, 422);
     }
-  } catch {
-    return fallbackData(
-      route,
-      'BigQuery unavailable or schema mismatch. Explicit mock fallback is active.',
-      'mock_fallback_explicit',
-    );
+    if (hasUnsupportedRouteFilter(route, validated.filters)) {
+      return disabledData(route, 'The selected filter cannot be applied to this route from its approved BigQuery view. No unfiltered substitute is shown.', 422);
+    }
+    switch (route) {
+      case 'executive-overview':
+      case 'activity-progress':
+      case 'activity-detail':
+      case 'participant-reach':
+      case 'geographic-coverage':
+        return await queryCombinedRoute(route, validated.filters);
+      case 'indicator-progress':
+        return await queryIndicators(validated.filters);
+      case 'data-quality':
+        return await queryDataQuality();
+      case 'ip-performance':
+        return await queryIpPerformance(validated.filters);
+      default:
+        return disabledData(route, 'This route is not approved for BigQuery activation.');
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('authorization failure')) {
+      const result = unavailableData(route, 'Authorization failure: the approved dashboard identity cannot read the reporting views.');
+      result.metadata.validationStatus = 'authorization_failure';
+      return result;
+    }
+    return unavailableData(route, 'BigQuery is temporarily unavailable or access to an approved aggregate view was denied. No demo or mock data is shown.');
   }
 }

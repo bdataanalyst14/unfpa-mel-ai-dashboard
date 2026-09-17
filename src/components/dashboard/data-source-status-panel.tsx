@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Database, RefreshCw, ShieldCheck, AlertTriangle } from 'lucide-react';
-import { useDashboardFilters } from '@/components/dashboard/dashboard-filter-provider';
-import { serializeDashboardFilters } from '@/lib/dashboard-filters';
 
 type Metric = {
   label: string;
@@ -36,45 +35,41 @@ function formatTimestamp(value: string | null): string {
 }
 
 export default function DataSourceStatusPanel({ route }: { route: string }) {
-  const { filters } = useDashboardFilters();
-  const requestKey = useMemo(() => {
-    const params = serializeDashboardFilters(filters);
-    params.set('route', route);
-    return params.toString();
-  }, [filters, route]);
-  const [result, setResult] = useState<{
-    key: string;
-    data?: DashboardPageData;
-    failed?: boolean;
-  } | null>(null);
+  const query = useSearchParams().toString();
+  const requestKey = `${route}?${query}`;
+  const [result, setResult] = useState<{ key: string; data: DashboardPageData | null; failed: boolean } | null>(null);
+  const data = result?.key === requestKey ? result.data : null;
+  const failed = result?.key === requestKey && result.failed;
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/dashboard/page-data?${requestKey}`, {
+
+
+    fetch(`/api/dashboard/page-data?route=${encodeURIComponent(route)}&${query}`, {
       cache: 'no-store',
     })
       .then((response) => (response.ok ? response.json() : Promise.reject()))
       .then((payload: DashboardPageData) => {
-        if (!cancelled) setResult({ key: requestKey, data: payload });
+        if (!cancelled) setResult({ key: requestKey, data: payload, failed: false });
       })
       .catch(() => {
-        if (!cancelled) setResult({ key: requestKey, failed: true });
+        if (!cancelled) setResult({ key: requestKey, data: null, failed: true });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [requestKey]);
+  }, [route, query, requestKey]);
 
-  if (result?.key === requestKey && result.failed) {
+  if (failed) {
     return (
       <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        BigQuery metadata unavailable. Fallback mode must be verified before final live API/browser QA.
+        Data-source metadata is temporarily unavailable.
       </div>
     );
   }
 
-  if (result?.key !== requestKey || !result.data) {
+  if (!data) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-xs text-gray-500">
         Loading data-source metadata...
@@ -82,7 +77,6 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
     );
   }
 
-  const data = result.data;
   const isBigQuery = data.metadata.dataSource === 'bigquery';
 
   return (
@@ -100,7 +94,7 @@ export default function DataSourceStatusPanel({ route }: { route: string }) {
             <AlertTriangle className="h-4 w-4 text-amber-700" />
           )}
           <span>
-            Data source: {isBigQuery ? 'BigQuery' : 'Mock/prototype fallback'}
+            Data source: {isBigQuery ? 'BigQuery' : 'Demo / mock data'}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-gray-600">

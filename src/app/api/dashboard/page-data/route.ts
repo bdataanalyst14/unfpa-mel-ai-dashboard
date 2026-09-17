@@ -13,16 +13,22 @@ export async function GET(request: NextRequest) {
   try {
     const route = request.nextUrl.searchParams.get('route');
     const params = request.nextUrl.searchParams;
+    if (['year', 'quarter', 'project', 'implementingPartner', 'ip', 'province', 'district', 'municipality'].some((key) => params.getAll(key).length > 1)) {
+      return NextResponse.json({ error: 'Repeated filter values are unsupported.' }, { status: 422 });
+    }
     const data = await getDashboardPageData(route, {
       year: params.get('year') ?? undefined,
       quarter: params.get('quarter') ?? undefined,
       project: params.get('project') ?? undefined,
       province: params.get('province') ?? undefined,
+      district: params.get('district') ?? undefined,
+      municipality: params.get('municipality') ?? undefined,
       implementingPartner:
         params.get('implementingPartner') ?? params.get('ip') ?? undefined,
     });
 
     return NextResponse.json(data, {
+      status: data.metadata.responseStatus,
       headers: { 'Cache-Control': 'private, no-store' },
     });
   } catch {

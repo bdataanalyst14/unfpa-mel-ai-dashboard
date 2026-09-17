@@ -6,6 +6,8 @@ export const DASHBOARD_FILTER_KEYS = [
   'project',
   'implementingPartner',
   'province',
+  'district',
+  'municipality',
 ] as const;
 
 export type DashboardFilterKey = (typeof DASHBOARD_FILTER_KEYS)[number];
@@ -17,6 +19,8 @@ const emptyFilters: DashboardFilterState = {
   project: '',
   implementingPartner: '',
   province: '',
+  district: '',
+  municipality: '',
 };
 
 function unique(values: Array<string | number>): string[] {
@@ -34,6 +38,8 @@ export function buildDashboardFilterOptions(
     project: unique(activities.map((row) => row.project)),
     implementingPartner: unique(activities.map((row) => row.ip)),
     province: unique(activities.map((row) => row.province)),
+    district: unique(activities.map((row) => row.district)),
+    municipality: unique(activities.map((row) => row.palika)),
   };
 }
 
@@ -84,7 +90,9 @@ export function filterActivities(
       (!filters.quarter || row.quarter === filters.quarter) &&
       (!filters.project || row.project === filters.project) &&
       (!filters.implementingPartner || row.ip === filters.implementingPartner) &&
-      (!filters.province || row.province === filters.province),
+      (!filters.province || row.province === filters.province) &&
+      (!filters.district || row.district === filters.district) &&
+      (!filters.municipality || row.palika === filters.municipality),
   );
 }
 
@@ -131,4 +139,17 @@ export function summarizeActivities(activities: Activity[]) {
     femaleShare:
       totalParticipants > 0 ? (femaleParticipants / totalParticipants) * 100 : null,
   };
+}
+
+export function preserveDashboardFilterParams(
+  input: Record<string, string | string[] | undefined> = {},
+): URLSearchParams {
+  const params = new URLSearchParams();
+  for (const key of [...DASHBOARD_FILTER_KEYS, 'ip']) {
+    const value = input[key];
+    for (const item of Array.isArray(value) ? value : value === undefined ? [] : [value]) {
+      params.append(key, item);
+    }
+  }
+  return params;
 }

@@ -21,7 +21,7 @@ function prepare() {
   fs.writeFileSync(targetPaths.privateKeyFile, 'fixture-private-key\n');
   fs.writeFileSync(targetPaths.environmentFile, [
     'BIGQUERY_PROJECT_ID=unfpadatabase',
-    'BIGQUERY_DATASET_ID=reporting',
+    'BIGQUERY_DATASET_ID=unfpadatabase',
     'BIGQUERY_LOCATION=asia-south1',
     'GOOGLE_CLIENT_EMAIL=readonly@unfpadatabase.iam.gserviceaccount.com',
     `GOOGLE_PRIVATE_KEY_FILE=${targetPaths.privateKeyFile}`,
@@ -38,15 +38,15 @@ function client({ missing, empty } = {}) {
   const queries = [];
   const fieldsMap = {
     combined_activity_summary: [
-      'event_count', 'total_reportable_participants', 'female', 'male', 'other',
+      'event_count', 'total_participants', 'withdisability', 'palika1', 'total_reportable_participants', 'female', 'male', 'other',
       'repeat_beneficiary_total', 'repeat_guest_total', 'repeat_nonreportable_total',
       'district1', 'ip_name', 'reporting_year1', 'report_quarter1', 'project1', 'province1'
     ].map(name => ({ name })),
     indicator_progress_summary: [
-      'indicator1', 'activity1', 'ip_name', 'reporting_year1'
+      'indicator1', 'activity1', 'reporting_year1'
     ].map(name => ({ name })),
     data_quality_summary: [
-      'total_rows', 'records_with_quality_issue', 'run_timestamp', 'ip_name'
+      'total_rows', 'records_with_quality_issue', 'run_timestamp'
     ].map(name => ({ name })),
     ip_submission_status: [
       'ip_name', 'total_submissions', 'total_events', 'latest_sync_time'
@@ -78,6 +78,12 @@ function client({ missing, empty } = {}) {
     async query(options) {
       const q = options.query || options.ipQuery || '';
       queries.push(q);
+      assert.equal(options.maximumBytesBilled, '1000000');
+      assert.equal(options.location, 'asia-south1');
+      const queriedObject = APPROVED_OBJECTS.find((object) => q.includes(`.${object}`));
+      if (queriedObject && q.includes('ip_name')) {
+        assert.ok(fieldsMap[queriedObject].some((field) => field.name === 'ip_name'), 'Query must not request an absent partner column');
+      }
       if (q.includes('AS organization_count')) {
         return [[{ organization_count: 15 }]];
       }
@@ -113,7 +119,7 @@ async function main() {
     fs.writeFileSync(adcFile, '{"fixture":"credential-contents-must-not-be-read"}\n');
     fs.writeFileSync(targetPaths.environmentFile, [
       'BIGQUERY_PROJECT_ID=unfpadatabase',
-      'BIGQUERY_DATASET_ID=reporting',
+      'BIGQUERY_DATASET_ID=unfpadatabase',
       'BIGQUERY_LOCATION=asia-south1',
       `GOOGLE_APPLICATION_CREDENTIALS=${adcFile}`,
       'BIGQUERY_MAX_BYTES_BILLED=1000000',
@@ -138,7 +144,7 @@ async function main() {
     assert.throws(() => loadConfiguration(targetPaths), /bigquery_authentication_mode_conflict/);
     fs.writeFileSync(targetPaths.environmentFile, [
       'BIGQUERY_PROJECT_ID=unfpadatabase',
-      'BIGQUERY_DATASET_ID=reporting',
+      'BIGQUERY_DATASET_ID=unfpadatabase',
       'BIGQUERY_LOCATION=asia-south1',
       'GOOGLE_CLIENT_EMAIL=incomplete@example.com',
       'DASHBOARD_DATA_MODE=mock',

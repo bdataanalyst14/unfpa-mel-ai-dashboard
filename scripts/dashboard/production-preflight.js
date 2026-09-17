@@ -96,21 +96,11 @@ async function main() {
       process.exit(2); // Unsafe configuration: key file specified but missing
     }
 
-    // 7. Verify exactly 4 aggregate objects are approved and no participants_flat / staging
-    const expectedObjects = [
-      'combined_activity_summary',
-      'indicator_progress_summary',
-      'data_quality_summary',
-      'ip_submission_status'
-    ];
-
-    for (const obj of APPROVED_OBJECTS) {
-      if (!expectedObjects.includes(obj)) {
-        logError(`Unexpected approved object configured: "${obj}"`);
-        process.exit(1);
-      }
+    if (APPROVED_OBJECTS.length !== 6 || new Set(APPROVED_OBJECTS).size !== 6) {
+      logError('The centralized six-view contract is invalid.');
+      process.exit(1);
     }
-    log('Exactly four dashboard aggregate objects are approved.');
+    log('Exactly six stable dashboard views are approved.');
 
     if (FORBIDDEN_OBJECTS.has('participants_flat') || FORBIDDEN_OBJECTS.has('participants_flat_staging')) {
       log('participants_flat and participants_flat_staging are explicitly prohibited.');
@@ -124,7 +114,7 @@ async function main() {
     const serviceCodePath = path.join(__dirname, '../../src/lib/server/dashboard-page-data-service.ts');
     if (fs.existsSync(serviceCodePath)) {
       const code = fs.readFileSync(serviceCodePath, 'utf8');
-      if (!code.includes("route === 'gbv-ocmc'") || !code.includes("blocked_privacy_suppression_not_verified")) {
+      if (!code.includes("route === 'gbv-ocmc'") || !code.includes("return disabledData(route, 'GBV / OCMC is disabled in BigQuery mode")) {
         logError('Live GBV route protection check is missing in dashboard-page-data-service.ts');
         process.exit(1);
       }

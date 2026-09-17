@@ -1,0 +1,353 @@
+﻿RESUME AND FINISH THE EXISTING UNFPA MEL DASHBOARD PRODUCTION V1 HARDENING WORK.
+
+IMPORTANT:
+This is continuation work. Codex and Antigravity already modified the branch.
+DO NOT restart, reset, clean, discard, or switch branches.
+
+Expected branch:
+release/production-v1-hardening
+
+Authoritative origin/main:
+1d46a3cdb4ff0773563428d419e9970e6c44eb17
+
+FIRST inspect:
+git status
+git branch --show-current
+git rev-parse HEAD
+git rev-parse origin/main
+git stash list
+git diff --stat
+git diff --name-only
+
+If branch is not release/production-v1-hardening, STOP.
+
+Preserve the existing stash containing:
+next-env.d.ts
+dashboard.html
+exec.html
+
+Do NOT pop it and do NOT include those artifacts in the PR.
+
+Existing partial implementation includes changes around:
+proxy.ts
+src/app/dashboard/executive-overview/page.tsx
+src/app/dashboard/layout.tsx
+src/components/dashboard/dashboard-filter-provider.tsx
+src/components/dashboard/data-freshness-footer.tsx
+src/components/dashboard/filtered-dashboard-scope.tsx
+src/components/layout/dashboard-shell.tsx
+src/components/layout/top-filter-bar.tsx
+src/lib/dashboard-filters.ts
+src/lib/server/auth-policy.ts
+src/lib/server/bigquery-client.ts
+src/lib/server/bigquery-dashboard-service.ts
+src/lib/server/dashboard-page-data-service.ts
+src/lib/types.ts
+src/components/dashboard/bigquery-route-view.tsx
+src/lib/dashboard-mode.ts
+src/lib/server/dashboard-runtime.ts
+docs/production/PRODUCTION_V1_RELEASE_SCOPE.md
+
+Review the ACTUAL current diff. Treat existing edits as partial/unvalidated.
+Keep correct work and fix only what remains unsafe or incomplete.
+
+PRODUCTION SAFETY:
+
+Production DATA_MODE remains mock.
+
+DO NOT:
+- deploy Production
+- set DATA_MODE=bigquery
+- modify Vercel Production environment
+- modify OAuth configuration
+- modify WIF
+- modify GCP IAM
+- modify BigQuery IAM/data
+- run the recovery pipeline
+
+NEXT.JS / AUTH:
+
+Next.js = 16.2.11.
+proxy.ts is correct. Do NOT rename to middleware.ts.
+
+Preserve:
+- Google OAuth
+- email_verified requirement
+- exact-email allowlist
+- ADMIN RBAC
+- callbackUrl preservation
+- open-redirect protection
+- anonymous dashboard protection
+- anonymous API 401
+- authorization-before-BigQuery
+- unauthorized BigQuery calls = 0
+
+APPROVED BIGQUERY VIEWS ONLY:
+
+combined_activity_summary
+indicator_progress_summary
+data_quality_summary
+ip_submission_status
+
+Never query:
+participants_flat
+participants_flat_staging
+
+No participant-level data.
+No BigQuery writes.
+
+CORE V1 RULE:
+
+When DATA_MODE=bigquery there must be ZERO silent operational use of:
+- mock data
+- synthetic data
+- prototype constants
+- hard-coded programme figures
+- fake trends
+- fake indicator statuses
+- fake AI insights
+
+BigQuery failure must fail closed.
+Never silently fall back to mock.
+
+BigQuery mode label:
+Data source: BigQuery
+
+Mock mode label:
+Demo / mock data
+
+FINISH ALL PRODUCTION ROUTES:
+
+Executive Overview
+Activity Progress
+Participant & Reach
+Indicator Progress
+IP / Partner Performance
+Geographic Coverage
+GBV / OCMC Summary
+Data Quality & Evidence
+Management Decision Centre
+Activity Detail
+
+Every BigQuery-mode component must be:
+LIVE_BIGQUERY
+DERIVED_FROM_LIVE_AGGREGATE
+or
+DISABLED_PENDING_VALIDATION
+
+Finish these specifically:
+
+FILTERS
+Year, Quarter, Project, Implementing Partner, Province.
+Use real aggregate-backed values only.
+Disable unsupported filters.
+
+PROGRAMME PROGRESS
+Use defensible aggregate planned/completed values only.
+Otherwise disable in BigQuery mode.
+
+INDICATOR PERFORMANCE
+Derive status only if indicator_progress_summary supports an explicit rule.
+Document the rule.
+Otherwise disable.
+
+PARTICIPANT PROFILE
+Keep only if derivable from approved aggregate data.
+Never use participant tables.
+Otherwise disable.
+
+AI EXECUTIVE INSIGHTS
+Do not add generative AI.
+Hide/disable prototype insights in BigQuery mode unless deterministically
+derived from validated aggregate values and documented rules.
+
+GBV / OCMC
+Keep hidden or show:
+Pending approved reporting view
+until privacy/reporting approval exists.
+No survivor-level or participant-level data.
+
+FAIL-CLOSED STATES:
+
+Implement/verify:
+- no data
+- unsupported filter
+- BigQuery configuration failure
+- BigQuery read failure
+- unavailable component
+- authorization failure
+
+RELEASE DOCUMENTATION:
+
+Ensure these are complete:
+
+docs/production/PRODUCTION_V1_RELEASE_SCOPE.md
+docs/production/PRODUCTION_RELEASE_CHECKLIST.md
+
+Document:
+- LIVE_BIGQUERY features
+- DERIVED_FROM_LIVE_AGGREGATE features
+- disabled/deferred features
+- mock-only features
+- exact four-view boundary
+- Google OAuth and exact-email RBAC
+- no silent mock fallback
+- rollback principle
+- remaining Production WIF read validation
+- remaining DATA_MODE activation
+- final Production UAT
+- generation refresh dependency
+- generation expiry risk around 12 September 2026
+- main branch protection still requires configuration
+- repository visibility currently public and requires operational review
+
+Do NOT modify expiry.
+
+TESTS:
+
+Review existing tests and add only missing regression coverage for:
+- no mock operational content in BigQuery mode
+- source labels
+- no fallback
+- filters
+- Programme Progress
+- Indicator Performance
+- Participant Profile
+- AI disabled/deferred
+- GBV/OCMC disabled
+- participant table prohibition
+- auth/RBAC
+- callbackUrl
+- open redirects
+- unauthorized BigQuery calls
+
+Then run:
+
+npm ci
+npm run lint
+npm run typecheck
+npm test
+npm run test:dashboard-readiness
+npm run build
+npm audit
+
+Requirements:
+npm ci PASS
+lint zero errors
+typecheck PASS
+tests PASS
+dashboard readiness PASS
+build PASS
+
+Report npm audit severity counts.
+DO NOT run npm audit fix --force.
+
+Fix only failures directly related to this hardening work.
+
+FINAL REVIEW:
+
+Run:
+git status
+git diff --stat
+git diff --check
+git diff
+
+Verify:
+- no secrets
+- no OAuth credentials
+- no service account keys
+- no tokens
+- no Vercel env values
+- no participant-level access
+- no BigQuery writes
+- next-env.d.ts not included
+- dashboard.html not included
+- exec.html not included
+
+If all validation passes:
+
+commit the Production V1 hardening work
+push release/production-v1-hardening
+
+Create a PR to main if none exists.
+If one already exists, update it instead of creating another.
+
+Check remote CI.
+
+DO NOT MERGE.
+DO NOT DEPLOY PRODUCTION.
+
+FINAL RESPONSE:
+
+Branch:
+Base:
+Stash preserved:
+
+Existing work recovered:
+Remaining work completed:
+
+LIVE_BIGQUERY:
+DERIVED_FROM_LIVE_AGGREGATE:
+DISABLED_PENDING_VALIDATION:
+Mock/prototype content visible in BigQuery mode:
+
+Filters:
+Programme Progress:
+Indicator Performance:
+Participant Profile:
+AI Executive Insights:
+GBV / OCMC:
+
+Data-source labeling:
+Silent fallback:
+BigQuery failure behavior:
+
+participants_flat:
+participants_flat_staging:
+
+OAuth:
+RBAC:
+CallbackUrl:
+Anonymous dashboard:
+Anonymous API:
+Unauthorized BigQuery calls:
+
+npm ci:
+Lint:
+Typecheck:
+Tests:
+Dashboard readiness:
+Build:
+npm audit:
+
+Release scope:
+Release checklist:
+Generation expiry documented:
+Branch protection documented:
+Repository visibility documented:
+
+Changed files:
+Commit:
+PR:
+Remote CI:
+
+Production modified:
+Production DATA_MODE:
+Production deployed:
+Vercel env modified:
+OAuth modified:
+WIF modified:
+GCP IAM modified:
+BigQuery modified:
+
+Evidence classification:
+
+Use exactly:
+PRODUCTION_V1_PRODUCT_HARDENING_VALIDATED_PENDING_PR_MERGE
+
+only if all required validation passes.
+
+Next action:
+Merge the validated Production V1 hardening PR.
+
+Then STOP.

@@ -1,17 +1,16 @@
 'use client';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
-const defaultData = [
-  { name: 'Female', value: 11128, color: '#004B87' },
-  { name: 'Male', value: 7106, color: '#FF6600' },
-  { name: 'Other', value: 313, color: '#9CA3AF' },
-];
+import { useParticipantData } from '@/components/dashboard/participant-data-provider';
 
 interface ParticipantSexChartProps {
   data?: Array<{ name: string; value: number; color: string }>;
 }
 
-export default function ParticipantSexChart({ data = defaultData }: ParticipantSexChartProps) {
+export default function ParticipantSexChart({ data: suppliedData }: ParticipantSexChartProps) {
+  const { data: liveData, loading } = useParticipantData();
+  const data = suppliedData ?? liveData?.demographics.flatMap(group => group.metrics).filter(metric => ['female', 'male', 'other'].includes(metric.key)).map(metric => ({ name: metric.label, value: metric.value ?? 0, color: metric.key === 'female' ? '#004B87' : metric.key === 'male' ? '#FF6600' : '#9CA3AF' }));
+  if (!data?.length || (!suppliedData && liveData?.demographics.some(group => group.metrics.some(metric => ['female', 'male', 'other'].includes(metric.key) && metric.suppressed)))) return <p>{loading ? 'Loading participant profile?' : 'Participant profile unavailable or suppressed.'}</p>;
   return (
     <ResponsiveContainer width="100%" height={250}>
       <PieChart>

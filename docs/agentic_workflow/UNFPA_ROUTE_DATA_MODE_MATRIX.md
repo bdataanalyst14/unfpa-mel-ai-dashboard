@@ -1,34 +1,23 @@
 # UNFPA MEL Dashboard Route Data Mode Matrix
 
-**Updated:** 2026-07-24
-**Scope:** Local pre-Ubuntu readiness
+Updated 7 September 2026. Local Production V1 hardening; no production activation.
 
-All routes use synthetic mock rows by default. `DATA_MODE=bigquery` or `DASHBOARD_DATA_MODE=bigquery` enables only the read-only aggregate contracts identified below. A BigQuery error or missing configuration falls back to an explicitly labelled mock response. No route writes to BigQuery or KoBo.
+All routes use labeled synthetic data in mock mode. BigQuery mode fails closed and never substitutes mock data. All live values use approved aggregate views. Live GBV remains disabled.
 
-| Dashboard route | Mock mode | Read-only live mode | Disabled or restricted behavior |
-|---|---|---|---|
-| `/dashboard/executive-overview` | Full prototype summary, charts, and filter behavior | Approved aggregate summary query is implemented; environment and schema validation remain required | No writeback |
-| `/dashboard/activity-progress` | Full prototype visuals; global filters show validated synthetic activity rows | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | Live visual activation requires programme and IT approval |
-| `/dashboard/participant-reach` | Full prototype visuals; filtered participant aggregates are available | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | No person-level data |
-| `/dashboard/indicator-progress` | Full prototype visuals and filtered activity contribution view | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | Registry and programme validation required |
-| `/dashboard/ip-performance` | Full prototype visuals and filtered partner aggregates | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | Partner scope approval required |
-| `/dashboard/geographic-coverage` | Full prototype visuals with filtered activity, chart, table, KPI, and map states | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | Geography validation required before live activation |
-| `/dashboard/data-quality` | Full prototype visuals and filtered evidence/validation aggregates | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | No source-record mutation |
-| `/dashboard/management-decision-centre` | Full prototype visuals and filtered activity view | Read-only aggregate metadata API contract is implemented; page visuals remain mock-backed | AI text remains prototype-only |
-| `/dashboard/activity-detail` | Filtered synthetic table and CSV export | Read-only aggregate metadata API contract is implemented; live detail rows are not enabled | CSV contains only the current synthetic filtered rows |
-| `/dashboard/gbv-ocmc-summary` | Server-only sanitized GBV mock aggregates with small-cell and complementary suppression | None | Live GBV remains disabled pending privacy, access-control, API, export-policy, and programme approval |
-| `/dashboard/gbv-ocmc` | Redirect alias preserving supported filter query state | None | Same live GBV restriction as the summary route |
+| Dashboard route | BigQuery mode | Supported filters |
+|---|---|---|
+| /dashboard/executive-overview | Aggregate total/reportable participants, events, partners, districts, sex counts | Year, Quarter, Project, Implementing Partner, Province |
+| /dashboard/activity-progress | Aggregate volumes; planned/completed charts disabled | Same five |
+| /dashboard/participant-reach | Aggregate total/reportable and sex/disability counts | Same five |
+| /dashboard/geographic-coverage | Aggregate geographic/event counts; prototype map disabled | Same five |
+| /dashboard/ip-performance | Submission/event/partner counts | Implementing Partner only |
+| /dashboard/data-quality | Quality counts and derived quality percentage | None |
+| /dashboard/indicator-progress | Disabled pending validated target/status rule | None |
+| /dashboard/management-decision-centre | Disabled; no prototype/AI narratives | None |
+| /dashboard/activity-detail | Disabled; no live record detail or export | None |
+| /dashboard/gbv-ocmc-summary | Disabled pending privacy/reporting approval | None |
+| /dashboard/gbv-ocmc | Redirect to summary, preserving filter parameters | Same restriction |
 
-## Global filter contract
+Live filter options come from combined_activity_summary. Predicates use parameters and intersection semantics. Unsupported values, repeated values and unsupported route combinations fail explicitly; District and Municipality live filters are disabled. No-data responses contain no replacement KPIs. Mock-only filtered charts/tables/maps/CSV remain available with clear demo labels; CSV formula prefixes are neutralized.
 
-Year, Quarter, Project, Implementing Partner, and Province values are allow-listed from the synthetic activity contract. Supported values are serialized in the URL and preserved across dashboard navigation. Unsupported values are ignored rather than executed or forwarded as live query fragments. Combined filters use intersection semantics.
-
-The GBV mock contract supports Province only. Year, Quarter, Project, or Implementing Partner selections produce a privacy-safe empty state on the GBV summary instead of attempting to infer or expose unsupported GBV detail.
-
-## Empty-state and export contract
-
-When a supported filter combination returns no rows, KPI, chart, map, table, and CSV controls each show an explicit no-data state. CSV export is disabled for an empty result and contains only the current filtered synthetic rows otherwise. Spreadsheet formula prefixes are neutralized.
-
-## Approval boundary
-
-This matrix documents implemented local behavior; it does not approve a route for live use. UNFPA IT, programme owners, and privacy owners must approve authentication or restricted-UAT access, exact route scope, live data contracts, and the Ubuntu target host. Live GBV remains disabled.
+Detailed formula definitions, four-view scope, API payload/status behavior and uncompleted production gates are in [Production V1 scope](../production/PRODUCTION_V1_RELEASE_SCOPE.md). This matrix does not certify live source reconciliation or approve UAT/production activation.

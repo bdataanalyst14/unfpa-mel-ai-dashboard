@@ -13,7 +13,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit --incremental false",
-    "test": "npm run test:verify && npm run test:dashboard-bigquery-readonly && npm run test:vercel-wif && npm run test:vercel-manifest && npm run test:google-auth",
+    "test": "npm run test:verify && npm run test:dashboard-bigquery-readonly && npm run test:vercel-wif && npm run test:vercel-manifest && npm run test:google-auth && npm run test:production-v1 && npm run test:pre-uat-validation",
+    "test:pre-uat-validation": "node scripts/test-pre-uat-validation.js",
+    "test:production-v1": "node scripts/test-production-v1.js",
     "test:verify": "node scripts/verify.js",
     "test:release-safety": "node scripts/test-release-safety.js",
     "test:dashboard-readiness": "node scripts/test-dashboard-readiness.js",
@@ -111,7 +113,11 @@
   "overrides": {
     "postcss": "8.5.22",
     "sharp": "0.35.3",
-    "minimatch@3.1.5": "10.2.5"
+    "minimatch@3.1.5": "10.2.5",
+    "brace-expansion@5.0.8": "5.0.9",
+    "browserslist@4.28.2": "4.28.7",
+    "js-yaml@4.3.0": "4.3.1",
+    "nanoid@3.3.16": "3.3.18"
   },
   "allowScripts": {
     "unrs-resolver@1.12.2": true

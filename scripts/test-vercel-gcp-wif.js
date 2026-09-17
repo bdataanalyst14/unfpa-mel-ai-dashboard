@@ -13,6 +13,7 @@ function loadTypeScript(file, mocks) {
   const loadedModule = { exports: {} };
   const localRequire = (id) => {
     if (Object.prototype.hasOwnProperty.call(mocks, id)) return mocks[id];
+    if (id === '@/lib/dashboard-mode') return loadTypeScript(path.join(root, 'src/lib/dashboard-mode.ts'), {});
     return require(id);
   };
   Function('require', 'module', 'exports', '__filename', '__dirname', output)(
@@ -67,7 +68,11 @@ async function main() {
   assert.equal(oidcCalls, 2, 'each required refresh resolves the current request token');
 
   let bigQueryOptions;
-  class MockBigQuery { constructor(options) { bigQueryOptions = options; } }
+  const jobs = [];
+  class MockBigQuery {
+    constructor(options) { bigQueryOptions = options; }
+    async query(options) { jobs.push(options); return [[{ total: 17 }]]; }
+  }
   const privateKeyMock = { readPrivateKeyFile: () => 'fixture-private-key' };
   const wifAuthMock = {
     createVercelWifAuthClient: (value) => ({ kind: 'external-auth-client', value }),
@@ -75,7 +80,7 @@ async function main() {
   const clientModule = loadTypeScript(path.join(root, 'src/lib/server/bigquery-client.ts'), {
     'server-only': {}, '@google-cloud/bigquery': { BigQuery: MockBigQuery },
     './private-key-file': privateKeyMock, './vercel-gcp-wif': wifAuthMock,
-    './readiness-manifest-contract': { loadAndValidateManifest: () => true },
+    './readiness-manifest-contract': { ...require('../src/lib/server/readiness-manifest-contract'), loadAndValidateManifest: () => true },
   });
   const completeWif = {
     GCP_PROJECT_NUMBER: '123456789', GCP_SERVICE_ACCOUNT_EMAIL: 'dashboard@example.iam.gserviceaccount.com',
@@ -106,12 +111,46 @@ async function main() {
     assert.throws(() => clientModule.getBigQueryAuthentication(), /Incomplete BigQuery/));
 
   assert.deepEqual(clientModule.APPROVED_OBJECTS, [
-    'combined_activity_summary', 'indicator_progress_summary', 'data_quality_summary', 'ip_submission_status',
+    'repeatdata', 'activity_summary', 'combined_activity_summary', 'indicator_progress_summary', 'data_quality_summary', 'ip_submission_status',
   ]);
   for (const query of [
     'SELECT * FROM participants_flat', 'SELECT * FROM participants_flat_staging',
     'DELETE FROM combined_activity_summary', 'CREATE TABLE x AS SELECT * FROM combined_activity_summary',
   ]) assert.throws(() => clientModule.validateQuerySafety(query), /prohibited/);
+
+  withEnv(completeWif, () => {
+    for (const view of clientModule.APPROVED_OBJECTS) {
+      clientModule.validateQuerySafety(`SELECT COUNT(*) FROM \`unfpadatabase.unfpadatabase.${view}\``);
+    }
+    for (const source of ['activity_summary_flat', 'activity_summary_staging', '__gen_activity', 'unfpa_mel_internal.activity_summary', 'other.unfpadatabase.activity_summary', 'unfpadatabase.other.activity_summary']) {
+      assert.throws(() => clientModule.validateQuerySafety(`SELECT COUNT(*) FROM ${source}`));
+    }
+    for (const query of [
+      'SELECT * FROM repeatdata',
+      'SELECT sex_name FROM repeatdata LIMIT 1',
+      'SELECT COUNT(*) FROM combined_activity_summary; DELETE FROM combined_activity_summary',
+      "SELECT * FROM EXTERNAL_QUERY('connection', 'SELECT 1')",
+    ]) assert.throws(() => clientModule.validateQuerySafety(query));
+  });
+  const saved = { ...process.env };
+  try {
+    Object.assign(process.env, completeWif);
+    process.env.BIGQUERY_MAX_BYTES_BILLED = '1000000000';
+    const sql = 'SELECT COUNT(*) AS total FROM `unfpadatabase.unfpadatabase.activity_summary` WHERE project1 = @project';
+    assert.deepEqual(await clientModule.runSafeBigQuery(sql, { project: "quote' OR TRUE" }), [{ total: 17 }]);
+    assert.equal(jobs.at(-1).maximumBytesBilled, '1000000000');
+    assert.equal(jobs.at(-1).location, 'asia-south1');
+    assert.deepEqual(jobs.at(-1).params, { project: "quote' OR TRUE" });
+    for (const cap of ['0', '-1', '1000000001', 'NaN', '1e9']) {
+      process.env.BIGQUERY_MAX_BYTES_BILLED = cap;
+      const before = jobs.length;
+      await assert.rejects(clientModule.runSafeBigQuery(sql));
+      assert.equal(jobs.length, before);
+    }
+  } finally {
+    for (const name of Object.keys(process.env)) if (!(name in saved)) delete process.env[name];
+    Object.assign(process.env, saved);
+  }
 
   const combinedSource = [
     fs.readFileSync(path.join(root, 'src/lib/server/vercel-gcp-wif.ts'), 'utf8'),
@@ -121,6 +160,20 @@ async function main() {
   assert(!combinedSource.includes('VERCEL_OIDC_TOKEN'));
   assert(!/console\.(log|info|warn|error)/.test(combinedSource));
   assert(!combinedSource.includes('request-1'));
+  function clientFiles(directory) {
+    return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+      const file = path.join(directory, entry.name);
+      return entry.isDirectory() ? clientFiles(file) : /\.[jt]sx?$/.test(file) ? [file] : [];
+    });
+  }
+  for (const file of clientFiles(path.join(root, 'src'))) {
+    const source = fs.readFileSync(file, 'utf8');
+    if (/^['"]use client['"]/m.test(source)) {
+      assert.doesNotMatch(source, /from\s+['"][^'"]*(?:lib\/server|@google-cloud\/bigquery)/, file);
+      assert.doesNotMatch(source, /process\.env\.(?:GOOGLE_PRIVATE_KEY|GOOGLE_APPLICATION_CREDENTIALS|GOOGLE_CLIENT_SECRET|GCP_SERVICE_ACCOUNT_EMAIL)/, file);
+    }
+    assert.doesNotMatch(source, /NEXT_PUBLIC_(?:GOOGLE_PRIVATE_KEY|GOOGLE_CLIENT_SECRET|GCP_SERVICE_ACCOUNT|BIGQUERY_CREDENTIAL)/, file);
+  }
   console.log('Vercel GCP WIF offline tests passed.');
 }
 

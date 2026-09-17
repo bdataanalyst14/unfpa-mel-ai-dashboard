@@ -11,6 +11,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { mainData } from '@/data/mock/main-data';
 import {
+  DASHBOARD_FILTER_KEYS,
   buildDashboardFilterOptions,
   filterActivities,
   parseDashboardFilters,
@@ -20,6 +21,9 @@ import {
 } from '@/lib/dashboard-filters';
 
 type DashboardFilterContextValue = {
+  dataMode: 'bigquery' | 'mock';
+  filtersAvailable: boolean;
+  filterMessage: string;
   filters: DashboardFilterState;
   options: ReturnType<typeof buildDashboardFilterOptions>;
   filteredActivities: typeof mainData;
@@ -29,19 +33,48 @@ type DashboardFilterContextValue = {
 };
 
 const DashboardFilterContext = createContext<DashboardFilterContextValue | null>(null);
-const options = buildDashboardFilterOptions(mainData);
+const mockOptions = buildDashboardFilterOptions(mainData);
+const emptyOptions: Record<DashboardFilterKey, string[]> = {
+  year: [],
+  quarter: [],
+  project: [],
+  implementingPartner: [],
+  province: [],
+  district: [],
+  municipality: [],
+};
 
-export function DashboardFilterProvider({ children }: { children: ReactNode }) {
+export function DashboardFilterProvider({
+  children,
+  dataMode = 'mock',
+  liveOptions,
+  filtersAvailable = true,
+  filterMessage,
+}: {
+  children: ReactNode;
+  dataMode?: 'bigquery' | 'mock';
+  liveOptions?: ReturnType<typeof buildDashboardFilterOptions>;
+  filtersAvailable?: boolean;
+  filterMessage?: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const options = useMemo(
+    () => (dataMode === 'bigquery' ? liveOptions ?? emptyOptions : mockOptions),
+    [dataMode, liveOptions],
+  );
   const filters = useMemo(
-    () => parseDashboardFilters(new URLSearchParams(searchParams.toString()), options),
-    [searchParams],
+    () => dataMode === 'bigquery'
+      ? Object.fromEntries(DASHBOARD_FILTER_KEYS.map((key) => [key,
+          searchParams.get(key) ?? (key === 'implementingPartner' ? searchParams.get('ip') : null) ?? '',
+        ])) as DashboardFilterState
+      : parseDashboardFilters(new URLSearchParams(searchParams.toString()), options),
+    [searchParams, options, dataMode],
   );
   const filteredActivities = useMemo(
-    () => filterActivities(mainData, filters),
-    [filters],
+    () => (dataMode === 'mock' ? filterActivities(mainData, filters) : []),
+    [dataMode, filters],
   );
 
   const replaceFilters = useCallback(
@@ -58,9 +91,15 @@ export function DashboardFilterProvider({ children }: { children: ReactNode }) {
 
   const setFilter = useCallback(
     (key: DashboardFilterKey, value: string) => {
-      replaceFilters({ ...filters, [key]: options[key].includes(value) ? value : '' });
+      const next = { ...filters, [key]: options[key].includes(value) ? value : '' };
+      if (key === 'province') {
+        next.district = '';
+        next.municipality = '';
+      }
+      if (key === 'district') next.municipality = '';
+      replaceFilters(next);
     },
-    [filters, replaceFilters],
+    [filters, replaceFilters, options],
   );
 
   const clearFilters = useCallback(
@@ -71,6 +110,8 @@ export function DashboardFilterProvider({ children }: { children: ReactNode }) {
         project: '',
         implementingPartner: '',
         province: '',
+        district: '',
+        municipality: '',
       }),
     [replaceFilters],
   );
@@ -87,13 +128,18 @@ export function DashboardFilterProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       filters,
+      dataMode,
+      filtersAvailable,
+      filterMessage: filterMessage ?? (dataMode === 'bigquery'
+        ? 'Live filters use approved aggregate BigQuery data.'
+        : 'Demo / mock data filters are active.'),
       options,
       filteredActivities,
       setFilter,
       clearFilters,
       hrefWithFilters,
     }),
-    [clearFilters, filteredActivities, filters, hrefWithFilters, setFilter],
+    [clearFilters, dataMode, filterMessage, filteredActivities, filters, filtersAvailable, hrefWithFilters, options, setFilter],
   );
 
   return (

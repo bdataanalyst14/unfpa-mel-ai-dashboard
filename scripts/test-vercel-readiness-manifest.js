@@ -7,6 +7,8 @@ const { generate } = require('./dashboard/generate-vercel-readiness-manifest');
 
 const root = path.resolve(__dirname, '..');
 const approved = [
+  'repeatdata',
+  'activity_summary',
   'combined_activity_summary',
   'indicator_progress_summary',
   'data_quality_summary',
@@ -16,8 +18,8 @@ const mockEnv = { DATA_MODE: 'mock', DASHBOARD_DATA_MODE: 'mock' };
 const wifEnv = {
   DATA_MODE: 'bigquery',
   DASHBOARD_DATA_MODE: 'bigquery',
-  BIGQUERY_PROJECT_ID: 'fixture-project',
-  BIGQUERY_DATASET_ID: 'fixture_dataset',
+  BIGQUERY_PROJECT_ID: 'unfpadatabase',
+  BIGQUERY_DATASET_ID: 'unfpadatabase',
   BIGQUERY_LOCATION: 'asia-south1',
   GCP_PROJECT_NUMBER: '123456789012',
   GCP_SERVICE_ACCOUNT_EMAIL: 'fixture-preview@fixture-project.iam.gserviceaccount.com',
@@ -32,7 +34,7 @@ function loadTypeScript(file, mocks) {
   const loadedModule = { exports: {} };
   const localRequire = (id) => Object.prototype.hasOwnProperty.call(mocks, id)
     ? mocks[id]
-    : require(id);
+    : id === '@/lib/dashboard-mode' ? loadTypeScript(path.join(root, 'src/lib/dashboard-mode.ts'), {}) : require(id);
   Function('require', 'module', 'exports', '__filename', '__dirname', output)(
     localRequire, loadedModule, loadedModule.exports, file, path.dirname(file),
   );
@@ -64,14 +66,14 @@ function main() {
     'BIGQUERY_PROJECT_ID', 'BIGQUERY_DATASET_ID', 'BIGQUERY_LOCATION',
   ]) {
     const env = { ...wifEnv }; delete env[name];
-    assert.throws(() => contract.createManifest(env), /Missing required|Invalid Vercel readiness location/);
+    assert.throws(() => contract.createManifest(env), /Missing required|Invalid Vercel readiness location|Invalid frozen BigQuery/);
   }
   assert.throws(() => contract.createManifest({ ...wifEnv, BIGQUERY_LOCATION: 'us-central1' }), /asia-south1/);
 
+  assert.throws(() => contract.createManifest({ ...wifEnv, BIGQUERY_PROJECT_ID: 'changed-project' }));
+  assert.throws(() => contract.createManifest({ ...wifEnv, BIGQUERY_DATASET_ID: 'changed_dataset' }));
   const baseHash = manifest.configurationHash;
   for (const [name, replacement] of [
-    ['BIGQUERY_PROJECT_ID', 'changed-project'],
-    ['BIGQUERY_DATASET_ID', 'changed_dataset'],
     ['GCP_SERVICE_ACCOUNT_EMAIL', 'changed@fixture-project.iam.gserviceaccount.com'],
     ['GCP_WORKLOAD_IDENTITY_POOL_ID', 'changed-pool'],
     ['GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID', 'changed-provider'],
@@ -138,13 +140,13 @@ function main() {
     'server-only': {}, '@google-cloud/bigquery': { BigQuery: MockBigQuery },
     './private-key-file': { readPrivateKeyFile: () => 'fixture' },
     './vercel-gcp-wif': { createVercelWifAuthClient: () => ({}) },
-    './readiness-manifest-contract': { loadAndValidateManifest: () => false },
+    './readiness-manifest-contract': { ...contract, loadAndValidateManifest: () => false },
   });
   const validClientModule = loadTypeScript(path.join(root, 'src/lib/server/bigquery-client.ts'), {
     'server-only': {}, '@google-cloud/bigquery': { BigQuery: MockBigQuery },
     './private-key-file': { readPrivateKeyFile: () => 'fixture' },
     './vercel-gcp-wif': { createVercelWifAuthClient: () => ({}) },
-    './readiness-manifest-contract': { loadAndValidateManifest: () => true },
+    './readiness-manifest-contract': { ...contract, loadAndValidateManifest: () => true },
   });
   const previous = { ...process.env };
   Object.assign(process.env, wifEnv);

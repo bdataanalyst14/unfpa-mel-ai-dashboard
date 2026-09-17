@@ -167,6 +167,7 @@ async function main() {
         );
         return {
           route,
+          metadata: { responseStatus: 200 },
           count: filters.filterActivities(data.mainData, parsed).length,
         };
       },
