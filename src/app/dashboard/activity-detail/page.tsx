@@ -1,4 +1,3 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
 import { getDashboardDataMode } from '@/lib/server/bigquery-client';
 import PageHeader from '@/components/layout/page-header';
 import DataSourceStatusPanel from '@/components/dashboard/data-source-status-panel';
@@ -12,9 +11,6 @@ export default async function ActivityDetailPage({ searchParams }: {
   searchParams?: Promise<ExecutiveOverviewFilters>;
 }) {
   const resolvedParams = searchParams ? await searchParams : {};
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route="activity-detail" searchParams={resolvedParams} />;
-  }
   const pageData = await getDashboardPageData('activity-detail', resolvedParams);
   const live = pageData.metadata.componentState !== 'mock_demo';
 

@@ -1,94 +1,38 @@
 'use client';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { signOut } from 'next-auth/react';
+import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
 import SidebarNav from './sidebar-nav';
 import DataFreshnessFooter from '../dashboard/data-freshness-footer';
 
-export default function DashboardShell({
-  children,
-  dataMode,
-}: {
-  children: React.ReactNode;
-  dataMode: 'bigquery' | 'mock';
-}) {
+export default function DashboardShell({ children, dataMode }: { children: React.ReactNode; dataMode: 'bigquery' | 'mock' }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  return (
-    <div className="flex min-h-screen bg-[#F3F4F6]">
-
-      {/* Mobile backdrop */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black/50 md:hidden"
-          aria-hidden="true"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar — off-canvas on mobile, fixed on md+ */}
-      <aside
-        className={[
-          'fixed inset-y-0 left-0 z-30 w-64 bg-[#082A4D] text-white flex flex-col',
-          'transition-transform duration-300 ease-in-out',
-          'md:translate-x-0',
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        ].join(' ')}
-        aria-label="Sidebar"
-      >
-        <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#FF6600] flex items-center justify-center text-white font-bold text-sm">U</div>
-            <div>
-              <h1 className="text-sm font-bold tracking-wide">UNFPA Nepal</h1>
-              <p className="text-[10px] text-white/60 tracking-wider uppercase">MEL Intelligence</p>
-            </div>
-          </div>
-          {/* Close button — mobile only */}
-          <button
-            className="md:hidden text-white/70 hover:text-white p-1 rounded"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close navigation"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <SidebarNav onNavigate={() => setSidebarOpen(false)} />
-        <div className="px-5 py-3 border-t border-white/10">
-          <button
-            type="button"
-            className="mb-2 text-xs text-white/70 hover:text-white"
-            onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-          >
-            Sign out
-          </button>
-          <p className="text-[10px] text-white/40">{dataMode === 'bigquery' ? 'Production V1 aggregate mode' : 'Demo / mock data'}</p>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main className="min-w-0 flex-1 md:ml-64 flex flex-col min-h-screen">
-        {/* Mobile top bar with hamburger */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-[#082A4D] text-white sticky top-0 z-10">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Open navigation"
-            aria-expanded={sidebarOpen}
-            className="text-white/80 hover:text-white p-1 rounded"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-[#FF6600] flex items-center justify-center text-white font-bold text-xs">U</div>
-            <span className="text-sm font-semibold tracking-wide">UNFPA Nepal MEL</span>
-          </div>
-        </div>
-
-        <div className="min-w-0 flex-1 overflow-auto p-4 md:p-6 space-y-6">
-          {children}
-        </div>
-        <DataFreshnessFooter dataMode={dataMode} />
-      </main>
-    </div>
-  );
+  const [collapsed, setCollapsed] = useState(false);
+  const brand = <div className="px-5 py-5 border-b border-white/10"><p className="text-sm font-bold tracking-wide">UNFPA Nepal</p><p className="text-[10px] text-white/70 uppercase tracking-wider">MEL Intelligence</p></div>;
+  const footer = <div className="px-4 py-3 border-t border-white/10"><button type="button" className="min-h-11 text-xs text-white/80 hover:text-white" onClick={() => signOut({ callbackUrl: '/auth/signin' })}>Sign out</button>{!collapsed && <p className="text-[10px] text-white/60">{dataMode === 'bigquery' ? 'Production aggregate mode' : 'Demo / mock data'}</p>}</div>;
+  return <div className="flex min-h-screen bg-[#F3F4F6]">
+    <a href="#dashboard-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-white focus:p-3">Skip to dashboard content</a>
+    <aside aria-label="Sidebar" className={`fixed inset-y-0 left-0 hidden flex-col bg-[#082A4D] text-white md:flex ${collapsed ? 'w-20' : 'w-64'}`}>
+      {!collapsed && brand}
+      <button type="button" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'} aria-expanded={!collapsed} className="flex min-h-11 items-center justify-center gap-2 border-b border-white/10 p-3 text-xs text-white/80 hover:bg-white/10">
+        {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <><PanelLeftClose className="h-4 w-4" />Collapse navigation</>}
+      </button>
+      <SidebarNav collapsed={collapsed} />{footer}
+    </aside>
+    <main className={`min-w-0 flex-1 flex flex-col min-h-screen overflow-x-hidden ${collapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+      <div className="sticky top-0 z-10 flex items-center gap-3 bg-[#082A4D] px-4 py-2 text-white md:hidden">
+        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+          <SheetTrigger asChild><button type="button" aria-label="Open navigation" className="flex h-11 w-11 items-center justify-center rounded hover:bg-white/10"><Menu className="h-5 w-5" /></button></SheetTrigger>
+          <SheetContent side="left" className="w-64 gap-0 bg-[#082A4D] text-white">
+            <SheetTitle className="sr-only">Dashboard navigation</SheetTitle><SheetDescription className="sr-only">UNFPA Nepal dashboard pages</SheetDescription>
+            {brand}<SidebarNav onNavigate={() => setSidebarOpen(false)} />{footer}
+          </SheetContent>
+        </Sheet>
+        <span className="text-sm font-semibold">UNFPA Nepal MEL</span>
+      </div>
+      <div id="dashboard-content" tabIndex={-1} className="min-w-0 flex-1 p-4 md:p-6 space-y-6">{children}</div>
+      <DataFreshnessFooter dataMode={dataMode} />
+    </main>
+  </div>;
 }

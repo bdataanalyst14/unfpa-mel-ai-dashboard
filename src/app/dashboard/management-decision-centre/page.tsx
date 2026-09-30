@@ -1,4 +1,3 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
 import { getDashboardDataMode } from '@/lib/server/bigquery-client';
 import PageHeader from '@/components/layout/page-header';
 import AIInsightPanel from '@/components/dashboard/ai-insight-panel';
@@ -17,9 +16,6 @@ export default async function ManagementDecisionCentrePage({ searchParams }: {
   searchParams?: Promise<ExecutiveOverviewFilters>;
 }) {
   const resolvedParams = searchParams ? await searchParams : {};
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route="management-decision-centre" searchParams={resolvedParams} />;
-  }
   const pageData = await getDashboardPageData('management-decision-centre', resolvedParams);
   const live = pageData.metadata.componentState !== 'mock_demo';
 

@@ -4,6 +4,12 @@ export type IndicatorStatus = 'On Track' | 'Watch' | 'Off Track' | 'No Data';
 export type Severity = 'high' | 'medium' | 'low';
 export type UserRole = 'AUTHORIZED_USER' | 'ADMIN';
 
+export type DashboardPageMetric = {
+  label: string;
+  value: string;
+  note?: string;
+};
+
 export interface Activity {
   id: string;
   ip: string;

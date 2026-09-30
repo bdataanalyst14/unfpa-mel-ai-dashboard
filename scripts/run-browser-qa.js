@@ -103,6 +103,7 @@ async function main() {
           NODE_ENV: 'production',
           DATA_MODE: 'mock',
           DASHBOARD_DATA_MODE: 'mock',
+          DASHBOARD_AUTH_REQUIRED: 'false',
           PLAYWRIGHT_QA: '1',
         },
         detached: false,

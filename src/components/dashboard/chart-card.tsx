@@ -18,7 +18,7 @@ export default function ChartCard({ title, subtitle, children, action, className
         </div>
         {action}
       </div>
-      <div className="flex-1 w-full flex items-center justify-center min-h-[250px]">
+      <div className="flex-1 w-full min-w-0 flex items-center justify-center min-h-[250px]">
         {children}
       </div>
     </div>

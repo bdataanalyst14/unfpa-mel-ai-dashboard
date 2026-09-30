@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-canvas-bg min-h-screen font-sans">
+      <body className="bg-canvas-bg min-h-screen font-sans overflow-x-hidden">
         {children}
       </body>
     </html>

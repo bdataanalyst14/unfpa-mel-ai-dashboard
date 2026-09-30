@@ -16,7 +16,8 @@ import {
   type DashboardFilterKey,
   type DashboardFilterState,
 } from '@/lib/dashboard-filters';
-import type { ExecutiveOverviewFilters } from '@/lib/types';
+import type { DashboardPageMetric, ExecutiveOverviewFilters } from '@/lib/types';
+export type { DashboardPageMetric } from '@/lib/types';
 
 export type DashboardRouteKey =
   | 'executive-overview'
@@ -36,12 +37,6 @@ export type DashboardComponentState =
   | 'no_data'
   | 'disabled_pending_validation'
   | 'unavailable';
-
-export type DashboardPageMetric = {
-  label: string;
-  value: string;
-  note?: string;
-};
 
 export type DashboardPageMetadata = {
   dataSource: 'bigquery' | 'mock';
@@ -107,10 +102,6 @@ function asTimestamp(value: CountRow[string]): string | null {
 
 function countMetric(label: string, value: number, note?: string): DashboardPageMetric {
   return { label, value: suppressCount(value).displayValue, note };
-}
-
-function textMetric(label: string, value: string, note?: string): DashboardPageMetric {
-  return { label, value, note };
 }
 
 function response(
@@ -484,25 +475,7 @@ async function queryIndicators(filters: DashboardFilterState): Promise<Dashboard
 }
 
 async function queryDataQuality(): Promise<DashboardPageData> {
-  const { quality } = projectAndDataset();
-  const [row] = await runSafeBigQuery<CountRow>(`
-    SELECT
-      COUNT(1) AS matched_rows,
-      COALESCE(SUM(total_rows), 0) AS total_rows,
-      COALESCE(SUM(records_with_quality_issue), 0) AS records_with_quality_issue,
-      MAX(run_timestamp) AS freshness_timestamp
-    FROM ${quality}
-  `);
-  const freshness = row ? asTimestamp(row.freshness_timestamp) : null;
-  if (!row || asNumber(row.matched_rows) === 0) return noData('data-quality', emptyFilterState(), freshness);
-  const totalRows = asNumber(row.total_rows);
-  const issueRows = asNumber(row.records_with_quality_issue);
-  const score = totalRows > 0 ? `${Math.max(0, ((totalRows - issueRows) / totalRows) * 100).toFixed(1)}%` : 'N/A';
-  return liveData('data-quality', [
-    countMetric('Rows checked', totalRows),
-    countMetric('Rows with quality issue', issueRows),
-    textMetric('Data quality score', score, 'Derived as (rows checked - rows with quality issue) / rows checked.'),
-  ], emptyFilterState(), freshness, 'Live aggregate data quality metrics are shown. Evidence, validation, and per-partner prototype components are disabled.');
+  return disabledData('data-quality', 'Data Quality Score and historical row totals are disabled pending a validated latest-snapshot calculation. Evidence and validation measures are not yet available.');
 }
 
 async function queryIpPerformance(filters: DashboardFilterState): Promise<DashboardPageData> {

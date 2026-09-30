@@ -1,4 +1,3 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
 import PageHeader from '@/components/layout/page-header';
 import KpiCard from '@/components/dashboard/kpi-card';
 import ChartCard from '@/components/dashboard/chart-card';
@@ -12,6 +11,7 @@ import { Users, UserPlus, HelpCircle, Accessibility, Percent } from 'lucide-reac
 import { getDashboardPageData } from '@/lib/server/dashboard-page-data-service';
 import type { ExecutiveOverviewFilters } from '@/lib/types';
 import { getDashboardDataMode } from '@/lib/server/bigquery-client';
+import { getParticipantMetrics } from '@/lib/server/participant-metrics';
 
 import { AgeProfileChart, SocialInclusionChart } from './client-charts';
 
@@ -30,6 +30,25 @@ const casteData = [
   { name: 'Other', value: 744, color: '#9CA3AF' },
 ];
 
+const disabilityData = [
+  { name: 'Without Disability', value: 17800, color: '#004B87' },
+  { name: 'With Disability', value: 747, color: '#FF6600' },
+];
+
+const typeData = [
+  { name: 'Community Member', value: 12500, color: '#004B87' },
+  { name: 'Service Provider', value: 3200, color: '#0066B3' },
+  { name: 'Govt Official', value: 1800, color: '#FF6600' },
+  { name: 'CSO Rep', value: 1047, color: '#FF8533' },
+];
+
+const orgData = [
+  { name: 'Local Gov', value: 850, color: '#004B87' },
+  { name: 'Health Facility', value: 620, color: '#0066B3' },
+  { name: 'School', value: 410, color: '#FF6600' },
+  { name: 'Ward Comm.', value: 320, color: '#FF8533' },
+];
+
 const inclusionDistricts = [
   { district: 'Kathmandu', total: 1250, femalePct: 62.4, disabilityPct: 4.8, marginalizedPct: 22.4 },
   { district: 'Dhanusha', total: 980, femalePct: 58.0, disabilityPct: 3.9, marginalizedPct: 35.8 },
@@ -42,13 +61,18 @@ export default async function ParticipantReachPage({ searchParams }: {
   searchParams?: Promise<ExecutiveOverviewFilters>;
 }) {
   const resolvedParams = searchParams ? await searchParams : {};
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route="participant-reach" searchParams={resolvedParams} />;
-  }
   const pageData = await getDashboardPageData('participant-reach', resolvedParams);
   const live = pageData.metadata.componentState === 'live_bigquery';
 
-  // Helper to extract KPI values from BigQuery metrics or fallback to mock
+  const participants = live ? await getParticipantMetrics(pageData.metadata.filtersApplied) : undefined;
+  const demographic = live && participants?.metadata.dataSource === 'bigquery' ? participants.demographics.flatMap(group => group.metrics) : [];
+  const demographicMetrics = (keys: string[]) => demographic.filter(metric => keys.includes(metric.key)).map(metric => ({ name: metric.label, value: Number(String(metric.value).replace(/[^0-9]/g, '')) || 0, color: '#004B87' }));
+
+  const liveAgeData = live ? demographicMetrics(['below_15', 'age_15_19', 'age_16_24', 'age_20_24', 'age_25_49', 'age_25_54', 'age_50_and_above', 'age_55_and_above']) : ageData;
+  const liveCasteData = live ? demographicMetrics(['hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast']) : casteData;
+  const liveDisabilityData = live ? demographicMetrics(['withdisability', 'nodisability']) : disabilityData;
+  const renderDisability = liveDisabilityData.length ? liveDisabilityData : disabilityData;
+
   const getMetric = (label: string, fallback: string | number) => {
     if (live) {
       const metric = pageData.metrics.find(m => m.label.toLowerCase() === label.toLowerCase());
@@ -106,7 +130,7 @@ export default async function ParticipantReachPage({ searchParams }: {
         </AwaitingDataOverlay>
       </div>
 
-      {/* Charts Grid */}
+      {/* Core Demographics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <ChartCard
@@ -117,21 +141,51 @@ export default async function ParticipantReachPage({ searchParams }: {
           </ChartCard>
         </div>
 
-        <AwaitingDataOverlay active={live} message="Age disaggregations disabled pending upstream formula verification." className="lg:col-span-1">
+        <div className="lg:col-span-1">
           <ChartCard
             title="Age Profile"
-            subtitle="Participant share by age category"
+            subtitle="Participant share by age category (Source bands can overlap)"
           >
-            <AgeProfileChart data={ageData} />
+            <AgeProfileChart data={liveAgeData} />
           </ChartCard>
-        </AwaitingDataOverlay>
+        </div>
 
-        <AwaitingDataOverlay active={live} message="Caste/Ethnicity disabled pending privacy and suppression validation." className="lg:col-span-1">
+        <div className="lg:col-span-1">
           <ChartCard
             title="Social Inclusion Profile"
             subtitle="Inclusion by caste and ethnicity classification"
           >
-            <SocialInclusionChart data={casteData} />
+            <SocialInclusionChart data={liveCasteData} />
+          </ChartCard>
+        </div>
+      </div>
+
+      {/* Additional Classifications Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <ChartCard
+            title="Disability Profile"
+            subtitle="Participants by disability status"
+          >
+            <AgeProfileChart data={renderDisability} />
+          </ChartCard>
+        </div>
+
+        <AwaitingDataOverlay active={live} message="Participant type classifications disabled pending metadata registry." className="lg:col-span-1">
+          <ChartCard
+            title="Participant Type"
+            subtitle="Distribution by attendee category"
+          >
+            <SocialInclusionChart data={typeData} />
+          </ChartCard>
+        </AwaitingDataOverlay>
+
+        <AwaitingDataOverlay active={live} message="Organizational data disabled pending metadata registry." className="lg:col-span-1">
+          <ChartCard
+            title="Organization / Position"
+            subtitle="Institutional and role affiliation"
+          >
+            <SocialInclusionChart data={orgData} />
           </ChartCard>
         </AwaitingDataOverlay>
       </div>
