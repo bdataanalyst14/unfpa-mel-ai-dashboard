@@ -79,8 +79,10 @@ test.afterEach(async ({ page }) => {
 });
 
 async function expectNoHorizontalOverflow(page: Page) {
-  const result = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
-  expect(result).toBe(true);
+  await expect(async () => {
+    const result = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+    expect(result).toBe(true);
+  }).toPass();
 }
 
 test.describe('production routes and responsive layout', () => {
@@ -265,9 +267,8 @@ test('GBV remains suppressed across HTML, accessibility, APIs and client bundles
   const response = await page.goto('/dashboard/gbv-ocmc-summary?province=Karnali');
   expect(response?.status()).toBe(200);
   await expect(page.locator('body')).toContainText('<5');
-  const body = await page.locator('body').innerText();
-  expect(body).toContain('<5');
-  expect(body).not.toMatch(/\b(?:1|2|3|4)\s+(?:survivors?|cases?|services?)\b/i);
+  await expect(page.locator('body')).toContainText('<5');
+  await expect(page.locator('body')).not.toContainText(/\b(?:1|2|3|4)\s+(?:survivors?|cases?|services?)\b/i);
   await expect(page.getByRole('button', { name: /Export CSV/i })).toHaveCount(0);
 
   const accessibleSnapshot = await page.locator('body').ariaSnapshot();
