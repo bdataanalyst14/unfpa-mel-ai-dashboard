@@ -1,4 +1,3 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
 import { getDashboardDataMode } from '@/lib/server/bigquery-client';
 import PageHeader from '@/components/layout/page-header';
 import KpiCard from '@/components/dashboard/kpi-card';
@@ -28,9 +27,6 @@ export default async function IpPerformancePage({ searchParams }: {
   searchParams?: Promise<ExecutiveOverviewFilters>;
 }) {
   const resolvedParams = searchParams ? await searchParams : {};
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route="ip-performance" searchParams={resolvedParams} />;
-  }
   const pageData = await getDashboardPageData('ip-performance', resolvedParams);
   const live = pageData.metadata.componentState === 'live_bigquery';
 

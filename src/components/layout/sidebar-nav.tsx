@@ -21,7 +21,7 @@ const navItems = [
   { label: 'Activity Detail', href: '/dashboard/activity-detail', icon: FileSpreadsheet },
 ];
 
-export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+export default function SidebarNav({ onNavigate, collapsed = false }: { onNavigate?: () => void; collapsed?: boolean }) {
   const pathname = usePathname();
   const { hrefWithFilters } = useDashboardFilters();
   return (
@@ -35,6 +35,9 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
             href={hrefWithFilters(item.href)}
             prefetch={false}
             onClick={onNavigate}
+            aria-current={isActive ? 'page' : undefined}
+            aria-label={item.label}
+            title={collapsed ? item.label : undefined}
             className={cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
               isActive
@@ -43,7 +46,7 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
-            <span className="truncate">{item.label}</span>
+            <span className={collapsed ? 'sr-only' : 'min-w-0'}>{item.label}</span>
           </Link>
         );
       })}

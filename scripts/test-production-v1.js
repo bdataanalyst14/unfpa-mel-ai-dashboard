@@ -71,7 +71,7 @@ async function main() {
     assert.match(calls.at(-1).sql, /SUM\(total_participants\)/);
     assert.match(calls.at(-1).sql, /SUM\(total_reportable_participants\)/);
   }
-  for (const route of ['activity-progress', 'activity-detail', 'indicator-progress', 'participant-reach', 'geographic-coverage', 'data-quality', 'ip-performance']) {
+  for (const route of ['activity-progress', 'activity-detail', 'indicator-progress', 'participant-reach', 'geographic-coverage', 'ip-performance']) {
     assert.equal((await service.getDashboardPageData(route)).metadata.componentState, 'live_bigquery');
     fail = true;
     const failed = await service.getDashboardPageData(route);
@@ -92,6 +92,13 @@ async function main() {
     assert.equal((await service.getDashboardPageData(route)).metadata.responseStatus, 409);
     assert.equal(calls.length, count);
   }
+  const qualityCalls = calls.length;
+  const quality = await service.getDashboardPageData('data-quality');
+  assert.equal(quality.metadata.responseStatus, 409);
+  assert.deepEqual(quality.metrics, []);
+  assert.match(quality.metadata.message, /latest-snapshot/);
+  assert.ok(calls.slice(qualityCalls).every(call => !call.sql.includes('data_quality_summary')));
+  assert.doesNotMatch(fs.readFileSync(path.join(root, 'src/lib/server/dashboard-page-data-service.ts'), 'utf8'), /SUM\(total_rows\)/i);
   assert.equal((await service.getDashboardPageData('indicator-progress', { implementingPartner: 'Live partner' })).metadata.responseStatus, 422);
   assert.equal((await service.getDashboardPageData('ip-performance', { implementingPartner: 'Live partner' })).metadata.responseStatus, 200);
   empty = true;
@@ -108,21 +115,37 @@ async function main() {
   for (const route of ['executive-overview', 'activity-progress', 'activity-detail', 'participant-reach', 'geographic-coverage', 'data-quality', 'ip-performance', 'indicator-progress', 'management-decision-centre', 'gbv-ocmc-summary']) {
     const source = fs.readFileSync(path.join(root, `src/app/dashboard/${route}/page.tsx`), 'utf8');
     assert.doesNotMatch(source, /^'use client'/);
-    assert.match(source, /getDashboardDataMode\(\) === 'bigquery'/);
-    assert.match(source, /return <BigQueryRouteView/);
-    const marker = () => null;
-    const page = load(`src/app/dashboard/${route}/page.tsx`, {
-      '@/lib/server/bigquery-client': { getDashboardDataMode: () => 'bigquery' },
-      '@/components/dashboard/bigquery-route-view': { default: marker, __esModule: true },
-      fallback: (id) => id.startsWith('@/') || id.startsWith('./')
-        ? new Proxy({}, { get: (_, key) => key === '__esModule' ? true : assert.fail(`Prototype dependency accessed in live route: ${id}`) })
-        : require(id),
-    });
-    const rendered = await page.default({ searchParams: Promise.resolve(selected) });
-    assert.equal(rendered.type, marker);
-    assert.deepEqual(rendered.props.searchParams, selected);
+    assert.match(source, /getDashboardDataMode/);
+    assert.match(source, /getDashboardPageData/);
 
   }
+  for (const state of ['live_bigquery', 'no_data', 'unavailable', 'disabled_pending_validation']) {
+    const sequence = [];
+    const data = { metadata: { componentState: state, filtersApplied: selected } };
+    const marker = () => null;
+    const view = load('src/components/dashboard/bigquery-route-view.tsx', {
+      '@/lib/server/auth-guard': { requireDashboardPageAccess: async route => sequence.push(['auth', route]) },
+      '@/lib/server/dashboard-page-data-service': { getDashboardPageData: async (route, filters) => { sequence.push(['data', route, filters]); return data; } },
+      '@/lib/server/participant-metrics': { getParticipantMetrics: async filters => { sequence.push(['participants', filters]); return { metadata: { dataSource: 'bigquery' } }; } },
+      './production-dashboard-view': { default: marker, __esModule: true },
+    });
+    const rendered = await view.default({ route: 'geographic-coverage', searchParams: selected });
+    assert.equal(rendered.type, marker);
+    assert.deepEqual(sequence[0], ['auth', '/dashboard/geographic-coverage']);
+    assert.deepEqual(sequence[1], ['data', 'geographic-coverage', selected]);
+    assert.equal(sequence.length, state === 'live_bigquery' ? 3 : 2);
+    if (state === 'live_bigquery') assert.deepEqual(sequence[2], ['participants', selected]);
+    sequence.length = 0;
+    await view.default({ route: 'management-decision-centre', searchParams: selected });
+    assert.deepEqual(sequence, [['auth', '/dashboard/management-decision-centre'], ['data', 'executive-overview', selected]]);
+  }
+  const deniedView = load('src/components/dashboard/bigquery-route-view.tsx', {
+    '@/lib/server/auth-guard': { requireDashboardPageAccess: async () => { throw new Error('Access denied'); } },
+    '@/lib/server/dashboard-page-data-service': { getDashboardPageData: () => assert.fail('Read before authorization') },
+    '@/lib/server/participant-metrics': { getParticipantMetrics: () => assert.fail('Participant read before authorization') },
+    './production-dashboard-view': { default: () => null, __esModule: true },
+  });
+  await assert.rejects(deniedView.default({ route: 'participant-reach' }), /Access denied/);
   let reads = 0;
   for (const route of ['page-data', 'executive-overview']) {
     for (const status of [401, 403, 409, 422, 503, 200]) {

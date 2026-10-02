@@ -1,4 +1,3 @@
-import BigQueryRouteView from '@/components/dashboard/bigquery-route-view';
 import PageHeader from '@/components/layout/page-header';
 import KpiCard from '@/components/dashboard/kpi-card';
 import ChartCard from '@/components/dashboard/chart-card';
@@ -19,9 +18,6 @@ export default async function IndicatorProgressPage({ searchParams }: {
   searchParams?: Promise<ExecutiveOverviewFilters>;
 }) {
   const resolvedParams = searchParams ? await searchParams : {};
-  if (getDashboardDataMode() === 'bigquery') {
-    return <BigQueryRouteView route="indicator-progress" searchParams={resolvedParams} />;
-  }
   const pageData = await getDashboardPageData('indicator-progress', resolvedParams);
   const live = pageData.metadata.componentState !== 'mock_demo';
 

@@ -29,7 +29,9 @@ async function main() {
   
   const routes = [
     '/dashboard/executive-overview',
-    '/dashboard/activity-progress'
+    '/dashboard/activity-progress',
+    '/dashboard/participant-reach',
+    '/dashboard/geographic-coverage'
   ];
   
   for (const vp of viewports) {
