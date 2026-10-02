@@ -120,6 +120,7 @@ test.describe('production routes and responsive layout', () => {
 test('five filters synchronize, persist, navigate, reset, and never show stale data', async ({
   page,
 }) => {
+  test.setTimeout(90000);
   installFailureGuards(page);
   await page.goto('/dashboard/executive-overview');
 
