@@ -24,3 +24,13 @@
 ## Clean Up
 - **Excluded Temporary Files:** `lint_base.txt`, `lint_current.txt`, `test_prod.js`, `test_prod2.js` were explicitly excluded from commits.
 - **Architecture Integrity:** Confirmed that BigQuery, WIF, OAuth, and privacy architecture remained completely unchanged during this UI restoration release.
+
+## Production QA Patch Release
+- **Patch SHA:** `4aa570f`
+- **Deployed SHA:** Vercel deployment triggered automatically upon push of `4aa570f`.
+- **QA Results:** PASS (Full suite: build, lint, typecheck, verify, browser tests, ui reconciliation)
+- **Production Verification:** MANUAL AUTHENTICATED QA REQUIRED (Dashboard pages are protected by Google OAuth).
+- **Data Quality Fix:** Removed mock constants from the page and wrapped all components in `AwaitingDataOverlay active={true}`, ensuring the page fails closed and the 82.4% prototype score is blocked.
+- **Gender Profile Fix:** Updated Executive Overview and Participant Reach to extract and pass the live `demographics` BigQuery payload to the Gender Profile chart, resolving the infinite loading state.
+- **District Coverage Fix:** Unified all routes to pull from the live BigQuery `"Districts covered"` field (45) rather than falling back to prototypes or the 77 maximum Nepal district total.
+- **Participant Label Fix:** Changed ambiguous "Total Reached" to "Reportable Participants" on Participant Reach page to accurately describe the 152,252 figure and clearly differentiate it from the "Total Participants" count.
