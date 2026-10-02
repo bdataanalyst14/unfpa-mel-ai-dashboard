@@ -24,7 +24,7 @@ export default async function GbvOcmcSummaryPage({
 }) {
   const resolvedParams = searchParams ? await searchParams : {};
   const pageData = await getDashboardPageData('gbv-ocmc-summary', resolvedParams);
-  const live = pageData.metadata.componentState !== 'mock_demo';
+  const live = pageData.metadata.dataSource === 'bigquery';
   const filters = parseDashboardFilters(
     await searchParams,
     buildDashboardFilterOptions(mainData),

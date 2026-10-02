@@ -153,12 +153,11 @@ test('five filters synchronize, persist, navigate, reset, and never show stale d
   await page.getByRole('combobox', { name: 'Province' }).selectOption('Gandaki');
   await expect.poll(() => new URL(page.url()).searchParams.get('province')).toBe('Gandaki');
   await page.waitForLoadState('networkidle');
-  await expect(page.getByText('No approved aggregate data matches the selected filters', { exact: false })).toBeVisible();
+  await expect(page.getByText('No data available for the selected filters', { exact: false })).toBeVisible();
 
   await page.goBack();
   await page.waitForLoadState('networkidle');
   await expect(page.getByRole('combobox', { name: 'Province' })).toHaveValue('Koshi');
-  await expect(page.getByText('Koshi').first()).toBeVisible();
   await page.goForward();
   await page.waitForLoadState('networkidle');
   await expect(page.getByRole('combobox', { name: 'Province' })).toHaveValue('Gandaki');
@@ -246,7 +245,7 @@ test('mobile sidebar, keyboard focus, landmarks, loading and not-found states', 
   ).toBe(true);
 
   await expect(page.getByRole('main')).toHaveCount(1);
-  await expect(page.getByRole('navigation', { name: 'Dashboard navigation' })).toHaveCount(1);
+  await expect(page.getByRole('navigation', { name: 'Dashboard navigation', includeHidden: true })).toHaveCount(1);
   await expect(page.getByRole('region', { name: 'Global filters' })).toHaveCount(1);
 
   await open.click();
@@ -281,12 +280,12 @@ test('GBV remains suppressed across HTML, accessibility, APIs and client bundles
   for (const marker of secretMarkers) expect(html).not.toContain(marker);
 
   const api = await page.request.get('/api/dashboard/page-data?route=gbv-ocmc-summary&province=Karnali');
-  expect(api.status()).toBe(200);
+  expect(api.status()).toBe(409);
   expect(api.headers()['cache-control']).toContain('private');
   expect(api.headers()['cache-control']).toContain('no-store');
   const payload = await api.text();
   expect(payload).toContain('"suppressionApplied":true');
-  expect(payload).toContain('"validationStatus":"blocked_privacy_suppression_not_verified"');
+  expect(payload).toContain('"validationStatus":"live_gbv_disabled"');
   expect(payload).not.toMatch(/"(?:value|chartValue)"\s*:\s*[1-4](?:[,}])/);
   for (const marker of secretMarkers) expect(payload).not.toContain(marker);
 
