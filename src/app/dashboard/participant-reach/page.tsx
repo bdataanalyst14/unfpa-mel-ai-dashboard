@@ -71,6 +71,9 @@ export default async function ParticipantReachPage({ searchParams }: {
   const liveAgeData = live ? demographicMetrics(['below_15', 'age_15_19', 'age_16_24', 'age_20_24', 'age_25_49', 'age_25_54', 'age_50_and_above', 'age_55_and_above']) : ageData;
   const liveCasteData = live ? demographicMetrics(['hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast']) : casteData;
   const liveDisabilityData = live ? demographicMetrics(['withdisability', 'nodisability']) : disabilityData;
+  
+  const liveSexData = live ? demographicMetrics(['female', 'male', 'other']).map(m => ({ ...m, color: m.name.toLowerCase().includes('female') ? '#004B87' : m.name.toLowerCase().includes('male') ? '#FF6600' : '#9CA3AF' })) : undefined;
+  
   const renderDisability = liveDisabilityData.length ? liveDisabilityData : disabilityData;
 
   const getMetric = (label: string, fallback: string | number) => {
@@ -98,7 +101,7 @@ export default async function ParticipantReachPage({ searchParams }: {
       {/* KPI Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
-          label="Total Reached"
+          label="Reportable Participants"
           value={reportableParticipants}
           change={live ? "Verified aggregate count" : "Unique registered attendees"}
           icon={Users}
@@ -137,7 +140,7 @@ export default async function ParticipantReachPage({ searchParams }: {
             title="Gender Profile"
             subtitle="Participant share by sex"
           >
-            <ParticipantSexChart />
+            <ParticipantSexChart data={liveSexData} />
           </ChartCard>
         </div>
 

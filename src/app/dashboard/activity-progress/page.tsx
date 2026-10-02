@@ -64,7 +64,7 @@ export default async function ActivityProgressPage({ searchParams }: {
         />
         <KpiCard
           label="Districts Covered"
-          value={getMetric('Districts covered', 77)}
+          value={getMetric('Districts covered', combinedSummary.districtsCovered)}
           change={live ? "Verified aggregate count" : "Target districts"}
           icon={MapPin}
         />

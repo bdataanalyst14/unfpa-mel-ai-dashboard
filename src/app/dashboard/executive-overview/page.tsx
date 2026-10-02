@@ -55,6 +55,11 @@ export default async function ExecutiveOverviewPage({
   const pageData = await getDashboardPageData('executive-overview', resolvedParams);
   const live = pageData.metadata.componentState === 'live_bigquery';
   const participants = live ? await getParticipantMetrics(pageData.metadata.filtersApplied) : undefined;
+  
+  const demographic = live && participants?.metadata.dataSource === 'bigquery' ? participants.demographics.flatMap(group => group.metrics) : [];
+  const demographicMetrics = (keys: string[]) => demographic.filter(metric => keys.includes(metric.key)).map(metric => ({ name: metric.label, value: Number(String(metric.value).replace(/[^0-9]/g, '')) || 0, color: '#004B87' }));
+  const liveSexData = live ? demographicMetrics(['female', 'male', 'other']).map(m => ({ ...m, color: m.name.toLowerCase().includes('female') ? '#004B87' : m.name.toLowerCase().includes('male') ? '#FF6600' : '#9CA3AF' })) : undefined;
+
   const districtMetrics = live && participants?.metadata.dataSource === 'bigquery' ? participants.districts.flatMap(group => {
     const count = group.metrics.find(metric => metric.key === 'totalParticipants');
     return count ? [{ label: group.name, value: count.displayValue }] : [];
@@ -160,7 +165,7 @@ export default async function ExecutiveOverviewPage({
             action={<DrillthroughButton href="/dashboard/participant-reach" />}
             className="h-full"
           >
-            <ParticipantSexChart  />
+            <ParticipantSexChart data={liveSexData} />
           </ChartCard>
         </div>
 

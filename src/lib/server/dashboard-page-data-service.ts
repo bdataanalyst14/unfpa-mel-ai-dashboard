@@ -417,9 +417,10 @@ async function queryCombinedRoute(
   const common = [
     countMetric('Total events', asNumber(row.total_events)),
     countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
-      countMetric('Reportable participants', asNumber(row.reportable_participants)),
+    countMetric('Reportable participants', asNumber(row.reportable_participants)),
     countMetric('Projects', asNumber(row.projects)),
     countMetric('Implementing partners', asNumber(row.partners)),
+    countMetric('Districts covered', asNumber(row.districts)),
   ];
   if (route === 'executive-overview') {
     return liveData(route, [

@@ -61,7 +61,7 @@ export default async function GeographicCoveragePage({ searchParams }: {
     return fallback;
   };
 
-  const districtsCovered = getMetric('Active districts', combinedSummary.districtsCovered);
+  const districtsCovered = getMetric('Districts covered', combinedSummary.districtsCovered);
 
   return (
     <div className="space-y-6">
