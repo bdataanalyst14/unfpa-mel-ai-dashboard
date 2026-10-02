@@ -134,16 +134,16 @@ test('five filters synchronize, persist, navigate, reset, and never show stale d
   for (const [label, value, query] of filters) {
     await page.getByRole('combobox', { name: label }).selectOption(value);
     await expect.poll(() => new URL(page.url()).searchParams.get(query)).toBe(value);
-    await page.waitForLoadState('domcontentloaded');
+
     await page.getByRole('button', { name: 'Clear filters' }).click();
     await expect.poll(() => new URL(page.url()).searchParams.has(query)).toBe(false);
-    await page.waitForLoadState('domcontentloaded');
+
   }
 
   for (const [label, value, query] of filters) {
     await page.getByRole('combobox', { name: label }).selectOption(value);
     await expect.poll(() => new URL(page.url()).searchParams.get(query)).toBe(value);
-    await page.waitForLoadState('domcontentloaded');
+
   }
 
 
@@ -154,22 +154,22 @@ test('five filters synchronize, persist, navigate, reset, and never show stale d
 
   await page.getByRole('combobox', { name: 'Province' }).selectOption('Gandaki');
   await expect.poll(() => new URL(page.url()).searchParams.get('province')).toBe('Gandaki');
-  await page.waitForLoadState('domcontentloaded');
+
   await expect(page.getByText('No data available for the selected filters', { exact: false })).toBeVisible();
 
   await page.goBack();
-  await page.waitForLoadState('domcontentloaded');
+
   await expect(page.getByRole('combobox', { name: 'Province' })).toHaveValue('Koshi');
   await page.goForward();
-  await page.waitForLoadState('domcontentloaded');
+
   await expect(page.getByRole('combobox', { name: 'Province' })).toHaveValue('Gandaki');
 
   await page.goBack();
-  await page.waitForLoadState('domcontentloaded');
+
   await expect(page.getByRole('combobox', { name: 'Province' })).toHaveValue('Koshi');
   await page.getByRole('link', { name: 'Activity Detail' }).click();
   await expect(page).toHaveURL(/\/dashboard\/activity-detail/);
-  await page.waitForLoadState('domcontentloaded');
+
   for (const [, value, query] of filters) {
     expect(new URL(page.url()).searchParams.get(query)).toBe(value);
   }
