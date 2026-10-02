@@ -114,7 +114,7 @@ async function main() {
     const serviceCodePath = path.join(__dirname, '../../src/lib/server/dashboard-page-data-service.ts');
     if (fs.existsSync(serviceCodePath)) {
       const code = fs.readFileSync(serviceCodePath, 'utf8');
-      if (!code.includes("route === 'gbv-ocmc'") || !code.includes("return disabledData(route, 'GBV / OCMC is disabled in BigQuery mode")) {
+      if (!code.includes("route === 'gbv-ocmc'") || !code.includes("return disabledData(route, 'GBV/OCMC aggregate survivor and service reporting")) {
         logError('Live GBV route protection check is missing in dashboard-page-data-service.ts');
         process.exit(1);
       }

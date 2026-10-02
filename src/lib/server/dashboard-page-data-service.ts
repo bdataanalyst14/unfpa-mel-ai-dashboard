@@ -198,7 +198,7 @@ function mockData(route: DashboardRouteKey, filters: QueryFilters): DashboardPag
   ];
   const routeMetrics: Partial<Record<DashboardRouteKey, DashboardPageMetric[]>> = {
     'executive-overview': [
-      countMetric('Total events', summary.totalActivities),
+      countMetric('Reported activities', summary.totalActivities),
       countMetric('Reportable participants', summary.totalParticipants),
       countMetric('Female participants', summary.femaleParticipants),
       countMetric('Male participants', summary.maleParticipants),
@@ -407,7 +407,7 @@ async function queryCombinedRoute(
   if (!row || asNumber(row.matched_rows) === 0) return noData(route, filters, freshness);
 
   const common = [
-    countMetric('Total events', asNumber(row.total_events)),
+    countMetric('Reported activities', asNumber(row.total_events)),
     countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
     countMetric('Reportable participants', asNumber(row.reportable_participants)),
     countMetric('Projects', asNumber(row.projects)),
@@ -416,7 +416,7 @@ async function queryCombinedRoute(
   ];
   if (route === 'executive-overview') {
     return liveData(route, [
-      countMetric('Total events', asNumber(row.total_events)),
+      countMetric('Reported activities', asNumber(row.total_events)),
       countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
       countMetric('Reportable participants', asNumber(row.reportable_participants)),
       countMetric('Districts covered', asNumber(row.districts)),
@@ -441,7 +441,7 @@ async function queryCombinedRoute(
       countMetric('Provinces covered', asNumber(row.provinces)),
       countMetric('Districts covered', asNumber(row.districts)),
       countMetric('Palikas covered', asNumber(row.palikas)),
-      countMetric('Total events', asNumber(row.total_events)),
+      countMetric('Reported activities', asNumber(row.total_events)),
     ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
   }
   return liveData(route, common, filters, freshness, 'Live aggregate activity volume is shown. Planned-versus-completed progress, trends, evidence, and delayed-report components are disabled pending approved contracts.');
@@ -493,14 +493,52 @@ async function queryIndicators(filters: DashboardFilterState): Promise<Dashboard
   if (!row || asNumber(row.matched_rows) === 0) return noData('indicator-progress', filters, null);
   return liveData('indicator-progress', [
     countMetric('Indicators reported', asNumber(row.indicators)),
-    countMetric('Total events', asNumber(row.total_events)),
+    countMetric('Reported activities', asNumber(row.total_events)),
     countMetric('Total participants', asNumber(row.total_participants)),
     countMetric('Reportable participants', asNumber(row.reportable_participants)),
   ], filters, null, 'Published indicator aggregates. Participant counts are attendance records, not unique people. Targets, achievement percentages and performance status are unsupported by the frozen reporting contract.');
 }
 
-async function queryDataQuality(): Promise<DashboardPageData> {
-  return disabledData('data-quality', 'Data Quality Score and historical row totals are disabled pending a validated latest-snapshot calculation. Evidence and validation measures are not yet available.');
+async function queryDataQuality(filters: DashboardFilterState): Promise<DashboardPageData> {
+  const { combined, quality: dataQuality } = projectAndDataset();
+  const { where, params } = buildCombinedWhere(filters);
+  const [row] = await runSafeBigQuery<CountRow>(`
+    SELECT
+      COUNT(1) AS matched_rows,
+      COUNT(CASE WHEN NULLIF(TRIM(province1), '') IS NULL OR NULLIF(TRIM(district1), '') IS NULL THEN 1 END) AS missing_geo,
+      COUNT(CASE WHEN NULLIF(TRIM(project1), '') IS NULL THEN 1 END) AS missing_project,
+      COUNT(CASE WHEN NULLIF(TRIM(ip_name), '') IS NULL THEN 1 END) AS missing_partner
+    FROM ${combined}
+    ${where}
+  `, params);
+  
+  // We only take the latest timestamp from data_quality_summary to avoid summing historical snaps
+  const [dqRow] = await runSafeBigQuery<{ total_rows: string, issues: string, ts: string }>(`
+    SELECT
+      SUM(total_rows) AS total_rows,
+      SUM(records_with_quality_issue) AS issues,
+      MAX(run_timestamp) AS ts
+    FROM ${dataQuality}
+    WHERE run_timestamp = (SELECT MAX(run_timestamp) FROM ${dataQuality})
+  `);
+
+  const dqFreshness = dqRow && dqRow.ts ? asTimestamp(dqRow.ts) : null;
+  if (!row || asNumber(row.matched_rows) === 0) return noData('data-quality', filters, dqFreshness);
+  
+  const matched = asNumber(row.matched_rows ?? 0);
+  const missingGeo = asNumber(row.missing_geo ?? 0);
+  const missingProject = asNumber(row.missing_project ?? 0);
+  const missingPartner = asNumber(row.missing_partner ?? 0);
+  
+  const validDQ = dqRow && asNumber(dqRow.total_rows ?? 0) > 0 ? (100 - (asNumber(dqRow.issues ?? 0) / asNumber(dqRow.total_rows ?? 0) * 100)).toFixed(1) + '%' : 'N/A';
+
+  return liveData('data-quality', [
+    countMetric('Reported activities', matched),
+    countMetric('Geographic gaps', missingGeo, 'Activities missing province or district'),
+    countMetric('Project gaps', missingProject, 'Activities missing project association'),
+    countMetric('Partner gaps', missingPartner, 'Activities missing implementing partner'),
+    { label: 'Validated rows', value: validDQ, note: 'System-wide validation score from latest snapshot only' }
+  ], filters, dqFreshness, 'Transparent activity completeness metrics derived from live reporting views. A composite Data Quality Score is not used. Validation tracking and evidence linkages are disabled pending an approved integration contract.');
 }
 
 async function queryIpPerformance(filters: DashboardFilterState): Promise<DashboardPageData> {
@@ -524,7 +562,7 @@ async function queryIpPerformance(filters: DashboardFilterState): Promise<Dashbo
   return liveData('ip-performance', [
     countMetric('Reporting partners', asNumber(row.reporting_partners)),
     countMetric('Total submissions', asNumber(row.total_submissions)),
-    countMetric('Total events', asNumber(row.total_events)),
+    countMetric('Reported activities', asNumber(row.total_events)),
   ], filters, freshness, 'Live partner submission aggregates are shown. Rankings, quality scores, evidence, timeliness, and management actions are disabled pending approved contracts.');
 }
 
@@ -555,7 +593,7 @@ export async function getDashboardPageData(
   const route = normalizeDashboardRoute(routeInput);
   if (getDashboardDataMode() !== 'bigquery') return mockData(route, filters as QueryFilters);
   if (route === 'gbv-ocmc') {
-    return disabledData(route, 'GBV / OCMC is disabled in BigQuery mode pending explicit privacy, reporting, and suppression approval.');
+    return disabledData(route, 'GBV/OCMC aggregate survivor and service reporting is not yet available from the approved production data contract.');
   }
   const config = getBigQueryConfigStatus();
   if (!config.dataModeConfigurationValid || !config.configured) {
@@ -584,13 +622,14 @@ export async function getDashboardPageData(
       case 'indicator-progress':
         return await queryIndicators(validated.filters);
       case 'data-quality':
-        return await queryDataQuality();
+        return await queryDataQuality(validated.filters);
       case 'ip-performance':
         return await addAnalysis(await queryIpPerformance(validated.filters), validated.filters);
       default:
         return disabledData(route, 'This route is not approved for BigQuery activation.');
     }
   } catch (error) {
+    console.error('getDashboardPageData error:', error);
     if (error instanceof Error && error.message.includes('authorization failure')) {
       const result = unavailableData(route, 'Authorization failure: the approved dashboard identity cannot read the reporting views.');
       result.metadata.validationStatus = 'authorization_failure';

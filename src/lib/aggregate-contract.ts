@@ -10,5 +10,5 @@ export const activityColumns = [
   ['year', 'Year'], ['quarter', 'Quarter'], ['project', 'Project'],
   ['partner', 'IP / Partner'], ['province', 'Province'], ['district', 'District'],
   ['municipality', 'Municipality / LG'], ['activity', 'Activity code / name'],
-  ['events', 'Events'], ['participants', 'Participants'], ['reportable', 'Reportable participants'],
+  ['events', 'Reported activities'], ['participants', 'Participants'], ['reportable', 'Reportable participants'],
 ] as const;
