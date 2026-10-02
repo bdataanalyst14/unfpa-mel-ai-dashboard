@@ -12,13 +12,14 @@
 - **Push Main:** PASS
 
 ## Production Deployment
-- **Deployment Identifier:** `https://unfpa-mel-ai-dashboard-l8rs8j6wd-bdataanalyst14s-projects.vercel.app`
+- **Deployment Identifier:** `https://unfpa-mel-ai-dashboard-81rn7dm7n-bdataanalyst14s-projects.vercel.app`
 - **Production URL:** `https://unfpa-mel-ai-dashboard.vercel.app`
-- **Vercel Deployment:** PASS (Completed successfully)
-- **Production Smoke-test Results:** Authentication enforcement verified (redirects to `/auth/signin`). Deep smoke testing of live routes is blocked by NextAuth Google OAuth requirements.
+- **Vercel Deployment:** DEPLOYMENT VERIFIED (Successfully built and active)
+- **Automated Pipeline:** AUTOMATED QA VERIFIED (Local builds, verification scripts, and offline Playwright validation)
+- **Live Smoke Testing:** MANUAL AUTHENTICATED QA REQUIRED (Dashboard pages are protected by Google OAuth, which correctly blocks automated unauthorized access).
 
 ## Known Limitations
-- Smoke testing the live Vercel production deployment is limited to authentication verification, as automated Playwright scripts do not possess valid Google OAuth credentials to bypass the live authentication layer. 
+- Automated testing against the live Vercel production URL correctly results in a redirect to the Google OAuth signin page. Do not bypass or disable this security layer. The dashboard owner must log in via a browser to verify the production connection. 
 
 ## Clean Up
 - **Excluded Temporary Files:** `lint_base.txt`, `lint_current.txt`, `test_prod.js`, `test_prod2.js` were explicitly excluded from commits.
