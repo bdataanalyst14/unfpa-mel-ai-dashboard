@@ -6,7 +6,7 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    files: ['scripts/**/*.js', 'test_prod.js', 'test_prod2.js'],
+    files: ['scripts/**/*.js', 'scripts/**/*.cjs', 'tests/ui-harness/*.cjs', 'test_prod.js', 'test_prod2.js'],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
     },
@@ -17,6 +17,7 @@ const eslintConfig = defineConfig([
     '.codex/**',
     '.continue/**',
     '.next/**',
+    '.qa-production-ui/**',
     '.node-lts-test/**',
     '.npm/**',
     'clean_install/**',

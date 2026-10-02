@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import type { DashboardFilterOptions } from '@/lib/dashboard-filters';
 import { mainData } from '@/data/mock/main-data';
 import {
   DASHBOARD_FILTER_KEYS,
@@ -53,7 +54,7 @@ export function DashboardFilterProvider({
 }: {
   children: ReactNode;
   dataMode?: 'bigquery' | 'mock';
-  liveOptions?: ReturnType<typeof buildDashboardFilterOptions>;
+  liveOptions?: DashboardFilterOptions;
   filtersAvailable?: boolean;
   filterMessage?: string;
 }) {
@@ -72,6 +73,14 @@ export function DashboardFilterProvider({
       : parseDashboardFilters(new URLSearchParams(searchParams.toString()), options),
     [searchParams, options, dataMode],
   );
+  const cascadingOptions = useMemo(() => {
+    if (dataMode !== 'bigquery' || !liveOptions?.geography) return options;
+    const geography = liveOptions.geography.filter(row => !filters.province || row.province === filters.province);
+    return { ...options,
+      district: Array.from(new Set(geography.map(row => row.district).filter(Boolean))).sort(),
+      municipality: Array.from(new Set(geography.filter(row => !filters.district || row.district === filters.district).map(row => row.municipality).filter(Boolean))).sort(),
+    };
+  }, [dataMode, liveOptions, options, filters.province, filters.district]);
   const filteredActivities = useMemo(
     () => (dataMode === 'mock' ? filterActivities(mainData, filters) : []),
     [dataMode, filters],
@@ -119,10 +128,17 @@ export function DashboardFilterProvider({
   const hrefWithFilters = useCallback(
     (href: string) => {
       const [target, query = ''] = href.split('?');
-      const params = serializeDashboardFilters(filters, new URLSearchParams(query));
+      const targetFilters = { ...filters };
+      if (dataMode === 'bigquery') {
+        const route = target.split('/').pop();
+        for (const key of DASHBOARD_FILTER_KEYS) {
+          if (['indicator-progress', 'data-quality', 'gbv-ocmc', 'gbv-ocmc-summary'].includes(route ?? '') || (route === 'ip-performance' && key !== 'implementingPartner')) targetFilters[key] = '';
+        }
+      }
+      const params = serializeDashboardFilters(targetFilters, new URLSearchParams(query));
       return params.size ? `${target}?${params.toString()}` : target;
     },
-    [filters],
+    [filters, dataMode],
   );
 
   const value = useMemo(
@@ -133,13 +149,13 @@ export function DashboardFilterProvider({
       filterMessage: filterMessage ?? (dataMode === 'bigquery'
         ? 'Live filters use approved aggregate BigQuery data.'
         : 'Demo / mock data filters are active.'),
-      options,
+      options: cascadingOptions,
       filteredActivities,
       setFilter,
       clearFilters,
       hrefWithFilters,
     }),
-    [clearFilters, dataMode, filterMessage, filteredActivities, filters, filtersAvailable, hrefWithFilters, options, setFilter],
+    [clearFilters, dataMode, filterMessage, filteredActivities, filters, filtersAvailable, hrefWithFilters, cascadingOptions, setFilter],
   );
 
   return (

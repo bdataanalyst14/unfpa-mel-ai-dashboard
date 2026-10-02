@@ -207,7 +207,7 @@ function main() {
     const source = fs.readFileSync(gbvPagePath, 'utf8');
     assert.doesNotMatch(source, /^['"]use client['"]/);
     assert.doesNotMatch(source, /\bgbvServiceData\b/);
-    assert.match(source, /\bgetSafeGbvMockDashboardData\b/);
+    assert.match(source, /BigQueryRouteView/);
   });
 
   check('GBV safe transport applies count suppression before chart serialization', () => {
@@ -258,7 +258,7 @@ function main() {
     const csvSource = fs.readFileSync(csvExportPath, 'utf8');
     assert.match(pageSource, /onClick=\{exportFilteredRows\}/);
     assert.match(pageSource, /\bcreateCsv\b/);
-    assert.match(csvSource, /\^\[=\+\\-@\]/);
+    assert.ok(csvSource.includes('[=+\\-@]'));
     assert.match(csvSource, /replace\(\/"\/g,\s*'""'\)/);
   });
 

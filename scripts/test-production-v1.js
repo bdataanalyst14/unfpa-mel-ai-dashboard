@@ -29,6 +29,8 @@ async function main() {
   let fail = false;
   let empty = false;
   let invalid = false;
+  let small = false;
+  let oversized = false;
   const dimensions = { reporting_year1: '2029', report_quarter1: 'Q4', project1: 'Live only project', ip_name: 'Live partner', province1: 'Live province', district1: 'Live district', palika1: 'Live palika' };
   const totals = { activity: 'Approved activity', indicators: 5, matched_rows: 2, total_participants: 137, reportable_participants: 111, total_events: 9, female_participants: 70, male_participants: 63, other_participants: 4, participants_with_disability: 8, projects: 6, partners: 7, provinces: 5, districts: 8, palikas: 12, freshness_timestamp: '2026-09-07T00:00:00Z', total_rows: 200, records_with_quality_issue: 20, reporting_partners: 7, total_submissions: 10 };
   const service = load('src/lib/server/dashboard-page-data-service.ts', {
@@ -48,6 +50,7 @@ async function main() {
         }
         if (fail && !sql.includes('SELECT DISTINCT')) throw new Error('private failure');
         if (sql.includes('SELECT DISTINCT')) return [dimensions];
+        if (sql.includes(' AS events')) return Array.from({length: oversized ? 10001 : 1}, () => ({ label: 'Approved activity', activity: 'Approved activity', events: small ? 3 : 17, participants: small ? 4 : 137, reportable: small ? 2 : 111, districts: 5, projects: 6 }));
         return [{ ...totals, matched_rows: empty ? 0 : 2, total_participants: invalid ? null : 137 }];
       },
     },
@@ -79,6 +82,29 @@ async function main() {
     assert.deepEqual(failed.metrics, []);
     fail = false;
   }
+  small = true;
+  const detail = await service.getDashboardPageData('activity-detail', selected);
+  assert.equal(detail.activityRows[0].events, '<5');
+  assert.equal(detail.activityRows[0].participants, '<5');
+  assert.equal(detail.activityRows[0].reportable, '<5');
+  assert.deepEqual(calls.at(-1).params, selected);
+  assert.doesNotMatch(calls.at(-1).sql, /female|male|name_list|survivor|beneficiary|SELECT \*/i);
+  const grouped = await service.getDashboardPageData('activity-progress', selected);
+  assert.equal(grouped.sections.length, 4);
+  assert.ok(grouped.sections.every(section => section.rows[0].events === '<5'));
+  small = false;
+  oversized = true;
+  const blockedExport = await service.getDashboardPageData('activity-detail');
+  assert.equal(blockedExport.metadata.responseStatus, 422);
+  assert.equal(blockedExport.activityRows, undefined);
+  oversized = false;
+  const management = await service.getDashboardPageData('management-decision-centre', selected);
+  assert.equal(management.metadata.componentState, 'live_bigquery');
+  assert.equal(management.sections.length, 4);
+  const csv = load('src/lib/csv-export.ts').createCsv(['Activity'], [['=SUM(A1)'], [' \t@SUM(A1)'], ['A,"B"']]);
+  assert.ok(csv.includes("'=SUM"));
+  assert.ok(csv.includes("' \t@SUM"));
+  assert.ok(csv.includes('A,""B""'));
   for (const filters of [{ project: 'Unknown' }, { district: 'Any' }, { municipality: 'Any' }, { year: ['2029', '2028'] }]) {
     const count = calls.length;
     assert.equal((await service.getDashboardPageData('executive-overview', filters)).metadata.responseStatus, 422);
@@ -87,7 +113,7 @@ async function main() {
   for (const route of ['data-quality', 'ip-performance']) {
     assert.equal((await service.getDashboardPageData(route, selected)).metadata.responseStatus, 422);
   }
-  for (const route of ['management-decision-centre', 'gbv-ocmc']) {
+  for (const route of ['gbv-ocmc']) {
     const count = calls.length;
     assert.equal((await service.getDashboardPageData(route)).metadata.responseStatus, 409);
     assert.equal(calls.length, count);
@@ -116,7 +142,7 @@ async function main() {
     const source = fs.readFileSync(path.join(root, `src/app/dashboard/${route}/page.tsx`), 'utf8');
     assert.doesNotMatch(source, /^'use client'/);
     assert.match(source, /getDashboardDataMode/);
-    assert.match(source, /getDashboardPageData/);
+    assert.match(source, /BigQueryRouteView/);
 
   }
   for (const state of ['live_bigquery', 'no_data', 'unavailable', 'disabled_pending_validation']) {
@@ -129,15 +155,15 @@ async function main() {
       '@/lib/server/participant-metrics': { getParticipantMetrics: async filters => { sequence.push(['participants', filters]); return { metadata: { dataSource: 'bigquery' } }; } },
       './production-dashboard-view': { default: marker, __esModule: true },
     });
-    const rendered = await view.default({ route: 'geographic-coverage', searchParams: selected });
+    const rendered = await view.default({ route: 'participant-reach', searchParams: selected });
     assert.equal(rendered.type, marker);
-    assert.deepEqual(sequence[0], ['auth', '/dashboard/geographic-coverage']);
-    assert.deepEqual(sequence[1], ['data', 'geographic-coverage', selected]);
+    assert.deepEqual(sequence[0], ['auth', '/dashboard/participant-reach']);
+    assert.deepEqual(sequence[1], ['data', 'participant-reach', selected]);
     assert.equal(sequence.length, state === 'live_bigquery' ? 3 : 2);
     if (state === 'live_bigquery') assert.deepEqual(sequence[2], ['participants', selected]);
     sequence.length = 0;
     await view.default({ route: 'management-decision-centre', searchParams: selected });
-    assert.deepEqual(sequence, [['auth', '/dashboard/management-decision-centre'], ['data', 'executive-overview', selected]]);
+    assert.deepEqual(sequence, [['auth', '/dashboard/management-decision-centre'], ['data', 'management-decision-centre', selected]]);
   }
   const deniedView = load('src/components/dashboard/bigquery-route-view.tsx', {
     '@/lib/server/auth-guard': { requireDashboardPageAccess: async () => { throw new Error('Access denied'); } },

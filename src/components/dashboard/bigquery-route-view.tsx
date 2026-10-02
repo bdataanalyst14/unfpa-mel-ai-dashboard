@@ -6,8 +6,8 @@ import ProductionDashboardView from './production-dashboard-view';
 
 export default async function BigQueryRouteView({ route, searchParams }: { route: DashboardRouteKey; searchParams?: ExecutiveOverviewFilters }) {
   await requireDashboardPageAccess(`/dashboard/${route === 'gbv-ocmc' ? 'gbv-ocmc-summary' : route}`);
-  const data = await getDashboardPageData(route === 'management-decision-centre' ? 'executive-overview' : route, searchParams);
-  const participants = data.metadata.componentState === 'live_bigquery' && ['executive-overview', 'participant-reach', 'geographic-coverage'].includes(route)
+  const data = await getDashboardPageData(route, searchParams);
+  const participants = data.metadata.componentState === 'live_bigquery' && route === 'participant-reach'
     ? await getParticipantMetrics(data.metadata.filtersApplied) : undefined;
   return <ProductionDashboardView route={route} data={data} participants={participants} />;
 }

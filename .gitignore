@@ -62,3 +62,5 @@ pnpm-debug.log*
 Thumbs.db
 .vercel
 .env*
+
+.qa-production-ui/

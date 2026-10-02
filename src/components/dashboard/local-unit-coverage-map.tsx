@@ -63,7 +63,7 @@ export default function LocalUnitCoverageMap({ districts = [], selectedDistrict 
           stroke={selectedDistrict && normalize(district) === normalize(selectedDistrict) ? '#FF6600' : 'white'}
           strokeWidth={selectedDistrict && normalize(district) === normalize(selectedDistrict) ? '0.9' : '0.35'}
         >
-          <title>{[district, province].filter(Boolean).join(', ')} — district attendance: {value ?? 'Not available'}. Boundary only; no local-unit count.</title>
+          <title>{[district, province].filter(Boolean).join(', ')} - district events: {value ?? 'Not available'}. Boundary only; no local-unit count.</title>
         </path>
       );
     });
@@ -97,30 +97,30 @@ export default function LocalUnitCoverageMap({ districts = [], selectedDistrict 
   if (compact) {
     return <div className="space-y-2 text-[11px] text-gray-600">
       <div className="aspect-[2/1] w-full">{renderedMap}</div>
-      <p>{geojson.features.length.toLocaleString()} boundary features · District aggregates only</p>
-      <p>Grey: unavailable or suppressed. Activity density is not available.</p>
+      <p>{geojson.features.length.toLocaleString()} boundary features  /  District aggregates only</p>
+      <p>Activity density by district. Grey: unavailable or suppressed.</p>
     </div>;
   }
 
   return (
     <div className="flex h-full min-h-[220px] flex-col rounded-lg border border-gray-100 bg-gray-50/70 p-3">
       <div className="text-xs text-gray-600">
-        <p className="font-semibold text-[#004B87]">District participant reach · Aggregated privacy view</p>
-        {!compact && <p className="mt-1">Activity density is not yet available. No participant locations or local-unit counts are plotted.</p>}
+        <p className="font-semibold text-[#004B87]">District activity density  /  Aggregated privacy view</p>
+        {!compact && <p className="mt-1">Colour represents reported district event counts. No participant locations or local-unit counts are plotted.</p>}
         {selectedDistrict && <p className="mt-1">Selected district: {selectedDistrict}</p>}
       </div>
       <div className="aspect-[2/1] w-full">{renderedMap}</div>
       <div className="space-y-2 border-t border-gray-200 pt-3 text-[11px] text-gray-600">
-        <p className="font-semibold">Reach density legend · district attendance counts</p>
+        <p className="font-semibold">Activity density legend  /  district event counts</p>
         <div className="flex flex-wrap gap-x-3 gap-y-2">
-          {[['#F8FAFC', '0'], ['#93C5FD', '5–99'], ['#3B82F6', '100–999'], ['#004B87', '1,000+'], ['#E2E8F0', 'Unavailable / suppressed']].map(([color, label]) => (
+          {[['#F8FAFC', '0'], ['#93C5FD', '5-99'], ['#3B82F6', '100-999'], ['#004B87', '1,000+'], ['#E2E8F0', 'Unavailable / suppressed']].map(([color, label]) => (
             <span key={label} className="flex items-center gap-1"><span className="h-3 w-3 rounded-sm border border-slate-300" style={{ backgroundColor: color }} />{label}</span>
           ))}
         </div>
-        <p>{geojson.features.length.toLocaleString()} boundary features{!compact && ' · Counts apply to entire districts, not individual polygons.'}</p>
-        {!compact && <p>Counts 1–4 remain suppressed. Grey does not mean zero coverage.</p>}
-        {!districts.length && <p>District reach is not available for this selection; geographic boundaries remain visible.</p>}
-        {!compact && districts.some(item => !geojson.features.some(feature => normalize(String(feature.properties.DISTRICT ?? '')) === normalize(item.label))) && <p>Some district names do not match the boundary asset and are listed only in the supporting chart.</p>}
+        <p>{geojson.features.length.toLocaleString()} boundary features{!compact && '  /  Counts apply to entire districts, not individual polygons.'}</p>
+        {!compact && <p>Counts 1-4 remain suppressed. Grey does not mean zero coverage.</p>}
+        {!districts.length && <p>District event volume is not available for this selection; geographic boundaries remain visible.</p>}
+        {!compact && districts.some(item => !geojson.features.some(feature => normalize(String(feature.properties.DISTRICT ?? '')) === normalize(item.label))) && <p>Some district names do not match the boundary asset and cannot be coloured on this map.</p>}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import 'server-only';
+import type { AggregateSection, AggregateRow } from '@/lib/aggregate-contract';
 
 import {
   getBigQueryConfigStatus,
@@ -54,9 +55,12 @@ export type DashboardPageData = {
   pageName: string;
   metrics: DashboardPageMetric[];
   metadata: DashboardPageMetadata;
+  sections?: AggregateSection[];
+  activityRows?: AggregateRow[];
 };
 
-export type DashboardFilterOptions = Record<DashboardFilterKey, string[]>;
+import type { DashboardFilterOptions } from '@/lib/dashboard-filters';
+export type { DashboardFilterOptions } from '@/lib/dashboard-filters';
 
 type CountRow = Record<string, number | string | { value?: string } | null>;
 type QueryFilters = Record<string, string | string[] | undefined>;
@@ -351,8 +355,9 @@ export async function getLiveDashboardFilterOptions(): Promise<DashboardFilterOp
       palika1
     FROM ${combined}
     ORDER BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1
-    LIMIT 10000
+    LIMIT 10001
   `);
+  if (rows.length > 10000) throw new Error('Filter options exceed response bound');
   const values = (selector: (row: (typeof rows)[number]) => string | null): string[] =>
     Array.from(new Set(rows.map(selector).filter((value): value is string => Boolean(value?.trim())))).sort(
       (left, right) => left.localeCompare(right, undefined, { numeric: true }),
@@ -365,32 +370,19 @@ export async function getLiveDashboardFilterOptions(): Promise<DashboardFilterOp
     province: values((row) => row.province1),
     district: values((row) => row.district1),
     municipality: values((row) => row.palika1),
+    geography: rows.map(row => ({ province: row.province1 ?? '', district: row.district1 ?? '', municipality: row.palika1 ?? '' })),
   };
 }
 
 async function queryCombinedRoute(
   route: Extract<
     DashboardRouteKey,
-    'executive-overview' | 'activity-progress' | 'activity-detail' | 'participant-reach' | 'geographic-coverage'
+    'executive-overview' | 'activity-progress' | 'activity-detail' | 'participant-reach' | 'geographic-coverage' | 'management-decision-centre'
   >,
   filters: DashboardFilterState,
 ): Promise<DashboardPageData> {
   const { combined, ipStatus } = projectAndDataset();
   const { where, params } = buildCombinedWhere(filters);
-  if (route === 'activity-detail') {
-    const rows = await runSafeBigQuery<CountRow>(`
-      SELECT activity1 AS activity, COUNT(1) AS matched_rows,
-        COALESCE(SUM(event_count), 0) AS total_events,
-        COALESCE(SUM(total_participants), 0) AS total_participants
-      FROM ${combined} ${where}
-      GROUP BY activity1 ORDER BY activity1 LIMIT 100
-    `, params);
-    if (!rows.length) return noData(route, filters, null);
-    return liveData(route, rows.flatMap(row => [
-      countMetric(`${typeof row.activity === 'string' && row.activity ? row.activity : 'Unspecified activity'} - events`, asNumber(row.total_events)),
-      countMetric(`${typeof row.activity === 'string' && row.activity ? row.activity : 'Unspecified activity'} - participants`, asNumber(row.total_participants)),
-    ]), filters, null, 'Aggregated activity totals from the published CombinedSummary. Up to 100 activity groups are shown; participant counts are attendance records, not unique people. Individual records, evidence and exports are unavailable.');
-  }
 
   const [row] = await runSafeBigQuery<CountRow>(`
     SELECT
@@ -453,6 +445,38 @@ async function queryCombinedRoute(
     ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
   }
   return liveData(route, common, filters, freshness, 'Live aggregate activity volume is shown. Planned-versus-completed progress, trends, evidence, and delayed-report components are disabled pending approved contracts.');
+}
+
+async function addAnalysis(data: DashboardPageData, filters: DashboardFilterState): Promise<DashboardPageData> {
+  if (data.metadata.componentState !== 'live_bigquery' || data.route === 'participant-reach') return data;
+  const { combined } = projectAndDataset();
+  const { where, params } = buildCombinedWhere(filters);
+  const counts = 'COALESCE(SUM(event_count), 0) AS events, COALESCE(SUM(total_participants), 0) AS participants, COALESCE(SUM(total_reportable_participants), 0) AS reportable';
+  const safeRow = (row: CountRow): AggregateRow => Object.fromEntries(Object.entries(row).map(([key, value]) => [key,
+    ['events', 'participants', 'reportable', 'districts', 'projects'].includes(key) ? suppressCount(asNumber(value)).displayValue : typeof value === 'string' && value.trim() ? value : 'Unspecified',
+  ]));
+  if (data.route === 'activity-detail') {
+    const dimensions = 'reporting_year1 AS year, report_quarter1 AS quarter, project1 AS project, ip_name AS partner, province1 AS province, district1 AS district, palika1 AS municipality, activity1 AS activity';
+    const rows = await runSafeBigQuery<CountRow>(`SELECT ${dimensions}, ${counts} FROM ${combined} ${where}
+      GROUP BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1, activity1
+      ORDER BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1, activity1 LIMIT 10001`, params);
+    if (rows.length > 10000) return disabledData(data.route, 'This selection exceeds 10,000 aggregate groups. Narrow the filters before viewing or exporting; no partial export is provided.', 422);
+    data.activityRows = rows.map(safeRow);
+  } else {
+    const dimensions = data.route === 'geographic-coverage'
+      ? [['province', 'province1', 'Events by province'], ['district', 'district1', 'Events by district']]
+      : data.route === 'ip-performance'
+        ? [['partner', 'ip_name', 'Partner implementation volume']]
+        : [['partner', 'ip_name', 'Events by partner'], ['project', 'project1', 'Events by project'], ['activity', 'activity1', 'Activity composition'], ['district', 'district1', 'Events by district']];
+    data.sections = await Promise.all(dimensions.map(async ([key, column, title]) => {
+      const rows = await runSafeBigQuery<CountRow>(`SELECT COALESCE(NULLIF(${column}, ''), 'Unspecified') AS label, ${counts}${key === 'partner' ? ", COUNT(DISTINCT NULLIF(district1, '')) AS districts, COUNT(DISTINCT NULLIF(project1, '')) AS projects" : ''}
+        FROM ${combined} ${where} GROUP BY ${column} ORDER BY events DESC, label LIMIT 10001`, params);
+      if (rows.length > 10000) throw new Error('Aggregate grouping exceeds response bound');
+      return { key, title, rows: rows.map(safeRow) };
+    }));
+  }
+  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. Counts 1 to 4 are withheld. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
+  return data;
 }
 
 async function queryIndicators(filters: DashboardFilterState): Promise<DashboardPageData> {
@@ -533,9 +557,6 @@ export async function getDashboardPageData(
   if (route === 'gbv-ocmc') {
     return disabledData(route, 'GBV / OCMC is disabled in BigQuery mode pending explicit privacy, reporting, and suppression approval.');
   }
-  if (route === 'management-decision-centre') {
-    return disabledData(route, 'Management Decision Centre is disabled in BigQuery mode. Prototype and AI-generated insights are not approved for Production V1.');
-  }
   const config = getBigQueryConfigStatus();
   if (!config.dataModeConfigurationValid || !config.configured) {
     return unavailableData(route, 'BigQuery is unavailable or its production-readiness configuration is invalid. No demo or mock data is shown.');
@@ -556,13 +577,16 @@ export async function getDashboardPageData(
       case 'activity-detail':
       case 'participant-reach':
       case 'geographic-coverage':
-        return await queryCombinedRoute(route, validated.filters);
+      case 'management-decision-centre': {
+        const result = await queryCombinedRoute(route, validated.filters);
+        return await addAnalysis(result, validated.filters);
+      }
       case 'indicator-progress':
         return await queryIndicators(validated.filters);
       case 'data-quality':
         return await queryDataQuality();
       case 'ip-performance':
-        return await queryIpPerformance(validated.filters);
+        return await addAnalysis(await queryIpPerformance(validated.filters), validated.filters);
       default:
         return disabledData(route, 'This route is not approved for BigQuery activation.');
     }

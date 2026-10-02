@@ -153,3 +153,5 @@ export function preserveDashboardFilterParams(
   }
   return params;
 }
+
+export type DashboardFilterOptions = Record<DashboardFilterKey, string[]> & { geography?: Array<{ province: string; district: string; municipality: string }> };

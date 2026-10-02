@@ -32,7 +32,7 @@ function MetricPanel({ title, metrics, subtitle }: { title: string; metrics: Das
 function ManagementAttention({ data }: { data: DashboardPageData }) {
   const live = data.metadata.componentState === 'live_bigquery';
   const value = (label: string) => data.metrics.find(metric => metric.label === label)?.value ?? 'Not available';
-  return <Panel title="Management Attention" subtitle="Advisory only · Human review required">
+  return <Panel title="Management Attention" subtitle="Advisory only  /  Human review required">
     <div className="grid gap-5 lg:grid-cols-3">
       <div><h3 className="text-xs font-semibold text-[#004B87]">Operational summary</h3>
         <p className="mt-2 text-sm leading-relaxed text-gray-700">{live
@@ -50,120 +50,69 @@ function ManagementAttention({ data }: { data: DashboardPageData }) {
   </Panel>;
 }
 
-const pendingPanels: Partial<Record<DashboardRouteKey, Array<[string, string]>>> = {
-  'activity-progress': [
-    ['Programme Progress by Project', 'Planned and completed activity targets are not yet available.'],
-    ['Progress by IP / Partner', 'Partner progress against plans is not yet available.'],
-    ['Activity Type', 'Event-type classifications are not supported by the current reporting data.'],
-    ['Monthly Activity Trend', 'A validated event time series is not yet available.'],
-    ['Delayed Activities & Evidence', 'Due dates, completion status and evidence validation are not yet available.'],
-  ],
-  'indicator-progress': [
-    ['Targets vs. Achievements', 'Approved targets and achievement definitions are not connected.'],
-    ['Indicator Performance Status', 'On-track and off-track status cannot be assigned without approved targets.'],
-    ['Indicator Detail', 'Only combined indicator totals are available; indicator-level progress remains unavailable.'],
-  ],
-  'ip-performance': [
-    ['IP Activity Volume Ranking', 'The current response contains combined partner totals, not a partner ranking.'],
-    ['Participant Reach by IP', 'Partner-level attendance counts are not available in this response.'],
-    ['Evidence Completeness Status', 'Evidence completeness by partner is not yet available.'],
-    ['Data Quality Scorecard', 'Quality scores are disabled pending validated latest-snapshot calculations.'],
-    ['Partner Follow-up', 'No approved overdue-report or corrective-action records are available.'],
-  ],
-  'data-quality': [
-    ['IP Data Quality Scores', 'Scores remain disabled pending a validated latest-snapshot calculation.'],
-    ['Evidence Completeness', 'Approved evidence completeness measures are not yet available.'],
-    ['Validation Trend', 'Comparable validated snapshots are not yet available.'],
-    ['Failed Checks', 'No approved check-level results are available.'],
-    ['Correction Tracker', 'No approved correction statuses or assigned follow-up actions are available.'],
-  ],
-};
-
 export default function ProductionDashboardView({ route, data, participants }: { route: DashboardRouteKey; data: DashboardPageData; participants?: ParticipantData }) {
   const live = data.metadata.componentState === 'live_bigquery';
   const metrics = live ? data.metrics : [];
   const select = (...labels: string[]) => metrics.filter(metric => labels.includes(metric.label));
   const demographic = live && participants?.metadata.dataSource === 'bigquery' ? participants.demographics.flatMap(group => group.metrics) : [];
   const demographicMetrics = (keys: string[]) => demographic.filter(metric => keys.includes(metric.key)).map(metric => ({ label: metric.label, value: metric.displayValue }));
-  const districtMetrics = live && participants?.metadata.dataSource === 'bigquery' ? participants.districts.flatMap(group => {
-    const count = group.metrics.find(metric => metric.key === 'totalParticipants');
-    return count ? [{ label: group.name, value: count.displayValue }] : [];
-  }) : [];
-  const districtRanking = [...districtMetrics].sort((a, b) => {
-    const count = (value: string) => /^\d+$/.test(value) ? Number(value) : -1;
-    return count(b.value) - count(a.value) || a.label.localeCompare(b.label);
-  }).slice(0, 10);
+  const sections = live ? data.sections ?? [] : [];
+  const districtMetrics = sections.find(section => section.key === 'district')?.rows.map(row => ({ label: row.label, value: row.events })) ?? [];
   const map = <LocalUnitCoverageMap districts={districtMetrics} selectedDistrict={data.metadata.filtersApplied.district} compact={route === 'executive-overview'} />;
+  const analysis = (keys: string[]) => sections.filter(section => keys.includes(section.key)).map(section => <MetricPanel key={section.key} title={section.title} subtitle={`Largest reported event volumes; up to ${route === 'executive-overview' ? 5 : 10} groups. Volume is not a performance score.`} metrics={section.rows.slice(0, route === 'executive-overview' ? 5 : 10).map(row => ({ label: row.label, value: row.events }))} />);
   const sex = <MetricPanel title="Participant Profile by Sex" subtitle="Attendance counts; values below five are withheld." metrics={select('Female participants', 'Male participants', 'Other participants')} />;
   const kpis = route === 'executive-overview' || route === 'management-decision-centre'
-    ? select('Total events', 'Total participants', 'Districts covered', 'Implementing partners') : metrics;
+    ? select('Total events', 'Total participants', 'Districts covered', 'Implementing partners') : route === 'activity-detail' ? select('Total events', 'Total participants', 'Reportable participants', 'Implementing partners') : route === 'participant-reach' ? select('Total participants', 'Reportable participants', 'Participants with disability') : metrics;
   const timestamp = data.metadata.freshnessTimestamp;
   const parsed = timestamp ? new Date(timestamp) : null;
   const freshness = parsed && !Number.isNaN(parsed.getTime()) ? parsed.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kathmandu' }) : 'Not available';
   return <div className="space-y-6">
-    <PageHeader title={route === 'management-decision-centre' ? 'Management Decision Centre' : data.pageName}
+    <PageHeader title={route === 'management-decision-centre' ? 'Management Decision Centre' : route === 'ip-performance' ? 'Partner Implementation & Reporting' : data.pageName}
       subtitle={route === 'management-decision-centre' ? 'Programme review and evidence-based follow-up. Advisory only; human review required.' : 'Programme monitoring from approved aggregate reporting data.'}
       action={route === 'executive-overview' ? <DrillthroughButton href="/dashboard/management-decision-centre" label="Decision Centre" /> : undefined} />
-    {!live && <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
-      <p className="font-semibold">{data.metadata.componentState === 'no_data' ? 'No approved aggregate data matches the selected filters' : data.metadata.componentState === 'unavailable' ? 'Temporarily unavailable' : route === 'gbv-ocmc' ? 'Privacy blocked' : 'Data not yet available'}</p>
-      <p className="mt-1 text-xs leading-relaxed">{data.metadata.message}</p>
-    </div>}
-    {route !== 'activity-detail' && route !== 'gbv-ocmc' && <section aria-label="Aggregate metrics" className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${route === 'participant-reach' || route === 'ip-performance' ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
-      {kpis.map(item => <KpiCard key={item.label} label={item.label} value={item.value} change={item.label === 'Total participants' ? 'Attendance records, not unique people' : undefined} />)}
-      {!kpis.length && (route === 'data-quality' ? ['Data Quality Score', 'Rows checked', 'Rows with quality issue', 'Evidence completeness'] : ['Total events', 'Total participants']).map(label => <KpiCard key={label} label={label} value="Not available" change={route === 'data-quality' ? 'Disabled pending validation' : 'No approved values for this selection'} />)}
-    </section>}
-    {route === 'executive-overview' && <>
-      <div className="grid gap-6 xl:grid-cols-3">
-        <Pending title="Programme Progress by Project" reason="Planned versus completed activity totals are not yet available." />
-        <Pending title="Indicator Performance Status" reason="Approved targets and achievement status are not yet available." />
-        <Panel title="Geographic Coverage" subtitle="District reach on the Nepal boundary layer">{map}<div className="mt-3"><DrillthroughButton href="/dashboard/geographic-coverage" /></div></Panel>
+    {['indicator-progress', 'data-quality', 'gbv-ocmc'].includes(route) ? <Panel title={route === 'indicator-progress' ? 'Pending indicator linkage validation' : route === 'data-quality' ? 'Data Quality calculation pending' : 'GBV / OCMC aggregate reporting'}>
+      <div className="max-w-3xl space-y-3 text-sm leading-relaxed text-gray-700">
+        {route === 'indicator-progress' ? <><p>Indicator-level progress is not yet available for production reporting. Activity-to-indicator linkage and target registry validation are in progress.</p><p className="font-semibold">INDICATOR LINKAGE VALIDATION REMAINS REQUIRED.</p><p>Activity totals are not indicator achievement. Targets, reporting periods and outcome/output mappings require programme validation before performance reporting is enabled.</p></> : route === 'data-quality' ? <><p>Data Quality Score is not currently calculated pending validated latest-snapshot logic.</p><p>Evidence integration and validation tracking are pending. Historical snapshots cannot be added together to calculate a current quality score.</p></> : <><p>GBV/OCMC aggregate reporting is not yet available in the production dashboard.</p><p>Only approved aggregate information will be displayed. Survivor-level records are never displayed. Activation requires approved aggregate reporting and suppression/privacy controls.</p></>}
       </div>
-      <div className="grid gap-6 xl:grid-cols-3">
-        {sex}
-        <Panel title="IP / Partner Attention"><p className="text-sm leading-relaxed text-gray-600">{live ? `${select('Implementing partners')[0]?.value ?? 'Not available'} implementing partners appear in the selected reporting scope.` : 'Partner reporting totals are not available for this selection.'} Partner risk and performance rankings remain unavailable.</p><div className="mt-4"><DrillthroughButton href="/dashboard/ip-performance" label="Review IP Performance" /></div></Panel>
-        <Pending title="Data Quality & Evidence Attention" reason="Data Quality Score is disabled. Review validated evidence before programme sign-off." />
-      </div>
-      <ManagementAttention data={data} />
+    </Panel> : <>
+      {!live && <Panel title={data.metadata.componentState === 'no_data' ? 'No production data available for these filters' : 'No production data available'}><p role="status" className="text-sm text-gray-600">{data.metadata.message}</p></Panel>}
+      {live && <>
+        <section aria-label="Aggregate metrics" className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+          {kpis.map(item => <KpiCard key={item.label} label={item.label} value={/^\d+$/.test(item.value) ? Number(item.value) : item.value} className="min-w-0 break-words !p-4" change={item.label.toLowerCase().includes('participants') ? 'Attendance records, not unique people' : 'Selected reporting scope'} />)}
+          {route === 'participant-reach' && <KpiCard className="min-w-0 break-words !p-4" label="Female Share" value={(() => {
+            const female = select('Female participants')[0]?.value;
+            const totals = select('Female participants', 'Male participants', 'Other participants');
+            if (!female || totals.length !== 3 || totals.some(item => !/^\d+$/.test(item.value))) return 'Privacy-restricted';
+            const denominator = totals.reduce((sum, item) => sum + Number(item.value), 0);
+            return denominator ? `${(Number(female) / denominator * 100).toFixed(1)}%` : 'N/A';
+          })()} change="Of reported sex-disaggregated attendance" />}
+        </section>
+        {route === 'executive-overview' && <>
+          <div className="grid gap-6 xl:grid-cols-2"><Panel title="Geographic Coverage" subtitle="Activity density: reported events by district">{map}</Panel><div className="space-y-4">{sex}<Panel title="Partner reporting overview"><p className="text-sm text-gray-600">{select('Implementing partners')[0]?.value} partners report activity in the selected scope.</p><div className="mt-3"><DrillthroughButton href="/dashboard/ip-performance" label="Review partner implementation" /></div></Panel></div></div>
+          <div className="grid gap-6 xl:grid-cols-2">{analysis(['project', 'partner'])}</div>
+          <ManagementAttention data={data} />
+        </>}
+        {route === 'activity-progress' && <><div className="grid gap-6 xl:grid-cols-2">{analysis(['partner', 'project', 'district', 'activity'])}</div>
+          <MetricPanel title="Participant volume by activity" subtitle="Top 10 by attendance; not unique people or indicator achievement." metrics={[...(sections.find(section => section.key === 'activity')?.rows ?? [])].sort((a, b) => (/^\d+$/.test(b.participants) ? Number(b.participants) : -1) - (/^\d+$/.test(a.participants) ? Number(a.participants) : -1)).slice(0, 10).map(row => ({label: row.label, value: row.participants}))} />
+          <DrillthroughButton href="/dashboard/activity-detail" label="Explore activity table and download CSV" /></>}
+        {route === 'participant-reach' && <div className="grid gap-6 xl:grid-cols-2">
+          {sex}
+          <MetricPanel title="Age Profile" subtitle="Source age bands can overlap; do not add them together." metrics={demographicMetrics(['below_15', 'age_15_19', 'age_16_24', 'age_20_24', 'age_25_49', 'age_25_54', 'age_50_and_above', 'age_55_and_above'])} />
+          <MetricPanel title="Social Inclusion Profile" subtitle="Published caste and ethnicity categories." metrics={demographicMetrics(['hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast'])} />
+          <MetricPanel title="Disability Profile" metrics={demographicMetrics(['withdisability', 'nodisability'])} />
+        </div>}
+        {route === 'geographic-coverage' && <><Panel title="Nepal Programme Coverage" subtitle="Activity density: district event counts. Local-unit polygons show district aggregates only.">{map}</Panel><div className="grid gap-6 xl:grid-cols-2">{analysis(['province', 'district'])}</div></>}
+        {route === 'ip-performance' && <><div className="grid gap-6 xl:grid-cols-2">{analysis(['partner'])}<MetricPanel title="Participants by partner" subtitle="Attendance volume, not a quality or performance score." metrics={sections[0]?.rows.map(row => ({label: row.label, value: row.participants})) ?? []} /></div><Panel title="Partner comparison" subtitle="Published submission totals above and combined implementation totals below have separate aggregation bases."><div className="overflow-x-auto"><table className="w-full min-w-[700px] text-left text-sm"><thead><tr>{['Partner', 'Events', 'Participants', 'Reportable participants', 'Districts', 'Projects'].map(label => <th key={label} className="p-3">{label}</th>)}</tr></thead><tbody>{sections[0]?.rows.map(row => <tr key={row.label} className="border-t"><th className="p-3 font-medium">{row.label}</th><td className="p-3">{row.events}</td><td className="p-3">{row.participants}</td><td className="p-3">{row.reportable}</td><td className="p-3">{row.districts ?? 'N/A'}</td><td className="p-3">{row.projects ?? 'N/A'}</td></tr>)}</tbody></table></div></Panel></>}
+        {route === 'activity-detail' && <AggregateActivityTable key={JSON.stringify(data.metadata.filtersApplied)} rows={data.activityRows ?? []} />}
+        {route === 'management-decision-centre' && <><ManagementAttention data={data} /><div className="grid gap-6 xl:grid-cols-2">{analysis(['partner', 'district'])}</div><Panel title="Reporting concentration" subtitle="Deterministic observation / Advisory only / Human review required"><p className="text-sm text-gray-700">{(() => {
+          const partner = sections.find(section => section.key === 'partner')?.rows.find(row => /^\d+$/.test(row.events));
+          const total = select('Total events')[0]?.value;
+          return partner && total && /^\d+$/.test(total) && Number(total) > 0 ? `${partner.label} has the largest publishable event volume: ${partner.events} events (${(Number(partner.events) / Number(total) * 100).toFixed(1)}% of the selected total). This describes reporting concentration, not partner effectiveness. Review coverage and reporting scope with programme owners.` : 'Concentration cannot be calculated from available unsuppressed counts.';
+        })()}</p><p className="mt-3 text-xs text-gray-500">Human-led, reviewable and non-authoritative. AI assistance is not enabled. No programme decisions or actions are executed automatically.</p></Panel></>}
+      </>}
     </>}
-    {route === 'participant-reach' && <>
-      <div className="grid gap-6 xl:grid-cols-3">
-        {sex}
-        <MetricPanel title="Age Profile" subtitle="Source age bands can overlap; do not add them together." metrics={demographicMetrics(['below_15', 'age_15_19', 'age_16_24', 'age_20_24', 'age_25_49', 'age_25_54', 'age_50_and_above', 'age_55_and_above'])} />
-        <MetricPanel title="Social Inclusion Profile" metrics={demographicMetrics(['hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast'])} />
-        <MetricPanel title="Disability Profile" metrics={demographicMetrics(['withdisability', 'nodisability']).length ? demographicMetrics(['withdisability', 'nodisability']) : select('Participants with disability')} />
-        <Pending title="Participant Type" reason="Validated participant-type classifications are not yet available." />
-        <Pending title="Organization / Position" reason="Approved organization and role aggregates are not yet available." />
-      </div>
-      <MetricPanel title="Participant Reach by District" subtitle="Top ten available district attendance counts. Demographic inclusion by district is not yet available." metrics={districtRanking} />
-    </>}
-    {route === 'geographic-coverage' && <>
-      <div className="grid gap-6 xl:grid-cols-3">
-        <Panel title="Nepal Programme Coverage Map" subtitle="District reach is the available density measure; activity density awaits approved data." className="xl:col-span-2">{map}</Panel>
-        <MetricPanel title="District Participant Reach Ranking" subtitle="Top ten available district attendance counts. Suppressed counts are unranked." metrics={districtRanking} />
-      </div>
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Pending title="Project × District Coverage Matrix" reason="Project-by-district coverage is not available from the current reporting response." />
-        <Pending title="Coverage Gaps & Follow-up" reason="Coverage targets are not yet available. Missing data must not be interpreted as an intervention gap." />
-      </div>
-    </>}
-    {route === 'activity-progress' && <MetricPanel title="Activity & Participant Volume" subtitle="Events and attendance counts, not target achievement." metrics={select('Total events', 'Total participants', 'Reportable participants')} />}
-    {pendingPanels[route] && <div className="grid gap-6 xl:grid-cols-2">{pendingPanels[route]!.map(([title, reason]) => <Pending key={title} title={title} reason={reason} />)}</div>}
-    {route === 'activity-detail' && <AggregateActivityTable metrics={metrics} />}
-    {route === 'management-decision-centre' && <>
-      <ManagementAttention data={data} />
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Panel title="Programme Review Narrative" subtitle="Deterministic summary · Draft for human review">
-          <p className="text-sm leading-relaxed text-gray-700">{live ? `Current approved reporting shows ${select('Total events')[0]?.value ?? 'Not available'} events and ${select('Total participants')[0]?.value ?? 'Not available'} participant attendance records. These figures describe reported activity volume. They do not establish target achievement, unique reach or quality of results.` : 'A review narrative requires available approved aggregate data. No narrative figures are substituted.'}</p>
-          <p className="mt-3 text-xs text-gray-500">Confirm scope, freshness and evidence with programme owners before external use. This text is not generated by AI.</p>
-        </Panel>
-        <Pending title="Off-Track Targets & Partner Risks" reason="Risk severity and target status require validated performance and evidence data. No automatic prioritization is applied." />
-        <Pending title="Follow-up Action Tracker" reason="No approved assigned-action records are connected. Review and assignment remain with programme managers." />
-        <Pending title="AI Narrative Generation" reason="Generative insights remain disabled. Only the aggregate review summary above is available." />
-      </div>
-    </>}
-    {route === 'gbv-ocmc' && <Panel title="GBV / OCMC Privacy Safeguards"><p className="text-sm leading-relaxed text-gray-600">Service summaries remain blocked pending explicit aggregate-reporting and suppression approval. No survivor records, case locations or demographic breakdowns are displayed.</p></Panel>}
     <footer aria-label="BigQuery data source status" className="space-y-2 rounded-xl border border-slate-200 bg-white p-4 text-xs text-gray-600">
-      <div className="flex flex-wrap items-center justify-between gap-2"><span className="flex items-center gap-2 font-semibold"><Database className="h-4 w-4" />Data source: BigQuery · {live ? 'Live aggregates' : 'No live values displayed'}</span><span>Freshness: {freshness} (Nepal time)</span></div>
+      <div className="flex flex-wrap items-center justify-between gap-2"><span className="flex items-center gap-2 font-semibold"><Database className="h-4 w-4" />Data source: BigQuery  /  {live && route !== 'indicator-progress' ? 'Live aggregates' : 'No live values displayed'}</span><span>Freshness: {freshness} (Nepal time)</span></div>
       <p>{data.metadata.message}</p>
       {participants && <p>Participant analysis: {participants.metadata.note} A separate demographic refresh timestamp is not supplied.</p>}
       <p className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 shrink-0" />Aggregate view only. Small counts are withheld as &lt;5. No personal or survivor-level records are shown.</p>

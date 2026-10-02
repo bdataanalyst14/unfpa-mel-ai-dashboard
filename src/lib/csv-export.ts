@@ -1,6 +1,6 @@
 function escapeCsvCell(value: unknown): string {
   const text = value == null ? '' : String(value);
-  const formulaSafe = /^[=+\-@]/.test(text) ? `'${text}` : text;
+  const formulaSafe = /^[\s\u0000-\u001f]*[=+\-@]/.test(text) ? `'${text}` : text;
   return `"${formulaSafe.replace(/"/g, '""')}"`;
 }
 

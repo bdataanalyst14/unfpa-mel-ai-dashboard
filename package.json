@@ -39,7 +39,7 @@
     "dashboard:bigquery-preflight": "node scripts/dashboard/bigquery-preflight.js",
     "production:preflight": "node scripts/dashboard/production-preflight.js",
     "production:bigquery-preflight": "node scripts/dashboard/production-bigquery-preflight.js",
-    "test:browser": "node scripts/run-browser-qa.js",
+    "test:browser": "node scripts/run-browser-qa.js && node scripts/test-production-ui.cjs",
     "test:browser:headed": "node scripts/run-browser-qa.js --headed",
     "test:browser:report": "playwright show-report",
     "prepare:local-unit-map": "node scripts/prepare-local-unit-map.js",
