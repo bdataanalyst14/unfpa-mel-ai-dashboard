@@ -40,7 +40,7 @@ export default function FilteredDashboardScope({
   const active = hasActiveDashboardFilters(filters);
 
   if (dataMode === 'bigquery' || !mounted) return children;
-  if (!active || pathname.includes('/gbv-ocmc')) return children;
+  if (!active || !pathname || pathname.includes('/gbv-ocmc') || pathname.includes('/activity-detail')) return children;
 
   const exportRows = () => {
     const csv = createCsv(
@@ -161,7 +161,7 @@ export default function FilteredDashboardScope({
         >
           <div className="w-full" aria-label="Filtered activities by project chart">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={projectChart} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+              <BarChart id="filtered-activities-bar-chart" data={projectChart} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                 <XAxis
                   dataKey="project"

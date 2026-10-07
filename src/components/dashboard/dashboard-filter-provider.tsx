@@ -87,15 +87,22 @@ export function DashboardFilterProvider({
   );
 
   const replaceFilters = useCallback(
-    (next: DashboardFilterState) => {
+    (next: DashboardFilterState, resetAnalytical = false) => {
       const params = serializeDashboardFilters(
         next,
         new URLSearchParams(searchParams.toString()),
       );
+      if (pathname === '/dashboard/activity-detail') params.delete('page');
+      if (DASHBOARD_FILTER_KEYS.some(key => next[key] !== filters[key])) {
+        for (const key of ['subact', 'subactcode', 'outcome', 'output', 'activity']) params.delete(key);
+      }
+      if (resetAnalytical) {
+        for (const key of ['subact', 'subactcode', 'outcome', 'output', 'activity', 'eventtype', 'entry_mode', 'classification', 'participantType', 'fundcode', 'search', 'page']) params.delete(key);
+      }
       const query = params.toString();
       router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, filters],
   );
 
   const setFilter = useCallback(
@@ -121,7 +128,7 @@ export function DashboardFilterProvider({
         province: '',
         district: '',
         municipality: '',
-      }),
+      }, true),
     [replaceFilters],
   );
 

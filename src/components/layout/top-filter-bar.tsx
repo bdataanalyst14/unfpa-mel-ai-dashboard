@@ -24,13 +24,7 @@ export default function TopFilterBar() {
 
   if (dataMode === 'bigquery' && !Object.keys(labels).some(key => supports(key as DashboardFilterKey))) return null;
 
-  return (
-    <section className="space-y-2 rounded-xl border bg-white px-4 py-3" aria-label="Global filters">
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="flex w-full items-center gap-1 mb-1 sm:w-auto">
-          <Filter className="h-4 w-4" /><span className="text-sm font-medium">Filters</span>
-        </div>
-        {(Object.entries(labels) as Array<[DashboardFilterKey, string]>).map(([key, label]) => {
+  const renderFilter = ([key, label]: [DashboardFilterKey, string]) => {
           const supported = supports(key);
           if (!supported) return null;
           const disabled = !filtersAvailable || !supported || !options[key].length;
@@ -47,10 +41,22 @@ export default function TopFilterBar() {
               </select>
             </label>
           );
-        })}
+  };
+  const entries = Object.entries(labels) as Array<[DashboardFilterKey, string]>;
+  const geographyKeys = ['province', 'district', 'municipality'];
+  const compact = dataMode === 'bigquery' && route === 'activity-progress';
+
+  return (
+    <section className="space-y-2 rounded-xl border bg-white px-4 py-3" aria-label="Global filters">
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="flex w-full items-center gap-1 mb-1 sm:w-auto">
+          <Filter className="h-4 w-4" /><span className="text-sm font-medium">Filters</span>
+        </div>
+        {entries.filter(([key]) => !compact || !geographyKeys.includes(key)).map(renderFilter)}
         <button type="button" onClick={clearFilters} className="min-h-11 text-xs font-medium text-[#A63F00] hover:underline">Clear filters</button>
       </div>
 
+      {compact && <details className="text-xs text-gray-600"><summary className="cursor-pointer py-2">Event location filters{filters.province || filters.district || filters.municipality ? ' (active)' : ''}</summary><div className="flex flex-wrap gap-3 py-2">{entries.filter(([key]) => geographyKeys.includes(key)).map(renderFilter)}</div></details>}
       <p className="text-xs text-gray-500">{filterMessage} Only applicable filters are shown.</p>
     </section>
   );

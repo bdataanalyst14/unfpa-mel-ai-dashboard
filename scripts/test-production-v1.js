@@ -10,7 +10,13 @@ function load(file, mocks = {}) {
   }).outputText;
   const loaded = { exports: {} };
   Function('require', 'module', 'exports', output)(
-    (id) => Object.hasOwn(mocks, id) ? mocks[id] : mocks.fallback ? mocks.fallback(id) : require(id), loaded, loaded.exports,
+    (id) => {
+      if (Object.hasOwn(mocks, id)) return mocks[id];
+      if (mocks.fallback) return mocks.fallback(id);
+      const target = id.startsWith('@/') ? path.join(root, 'src', id.slice(2)) : id.startsWith('.') ? path.resolve(root, path.dirname(file), id) : null;
+      if (target && fs.existsSync(target + '.ts')) return load(path.relative(root, target + '.ts'), mocks);
+      return require(id);
+    }, loaded, loaded.exports,
   );
   return loaded.exports;
 }
@@ -44,12 +50,23 @@ async function main() {
       getBigQueryProjectId: () => 'fixture', getBigQueryDatasetId: () => 'reporting',
       runSafeBigQuery: async (sql, params = {}) => {
         calls.push({ sql, params });
-        assert.doesNotMatch(sql, /participants_flat|staging|FROM.*repeatdata|\bJOIN\b|\bUNION\b|\bROW_NUMBER\b/i);
+        assert.doesNotMatch(sql, /participants_flat|staging|\bJOIN\b|\bUNION\b|\bROW_NUMBER\b/i);
         for (const match of sql.matchAll(/`fixture\.reporting\.([^`]+)`/g)) {
           assert.ok(['combined_activity_summary', 'ip_submission_status', 'data_quality_summary', 'indicator_progress_summary'].includes(match[1]));
         }
         if (fail && !sql.includes('SELECT DISTINCT')) throw new Error('private failure');
         if (sql.includes('SELECT DISTINCT')) return [dimensions];
+        if (sql.includes('AS reviewed_rows')) return [{ reviewed_rows: 100, missingGeography: 0, missingProject: 0, missingPartner: 0, latestActivityDate: '2026-08-23' }];
+        if (sql.includes('data_quality_summary')) return [{total_rows:100, issues:10, ts:'2026-08-13'}];
+        if (/ AS participants\b/.test(sql) && !sql.includes(' AS events') && !sql.startsWith('WITH grouped')) return [{label:'beneficiary',participants:100}];
+        if (sql.includes('participant_type_name AS value')) return [{ value: 'beneficiary', records: 100 }];
+        if (sql.includes(' AS totalParticipants')) {
+          const labels = require('./activity-test-loader.cjs').loader()('src/lib/server/participant-analysis.ts').profileLabels;
+          return [{ totalParticipants: 100, reportableParticipants: 100, ...Object.fromEntries(Object.keys(labels).map(key => [key, 10])) }];
+        }
+        if (sql.startsWith('WITH grouped')) return [{ row_count: oversized ? 10001 : 1, events: 17, participants: 137, reportable: 111, partners: 7 }];
+        if (sql.includes('ARRAY_AGG')) return [{}];
+        if (sql.includes(' AS `events`')) return [{ activity: 'Approved activity', events: small ? 3 : 17, participants: small ? 4 : 137, reportable: small ? 2 : 111 }];
         if (sql.includes(' AS events')) return Array.from({length: oversized ? 10001 : 1}, () => ({ label: 'Approved activity', activity: 'Approved activity', events: small ? 3 : 17, participants: small ? 4 : 137, reportable: small ? 2 : 111, districts: 5, projects: 6 }));
         return [{ ...totals, matched_rows: empty ? 0 : 2, total_participants: invalid ? null : 137 }];
       },
@@ -71,8 +88,8 @@ async function main() {
     assert.equal(metrics['Total participants'], '137');
     assert.equal(metrics['Reportable participants'], '111');
     assert.equal(metrics['Other participants'], '<5');
-    assert.match(calls.at(-1).sql, /SUM\(total_participants\)/);
-    assert.match(calls.at(-1).sql, /SUM\(total_reportable_participants\)/);
+    assert.match(calls.findLast(call => call.sql.includes(' AS events')).sql, /SUM\(total_participants\)/);
+    assert.match(calls.findLast(call => call.sql.includes(' AS events')).sql, /SUM\(total_reportable_participants\)/);
   }
   for (const route of ['activity-progress', 'activity-detail', 'indicator-progress', 'participant-reach', 'geographic-coverage', 'ip-performance']) {
     assert.equal((await service.getDashboardPageData(route)).metadata.componentState, 'live_bigquery');
@@ -84,23 +101,25 @@ async function main() {
   }
   small = true;
   const detail = await service.getDashboardPageData('activity-detail', selected);
-  assert.equal(detail.activityRows[0].events, '<5');
+  assert.equal(detail.activityRows[0].events, '3');
   assert.equal(detail.activityRows[0].participants, '<5');
   assert.equal(detail.activityRows[0].reportable, '<5');
-  assert.deepEqual(calls.at(-1).params, selected);
-  assert.doesNotMatch(calls.at(-1).sql, /female|male|name_list|survivor|beneficiary|SELECT \*/i);
+  assert.deepEqual(calls.at(-2).params, selected);
+  assert.doesNotMatch(calls.at(-2).sql, /name_list|survivor|actdetails1|event_row_key|SELECT \*/i);
   const grouped = await service.getDashboardPageData('activity-progress', selected);
-  assert.equal(grouped.sections.length, 4);
-  assert.ok(grouped.sections.every(section => section.rows[0].events === '<5'));
+  assert.equal(grouped.sections.length, 8);
+  assert.ok(grouped.sections.every(section => section.rows[0].events === '3' && section.rows[0].participants === '<5'));
   small = false;
   oversized = true;
   const blockedExport = await service.getDashboardPageData('activity-detail');
-  assert.equal(blockedExport.metadata.responseStatus, 422);
-  assert.equal(blockedExport.activityRows, undefined);
+  assert.equal(blockedExport.metadata.responseStatus, 200);
+  assert.equal(blockedExport.activityPage.totalRows, 10001);
+  assert.equal(blockedExport.activityPage.request.pageSize, 25);
+  assert.ok(blockedExport.activityRows.length <= 25);
   oversized = false;
   const management = await service.getDashboardPageData('management-decision-centre', selected);
   assert.equal(management.metadata.componentState, 'live_bigquery');
-  assert.equal(management.sections.length, 4);
+  assert.equal(management.sections.length, 5);
   const csv = load('src/lib/csv-export.ts').createCsv(['Activity'], [['=SUM(A1)'], [' \t@SUM(A1)'], ['A,"B"']]);
   assert.ok(csv.includes("'=SUM"));
   assert.ok(csv.includes("' \t@SUM"));
@@ -138,7 +157,7 @@ async function main() {
   for (const route of ['executive-overview', 'activity-progress', 'activity-detail', 'participant-reach', 'geographic-coverage', 'data-quality', 'ip-performance', 'indicator-progress', 'management-decision-centre', 'gbv-ocmc-summary']) {
     const source = fs.readFileSync(path.join(root, `src/app/dashboard/${route}/page.tsx`), 'utf8');
     assert.doesNotMatch(source, /^'use client'/);
-    assert.match(source, /getDashboardDataMode/);
+    if (route !== 'activity-detail') assert.match(source, /getDashboardDataMode/);
     assert.match(source, /BigQueryRouteView/);
 
   }
@@ -156,8 +175,7 @@ async function main() {
     assert.equal(rendered.type, marker);
     assert.deepEqual(sequence[0], ['auth', '/dashboard/participant-reach']);
     assert.deepEqual(sequence[1], ['data', 'participant-reach', selected]);
-    assert.equal(sequence.length, state === 'live_bigquery' ? 3 : 2);
-    if (state === 'live_bigquery') assert.deepEqual(sequence[2], ['participants', selected]);
+    assert.equal(sequence.length, 2);
     sequence.length = 0;
     await view.default({ route: 'management-decision-centre', searchParams: selected });
     assert.deepEqual(sequence, [['auth', '/dashboard/management-decision-centre'], ['data', 'management-decision-centre', selected]]);

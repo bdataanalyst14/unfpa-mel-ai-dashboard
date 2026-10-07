@@ -5,6 +5,7 @@ import TopFilterBar from '@/components/layout/top-filter-bar';
 import { DashboardFilterProvider } from '@/components/dashboard/dashboard-filter-provider';
 import type { DashboardPageData, DashboardRouteKey } from '@/lib/server/dashboard-page-data-service';
 import type { ParticipantData } from '@/lib/participant-contract';
+import { parseActivityRequest } from '@/lib/server/activity-detail-query';
 
 const route = location.pathname.split('/').pop() as DashboardRouteKey;
 const filters = Object.fromEntries(['year', 'quarter', 'project', 'implementingPartner', 'province', 'district', 'municipality'].map(key => [key, new URLSearchParams(location.search).get(key) ?? ''])) as DashboardPageData['metadata']['filtersApplied'];
@@ -16,6 +17,12 @@ const data: DashboardPageData = { route, pageName: ({'executive-overview':'Execu
  sections: ['partner','project','activity','district','province'].map(key=>({key,title:`Events by ${key}`,rows: rows.slice(0,12).map((row,i)=>({label:key==='district'?['Kathmandu','Lalitpur','Bhaktapur','Kaski','Surkhet','Morang','Kailali','Dhanusha','Parsa','Bara','Rautahat','Sarlahi'][i]:`${key} ${i+1}`,events:String(100-i*8),participants:row.participants,reportable:row.reportable,districts:'5',projects:'6'}))})), activityRows:rows };
 const routeLabels: Record<string,string[]> = { 'activity-detail':['Reported activities','Total participants','Reportable participants','Implementing partners'], 'activity-progress':['Reported activities','Total participants','Reportable participants','Districts covered','Implementing partners'], 'ip-performance':['Reporting partners','Total submissions','Reported activities'], 'geographic-coverage':['Provinces covered','Districts covered','Palikas covered','Reported activities'] };
 if (routeLabels[route]) data.metrics = data.metrics.filter(metric => routeLabels[route].includes(metric.label));
+if (route === 'activity-detail') {
+  const request = parseActivityRequest(Object.fromEntries(new URLSearchParams(location.search)));
+  const matching = rows.filter(row => !request.search || row.activity.toLowerCase().includes(request.search.toLowerCase()));
+  data.activityPage = { request, totalRows: matching.length, totalPages: Math.max(1, Math.ceil(matching.length / request.pageSize)), options: {} };
+  data.activityRows = matching.slice((request.page - 1) * request.pageSize, request.page * request.pageSize);
+}
 const participants: ParticipantData = {metrics:[], districts:[],monthly:[],activities:[],filters:{},metadata:{dataSource:'bigquery',note:'OFFLINE QA FIXTURE'},demographics:[{name:'QA',metrics:['below_15','age_15_19','age_20_24','age_25_49','age_50_and_above','hilldalit','teraidalit','hilljanajati','teraijanajati','madhesi','muslim','bc','other_cast','withdisability','nodisability'].map((key,i)=>({key,label:key.replaceAll('_',' '),value:i===0?null:(i+1)*80,displayValue:i===0?'<5':String((i+1)*80),suppressed:i===0}))}]};
 const options = {year:['2026'],quarter:['Q1'],project:['QA project'],implementingPartner:['QA partner 1'],province:['Bagmati','Karnali'],district:['Kathmandu','Surkhet'],municipality:['QA municipality','Other municipality'],geography:[{province:'Bagmati',district:'Kathmandu',municipality:'QA municipality'},{province:'Karnali',district:'Surkhet',municipality:'Other municipality'}]};
-createRoot(document.getElementById('root')!).render(<DashboardFilterProvider dataMode="bigquery" liveOptions={options}><DashboardShell dataMode="bigquery"><p role="note" style={{color:'#9a3412',fontWeight:700}}>OFFLINE UI QA FIXTURES - NOT LIVE DATA</p><TopFilterBar /><ProductionDashboardView route={route} data={data} participants={route === 'participant-reach' ? participants : undefined} /></DashboardShell></DashboardFilterProvider>);
+createRoot(document.getElementById('root')!).render(<DashboardFilterProvider dataMode="bigquery" liveOptions={options}><DashboardShell dataMode="bigquery"><p role="note" style={{color:'#9a3412',fontWeight:700}}>OFFLINE UI QA FIXTURES - NOT LIVE DATA</p><TopFilterBar /><ProductionDashboardView route={route} data={data} participants={['participant-reach', 'executive-overview'].includes(route) ? participants : undefined} /></DashboardShell></DashboardFilterProvider>);

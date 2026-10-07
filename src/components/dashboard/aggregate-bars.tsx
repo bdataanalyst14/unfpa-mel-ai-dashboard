@@ -4,7 +4,7 @@ export default function AggregateBars({ metrics, label }: { metrics: DashboardPa
   const numeric = metrics.map(metric => /^\d+$/.test(metric.value) ? Number(metric.value) : null);
   const maximum = Math.max(1, ...numeric.filter((value): value is number => value !== null));
   return (
-    <dl className="w-full space-y-4" aria-label={label}>
+    <dl className="max-h-80 w-full space-y-4 overflow-y-auto pr-2" aria-label={label} tabIndex={0}>
       {metrics.map((metric, index) => (
         <div key={metric.label}>
           <div className="mb-1 flex items-start justify-between gap-3 text-xs">

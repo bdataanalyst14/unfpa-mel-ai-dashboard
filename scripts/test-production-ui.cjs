@@ -14,6 +14,10 @@ async function main() {
   await new Promise((resolve,reject)=>webpack({mode:'development',devtool:false,entry:path.join(root,'tests/ui-harness/entry.tsx'),output:{path:out,filename:'bundle.js'},resolve:{extensions:['.tsx','.ts','.js'],alias:{'@':path.join(root,'src'),'next-auth/react$':path.join(root,'tests/ui-harness/navigation.tsx'),'next/navigation$':path.join(root,'tests/ui-harness/navigation.tsx'),'next/link$':path.join(root,'tests/ui-harness/navigation.tsx')}},module:{rules:[{test:/\.tsx?$/,use:path.join(root,'tests/ui-harness/loader.cjs')}]},stats:'errors-only'},(err,stats)=>err||stats.hasErrors()?reject(err||new Error(stats.toString({all:false,errors:true}))):resolve()));
   const server=http.createServer((req,res)=>{
     const name=req.url.split('?')[0];
+    if (name === '/api/dashboard/activity-detail/export') {
+      res.setHeader('Content-Type','text/csv');
+      return res.end('"Activity Name","Total Participants"\r\n"ACT-001 Training and community engagement","<5"');
+    }
     const file=name==='/bundle.js'?path.join(out,'bundle.js'):name==='/style.css'?path.join(out,'style.css'):name==='/maps/local-units.geojson'?path.join(root,'public/maps/local-units.geojson'):null;
     res.setHeader('Content-Type',name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':name.endsWith('.geojson')?'application/json':'text/html');
     res.end(file?fs.readFileSync(file):'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body><div id="root"></div><script src="/bundle.js"></script></body></html>');
@@ -32,8 +36,8 @@ async function main() {
         await page.goto(`${base}/dashboard/${route}`);
         await page.locator('h1').waitFor();
         if(['executive-overview','geographic-coverage'].includes(route)) {
-          await page.locator('svg[aria-label="Nepal local-unit coverage map"]').waitFor();
-          assert.equal(await page.locator('svg[aria-label="Nepal local-unit coverage map"] path').count(),777);
+          await page.locator('svg[aria-label="Nepal reported activity density by event location"]').waitFor();
+          assert.equal(await page.locator('svg[aria-label="Nepal reported activity density by event location"] path').count(),777);
         }
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${route} ${width} overflow`);
         assert.equal(await page.getByText('Not supported',{exact:true}).count(),0);
@@ -47,17 +51,21 @@ async function main() {
     await scroller.evaluate(node=>{node.scrollLeft=node.scrollWidth;});
     assert.ok(await scroller.evaluate(node=>node.scrollLeft)>0);
     await page.getByRole('button',{name:'Next',exact:true}).click();
-    assert.match(await page.locator('section').last().innerText(),/Page 2 of 3/);
+    assert.match(await page.locator('section').last().innerText(),/Page 2 of 2/);
     await page.getByRole('button',{name:'Reported activities',exact:false}).first().click();
     await page.getByRole('searchbox').fill('ACT-001');
+    await page.getByRole('button',{name:'Search',exact:true}).click();
+    await page.waitForURL(/search=ACT-001/);
     assert.equal(await page.locator('tbody tr').count(),1);
     const downloadPromise=page.waitForEvent('download');
-    await page.getByRole('button',{name:'Download CSV'}).click();
+    await page.getByRole('button',{name:'Download Full Combined Summary CSV'}).click();
     const download=await downloadPromise;
     const csv=fs.readFileSync(await download.path(),'utf8');
     assert.match(csv,/ACT-001/);assert.match(csv,/<5/);assert.doesNotMatch(csv,/ACT-002/);assert.equal(csv.split('\r\n').length,2);
     await page.getByRole('searchbox').fill('no-such-activity');
-    assert.equal(await page.getByRole('button',{name:'Download CSV'}).isDisabled(),true);
+    await page.getByRole('button',{name:'Search',exact:true}).click();
+    await page.waitForURL(/search=no-such-activity/);
+    assert.equal(await page.getByRole('button',{name:'Download Full Combined Summary CSV'}).isDisabled(),true);
     await page.goto(`${base}/dashboard/activity-detail`);
     await page.getByLabel('Province',{exact:true}).selectOption('Bagmati');
     await page.waitForURL(/province=Bagmati/);

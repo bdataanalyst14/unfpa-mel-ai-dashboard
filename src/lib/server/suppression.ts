@@ -46,7 +46,7 @@ function isUnsafeCount(value: unknown): boolean {
   return count !== null && count >= 1 && count < 5;
 }
 
-export function suppressCount(count: unknown): SuppressionResult {
+export function suppressCount(count: unknown, operational = false): SuppressionResult {
   const parsed = toFiniteNumber(count);
 
   if (parsed === null || parsed < 0) {
@@ -58,7 +58,7 @@ export function suppressCount(count: unknown): SuppressionResult {
     };
   }
 
-  if (parsed > 0 && parsed < 5) {
+  if (parsed > 0 && parsed < 5 && !operational) {
     return {
       displayValue: '<5',
       value: null,

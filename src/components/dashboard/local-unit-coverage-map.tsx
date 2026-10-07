@@ -16,7 +16,7 @@ const WIDTH = 420;
 const HEIGHT = 210;
 const PADDING = 12;
 
-export default function LocalUnitCoverageMap({ districts = [], selectedDistrict = '', compact = false }: { districts?: DashboardPageMetric[]; selectedDistrict?: string; compact?: boolean }) {
+export default function LocalUnitCoverageMap({ districts = [], selectedDistrict = '', compact = false, measure = 'Reported activities', onSelect }: { districts?: DashboardPageMetric[]; selectedDistrict?: string; compact?: boolean; measure?: string; onSelect?: (district: string, province: string) => void }) {
   const [geojson, setGeojson] = useState<LocalUnitGeoJson | null>(null);
   const [error, setError] = useState<string | null>(null);
   const normalize = (value: string) => value.trim().toLowerCase();
@@ -60,21 +60,27 @@ export default function LocalUnitCoverageMap({ districts = [], selectedDistrict 
           key={`${palika}-${index}`}
           d={geometryToPath(feature.geometry.coordinates, feature.geometry.type, bounds)}
           fill={color}
+          className={onSelect ? 'cursor-pointer hover:opacity-70 focus:outline-none focus:stroke-orange-500' : ''}
+          role={onSelect && value !== undefined ? 'button' : undefined}
+          tabIndex={onSelect && value !== undefined ? 0 : undefined}
+          aria-label={onSelect ? `Select ${district}` : undefined}
+          onClick={() => value !== undefined && onSelect?.(district, province)}
+          onKeyDown={event => { if (value !== undefined && ['Enter', ' '].includes(event.key)) { event.preventDefault(); onSelect?.(district, province); } }}
           stroke={selectedDistrict && normalize(district) === normalize(selectedDistrict) ? '#FF6600' : 'white'}
           strokeWidth={selectedDistrict && normalize(district) === normalize(selectedDistrict) ? '0.9' : '0.35'}
         >
-          <title>{[district, province].filter(Boolean).join(', ')} - district events: {value ?? 'Not available'}. Boundary only; no local-unit count.</title>
+          <title>{[district, province].filter(Boolean).join(', ')} - {measure} at event locations in district: {value ?? 'Not available'}. Boundary only; no local-unit count.</title>
         </path>
       );
     });
 
     return (
-      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-full w-full" role="img" aria-label="Nepal local-unit coverage map">
+      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-full w-full" role="img" aria-label="Nepal reported activity density by event location">
         <rect width={WIDTH} height={HEIGHT} rx="8" fill="#F8FAFC" />
         <g>{paths}</g>
       </svg>
     );
-  }, [geojson, counts, selectedDistrict]);
+  }, [geojson, counts, selectedDistrict, measure, onSelect]);
 
   if (error) {
     return (
@@ -98,27 +104,27 @@ export default function LocalUnitCoverageMap({ districts = [], selectedDistrict 
     return <div className="space-y-2 text-[11px] text-gray-600">
       <div className="aspect-[2/1] w-full">{renderedMap}</div>
       <p>{geojson.features.length.toLocaleString()} boundary features  /  District aggregates only</p>
-      <p>Activity density by district. Grey: unavailable or suppressed.</p>
+      <p>Reported activity density by event location (district). Grey: unavailable or suppressed.</p>
     </div>;
   }
 
   return (
     <div className="flex h-full min-h-[220px] flex-col rounded-lg border border-gray-100 bg-gray-50/70 p-3">
       <div className="text-xs text-gray-600">
-        <p className="font-semibold text-[#004B87]">District activity density  /  Aggregated privacy view</p>
-        {!compact && <p className="mt-1">Colour represents reported district event counts. No participant locations or local-unit counts are plotted.</p>}
+        <p className="font-semibold text-[#004B87]">{measure} at event locations / District aggregates</p>
+        {!compact && <p className="mt-1">Colour represents the selected measure at event locations, aggregated by district. This is not participant residence. No local-unit counts are plotted.</p>}
         {selectedDistrict && <p className="mt-1">Selected district: {selectedDistrict}</p>}
       </div>
       <div className="aspect-[2/1] w-full">{renderedMap}</div>
       <div className="space-y-2 border-t border-gray-200 pt-3 text-[11px] text-gray-600">
-        <p className="font-semibold">Activity density legend  /  district event counts</p>
+        <p className="font-semibold">Event-location legend / {measure} by district</p>
         <div className="flex flex-wrap gap-x-3 gap-y-2">
-          {[['#F8FAFC', '0'], ['#93C5FD', '5-99'], ['#3B82F6', '100-999'], ['#004B87', '1,000+'], ['#E2E8F0', 'Unavailable / suppressed']].map(([color, label]) => (
+          {[['#F8FAFC', '0'], ['#93C5FD', '1-99'], ['#3B82F6', '100-999'], ['#004B87', '1,000+'], ['#E2E8F0', 'Unavailable / suppressed']].map(([color, label]) => (
             <span key={label} className="flex items-center gap-1"><span className="h-3 w-3 rounded-sm border border-slate-300" style={{ backgroundColor: color }} />{label}</span>
           ))}
         </div>
         <p>{geojson.features.length.toLocaleString()} boundary features{!compact && '  /  Counts apply to entire districts, not individual polygons.'}</p>
-        {!compact && <p>Counts 1-4 remain suppressed. Grey does not mean zero coverage.</p>}
+        {!compact && <p>Sensitive counts 1?4 remain suppressed. Grey means unavailable, not zero.</p>}
         {!districts.length && <p>District event volume is not available for this selection; geographic boundaries remain visible.</p>}
         {!compact && districts.some(item => !geojson.features.some(feature => normalize(String(feature.properties.DISTRICT ?? '')) === normalize(item.label))) && <p>Some district names do not match the boundary asset and cannot be coloured on this map.</p>}
       </div>

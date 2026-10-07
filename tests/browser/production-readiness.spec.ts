@@ -201,28 +201,13 @@ test('empty states cover KPI, chart, table, map, and CSV', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Export CSV' })).toBeDisabled();
 });
 
-test('filtered CSV downloads safely with the expected filename and content', async ({
-  page,
-}) => {
+test('Activity Detail refuses mock data and export', async ({ page }) => {
   installFailureGuards(page);
   await page.goto('/dashboard/activity-detail?project=CP9%20SRHR&province=Koshi');
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export CSV' }).click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('unfpa-mel-filtered-activities.csv');
-  const stream = await download.createReadStream();
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
-  const csv = Buffer.concat(chunks).toString('utf8');
-  expect(csv.length).toBeGreaterThan(100);
-  expect(csv).toContain('"Activity ID"');
-  expect(csv).toContain('"CP9 SRHR"');
-  expect(csv).toContain('"Koshi"');
-  for (const line of csv.split(/\r?\n/).slice(1)) {
-    expect(line).not.toMatch(/^["']?[=+\-@]/);
-  }
+  await expect(page.getByRole('heading', { name: 'No production data available', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Download CSV', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Aggregate metrics' })).toHaveCount(0);
 });
-
 test('mobile sidebar, keyboard focus, landmarks, loading and not-found states', async ({
   page,
 }) => {

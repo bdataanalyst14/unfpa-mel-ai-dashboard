@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       municipality: params.get('municipality') ?? undefined,
       implementingPartner:
         params.get('implementingPartner') ?? params.get('ip') ?? undefined,
-    });
+    }, Object.fromEntries(Array.from(params.keys()).map(key => [key, params.getAll(key).length > 1 ? params.getAll(key) : params.get(key)])));
 
     return NextResponse.json(data, {
       status: data.metadata.responseStatus,

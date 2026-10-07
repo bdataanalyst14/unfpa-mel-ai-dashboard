@@ -1,5 +1,12 @@
 import 'server-only';
-import type { AggregateSection, AggregateRow } from '@/lib/aggregate-contract';
+import type { AggregateSection, AggregateRow, ActivityPage } from '@/lib/aggregate-contract';
+import { queryActivityDetail } from './activity-detail-service';
+import { parseActivityRequest } from './activity-detail-query';
+import { parseAnalyticalFilters, type AnalyticalControls, type AnalyticalFilters } from '@/lib/analytical-filters';
+import { combinedScope, implementationOptions } from './analytical-scope';
+import { participantAnalysis, participantAnalysisOptions, participantBreakdowns } from './participant-analysis';
+import { getParticipantMetrics } from './participant-metrics';
+import type { ParticipantData } from '@/lib/participant-contract';
 
 import {
   getBigQueryConfigStatus,
@@ -42,6 +49,7 @@ export type DashboardComponentState =
 export type DashboardPageMetadata = {
   dataSource: 'bigquery' | 'mock';
   freshnessTimestamp: string | null;
+  latestActivityDate?: string | null;
   suppressionApplied: boolean;
   componentState: DashboardComponentState;
   validationStatus: string;
@@ -57,6 +65,10 @@ export type DashboardPageData = {
   metadata: DashboardPageMetadata;
   sections?: AggregateSection[];
   activityRows?: AggregateRow[];
+  activityPage?: ActivityPage;
+  analyticalControls?: AnalyticalControls;
+  participants?: ParticipantData;
+  reliability?: { rows: number; missingGeography: number; missingProject: number; missingPartner: number };
 };
 
 import type { DashboardFilterOptions } from '@/lib/dashboard-filters';
@@ -104,8 +116,12 @@ function asTimestamp(value: CountRow[string]): string | null {
   return null;
 }
 
+function isOperational(key: string): boolean {
+  return /activities|districts|partners|projects|provinces|palikas|submissions|rows|gaps|events/i.test(key);
+}
+
 function countMetric(label: string, value: number, note?: string): DashboardPageMetric {
-  return { label, value: suppressCount(value).displayValue, note };
+  return { label, value: suppressCount(value, isOperational(label)).displayValue, note };
 }
 
 function response(
@@ -380,9 +396,10 @@ async function queryCombinedRoute(
     'executive-overview' | 'activity-progress' | 'activity-detail' | 'participant-reach' | 'geographic-coverage' | 'management-decision-centre'
   >,
   filters: DashboardFilterState,
+  analytical?: AnalyticalFilters,
 ): Promise<DashboardPageData> {
   const { combined, ipStatus } = projectAndDataset();
-  const { where, params } = buildCombinedWhere(filters);
+  const { where, params } = combinedScope(filters, analytical);
 
   const [row] = await runSafeBigQuery<CountRow>(`
     SELECT
@@ -441,41 +458,63 @@ async function queryCombinedRoute(
       countMetric('Provinces covered', asNumber(row.provinces)),
       countMetric('Districts covered', asNumber(row.districts)),
       countMetric('Palikas covered', asNumber(row.palikas)),
+      countMetric('Total participants', asNumber(row.total_participants)),
       countMetric('Reported activities', asNumber(row.total_events)),
     ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
   }
   return liveData(route, common, filters, freshness, 'Live aggregate activity volume is shown. Planned-versus-completed progress, trends, evidence, and delayed-report components are disabled pending approved contracts.');
 }
 
-async function addAnalysis(data: DashboardPageData, filters: DashboardFilterState): Promise<DashboardPageData> {
+async function addAnalysis(data: DashboardPageData, filters: DashboardFilterState, analytical?: AnalyticalFilters): Promise<DashboardPageData> {
   if (data.metadata.componentState !== 'live_bigquery' || data.route === 'participant-reach') return data;
   const { combined } = projectAndDataset();
-  const { where, params } = buildCombinedWhere(filters);
+  const { where, params } = combinedScope(filters, analytical);
   const counts = 'COALESCE(SUM(event_count), 0) AS events, COALESCE(SUM(total_participants), 0) AS participants, COALESCE(SUM(total_reportable_participants), 0) AS reportable';
+  const metricKeys = [
+    'events', 'participants', 'reportable', 'male', 'female', 'other_sex',
+    'below_15', 'age_15_19', 'age_16_24', 'age_20_24', 'age_25_49', 'age_25_54', 'age_50_and_above', 'age_55_and_above',
+    'hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast',
+    'pwd_total', 'withdisability', 'nodisability',
+    'repeat_reportable_total', 'repeat_nonreportable_total', 'repeat_guest_total', 'repeat_beneficiary_total',
+    'districts', 'projects', 'provinces', 'palikas', 'partners'
+  ];
+
   const safeRow = (row: CountRow): AggregateRow => Object.fromEntries(Object.entries(row).map(([key, value]) => [key,
-    ['events', 'participants', 'reportable', 'districts', 'projects'].includes(key) ? suppressCount(asNumber(value)).displayValue : typeof value === 'string' && value.trim() ? value : 'Unspecified',
+    metricKeys.includes(key) ? suppressCount(asNumber(value), isOperational(key)).displayValue : typeof value === 'string' && value.trim() ? value : 'Unspecified',
   ]));
-  if (data.route === 'activity-detail') {
-    const dimensions = 'reporting_year1 AS year, report_quarter1 AS quarter, project1 AS project, ip_name AS partner, province1 AS province, district1 AS district, palika1 AS municipality, activity1 AS activity';
-    const rows = await runSafeBigQuery<CountRow>(`SELECT ${dimensions}, ${counts} FROM ${combined} ${where}
-      GROUP BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1, activity1
-      ORDER BY reporting_year1, report_quarter1, project1, ip_name, province1, district1, palika1, activity1 LIMIT 10001`, params);
-    if (rows.length > 10000) return disabledData(data.route, 'This selection exceeds 10,000 aggregate groups. Narrow the filters before viewing or exporting; no partial export is provided.', 422);
-    data.activityRows = rows.map(safeRow);
-  } else {
+
+  {
     const dimensions = data.route === 'geographic-coverage'
-      ? [['province', 'province1', 'Events by province'], ['district', 'district1', 'Events by district']]
+      ? [['province', 'province1', 'Implementation by province'], ['district', 'district1', 'Implementation by district'], ['project', 'project1', 'Project footprint'], ['partner', 'ip_name', 'Partner footprint']]
       : data.route === 'ip-performance'
         ? [['partner', 'ip_name', 'Partner implementation volume']]
-        : [['partner', 'ip_name', 'Events by partner'], ['project', 'project1', 'Events by project'], ['activity', 'activity1', 'Activity composition'], ['district', 'district1', 'Events by district']];
+        : [['partner', 'ip_name', 'Implementation by partner'], ['project', 'project1', 'Implementation by project'], ['activity', 'activity1', 'Activity composition'], ['district', 'district1', 'Implementation by event location district'], ['eventtype', 'eventtype1', 'Activity / Event Type'], ...(data.route === 'activity-progress' ? [['outcome', 'outcome1', 'Implementation by outcome'], ['output', 'output1', 'Implementation by output']] : [])];
     data.sections = await Promise.all(dimensions.map(async ([key, column, title]) => {
-      const rows = await runSafeBigQuery<CountRow>(`SELECT COALESCE(NULLIF(${column}, ''), 'Unspecified') AS label, ${counts}${key === 'partner' ? ", COUNT(DISTINCT NULLIF(district1, '')) AS districts, COUNT(DISTINCT NULLIF(project1, '')) AS projects" : ''}
+      const rows = await runSafeBigQuery<CountRow>(`SELECT COALESCE(NULLIF(${column}, ''), 'Unspecified') AS label, ${counts} , COUNT(DISTINCT NULLIF(district1, '')) AS districts, COUNT(DISTINCT NULLIF(project1, '')) AS projects, COUNT(DISTINCT NULLIF(province1, '')) AS provinces, COUNT(DISTINCT NULLIF(ip_name, '')) AS partners, COUNT(DISTINCT IF(NULLIF(palika1, '') IS NOT NULL, TO_JSON_STRING(STRUCT(province1, district1, palika1)), NULL)) AS palikas
         FROM ${combined} ${where} GROUP BY ${column} ORDER BY events DESC, label LIMIT 10001`, params);
       if (rows.length > 10000) throw new Error('Aggregate grouping exceeds response bound');
       return { key, title, rows: rows.map(safeRow) };
     }));
   }
-  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. Counts 1 to 4 are withheld. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
+  const [reliability] = await runSafeBigQuery<CountRow>(`SELECT COUNT(*) AS reviewed_rows,
+    COUNTIF(NULLIF(TRIM(province1), '') IS NULL OR NULLIF(TRIM(district1), '') IS NULL) AS missingGeography,
+    COUNTIF(NULLIF(TRIM(project1), '') IS NULL) AS missingProject,
+    COUNTIF(NULLIF(TRIM(ip_name), '') IS NULL) AS missingPartner,
+    CAST(MAX(end_date1) AS STRING) AS latestActivityDate FROM ${combined} ${where}`, params);
+  if (reliability) {
+    data.metadata.latestActivityDate = asTimestamp(reliability.latestActivityDate);
+    if (data.route === 'management-decision-centre') data.reliability = {
+      rows: asNumber(reliability.reviewed_rows), missingGeography: asNumber(reliability.missingGeography),
+      missingProject: asNumber(reliability.missingProject), missingPartner: asNumber(reliability.missingPartner),
+    };
+  }
+  if (data.route === 'activity-progress') {
+    const rows = await runSafeBigQuery<CountRow>(`SELECT project1 AS project, outcome1 AS outcome, output1 AS output, activity1 AS activity, subact1 AS subact, ${counts}
+      FROM ${combined} ${where} GROUP BY project1, outcome1, output1, activity1, subact1 ORDER BY project1, outcome1, output1, activity1, subact1 LIMIT 10001`, params);
+    if (rows.length > 10000) throw new Error('Hierarchy exceeds response bound');
+    data.sections.push({ key: 'hierarchy', title: 'Programme hierarchy', rows: rows.map(safeRow) });
+  }
+  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. Sensitive participant counts 1 to 4 are withheld. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
   return data;
 }
 
@@ -530,14 +569,12 @@ async function queryDataQuality(filters: DashboardFilterState): Promise<Dashboar
   const missingProject = asNumber(row.missing_project ?? 0);
   const missingPartner = asNumber(row.missing_partner ?? 0);
   
-  const validDQ = dqRow && asNumber(dqRow.total_rows ?? 0) > 0 ? (100 - (asNumber(dqRow.issues ?? 0) / asNumber(dqRow.total_rows ?? 0) * 100)).toFixed(1) + '%' : 'N/A';
-
   return liveData('data-quality', [
-    countMetric('Reported activities', matched),
-    countMetric('Geographic gaps', missingGeo, 'Activities missing province or district'),
-    countMetric('Project gaps', missingProject, 'Activities missing project association'),
-    countMetric('Partner gaps', missingPartner, 'Activities missing implementing partner'),
-    { label: 'Validated rows', value: validDQ, note: 'System-wide validation score from latest snapshot only' }
+    countMetric('Aggregate rows reviewed', matched),
+    countMetric('Geographic gaps', missingGeo, 'Aggregate rows missing province or district'),
+    countMetric('Project gaps', missingProject, 'Aggregate rows missing project association'),
+    countMetric('Partner gaps', missingPartner, 'Aggregate rows missing implementing partner'),
+    countMetric('Validated rows', asNumber(dqRow.total_rows), 'Rows checked in latest system-wide DQ snapshot; not a quality score')
   ], filters, dqFreshness, 'Transparent activity completeness metrics derived from live reporting views. A composite Data Quality Score is not used. Validation tracking and evidence linkages are disabled pending an approved integration contract.');
 }
 
@@ -589,9 +626,14 @@ export function normalizeDashboardRoute(route: string | null): DashboardRouteKey
 export async function getDashboardPageData(
   routeInput: string | null,
   filters: ExecutiveOverviewFilters = {},
+  activityInput: Record<string, unknown> = filters as Record<string, unknown>,
+  activityExport = false,
 ): Promise<DashboardPageData> {
   const route = normalizeDashboardRoute(routeInput);
-  if (getDashboardDataMode() !== 'bigquery') return mockData(route, filters as QueryFilters);
+  if (getDashboardDataMode() !== 'bigquery') return route === 'activity-detail' ? unavailableData(route, 'Activity Detail requires approved BigQuery data. No mock data is shown.') : mockData(route, filters as QueryFilters);
+  if (route === 'activity-detail') {
+    try { parseActivityRequest(activityInput); } catch { return disabledData(route, 'Invalid Activity Detail query controls.', 422); }
+  }
   if (route === 'gbv-ocmc') {
     return disabledData(route, 'GBV/OCMC aggregate survivor and service reporting is not yet available from the approved production data contract.');
   }
@@ -601,6 +643,9 @@ export async function getDashboardPageData(
   }
 
   try {
+    let analytical: AnalyticalFilters;
+    try { analytical = parseAnalyticalFilters(route === 'activity-detail' ? {} : activityInput, route); }
+    catch { return disabledData(route, 'Unsupported or invalid analytical filter.', 422); }
     const options = await getLiveDashboardFilterOptions();
     const validated = validateFilters(filters as QueryFilters, options);
     if (validated.unsupportedKeys.length > 0) {
@@ -610,14 +655,44 @@ export async function getDashboardPageData(
       return disabledData(route, 'The selected filter cannot be applied to this route from its approved BigQuery view. No unfiltered substitute is shown.', 422);
     }
     switch (route) {
+      case 'activity-detail': {
+        const detail = await queryActivityDetail(validated.filters, activityInput, activityExport);
+        const [freshness] = await runSafeBigQuery<CountRow>(`SELECT MAX(latest_sync_time) AS freshness_timestamp FROM ${projectAndDataset().ipStatus}`);
+        const result = liveData(route, [
+          countMetric('Reported activities', Number(detail.summary.events)),
+          countMetric('Total participants', Number(detail.summary.participants)),
+          countMetric('Reportable participants', Number(detail.summary.reportable)),
+          countMetric('Implementing partners', Number(detail.summary.partners)),
+        ], validated.filters, asTimestamp(freshness?.freshness_timestamp), 'Approved combined activity aggregates. Search and all filters apply to KPIs, table and CSV. Counts 1 to 4 are withheld. Attendance records are not unique people.');
+        result.activityRows = detail.rows;
+        result.activityPage = detail.page;
+        return result;
+      }
       case 'executive-overview':
       case 'activity-progress':
-      case 'activity-detail':
       case 'participant-reach':
       case 'geographic-coverage':
       case 'management-decision-centre': {
-        const result = await queryCombinedRoute(route, validated.filters);
-        return await addAnalysis(result, validated.filters);
+        const options = route === 'activity-progress' ? await implementationOptions(validated.filters, analytical)
+          : route === 'participant-reach' ? await participantAnalysisOptions(validated.filters) : undefined;
+        const controls = options ? { values: analytical, options } : undefined;
+        if (options && Object.entries(analytical).some(([key, value]) => value && !(options as Record<string, string[]>)[key]?.includes(value))) {
+          const result = disabledData(route, 'This analytical category is unavailable in the selected reporting scope.', 422);
+          result.analyticalControls = controls;
+          return result;
+        }
+        let result = await queryCombinedRoute(route, validated.filters, analytical);
+        result.analyticalControls = controls;
+        if (route === 'participant-reach') {
+          const participants = await participantAnalysis(validated.filters, analytical);
+          result = liveData(route, participants.metrics.map(metric => ({ label: metric.label, value: metric.displayValue })), validated.filters, result.metadata.freshnessTimestamp, participants.metadata.note);
+          result.analyticalControls = controls;
+          result.participants = participants;
+          result.sections = await participantBreakdowns(validated.filters, analytical);
+          return result;
+        }
+        if (route === 'executive-overview' && result.metadata.componentState === 'live_bigquery') result.participants = await getParticipantMetrics(validated.filters);
+        return await addAnalysis(result, validated.filters, analytical);
       }
       case 'indicator-progress':
         return await queryIndicators(validated.filters);
@@ -629,7 +704,7 @@ export async function getDashboardPageData(
         return disabledData(route, 'This route is not approved for BigQuery activation.');
     }
   } catch (error) {
-    console.error('getDashboardPageData error:', error);
+    console.error('Dashboard aggregate request failed.');
     if (error instanceof Error && error.message.includes('authorization failure')) {
       const result = unavailableData(route, 'Authorization failure: the approved dashboard identity cannot read the reporting views.');
       result.metadata.validationStatus = 'authorization_failure';
