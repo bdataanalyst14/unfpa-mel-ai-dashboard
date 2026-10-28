@@ -14,6 +14,7 @@ import { concentration, ratio } from '@/lib/management-analysis';
 import type { DashboardPageData, DashboardPageMetric, DashboardRouteKey } from '@/lib/server/dashboard-page-data-service';
 import type { ParticipantData } from '@/lib/participant-contract';
 import AnalyticalFilterControls from './analytical-filter-controls';
+import { formatCategoryLabel } from '@/lib/format-labels';
 
 function Panel({
   title,
@@ -99,7 +100,7 @@ export default function ProductionDashboardView({
   const demographicMetrics = (keys: string[]) =>
     demographic
       .filter(metric => keys.includes(metric.key))
-      .map(metric => ({ label: metric.label, value: metric.displayValue }));
+      .map(metric => ({ label: formatCategoryLabel(metric.key, metric.label), value: metric.displayValue }));
   const sections = live ? data.sections ?? [] : [];
   const map = <GeographicExplorer sections={sections} compact={route === 'executive-overview'} />;
   const analysis = (keys: string[]) =>
@@ -116,13 +117,16 @@ export default function ProductionDashboardView({
       ));
   const profileNote =
     route === 'executive-overview'
-      ? 'Reportable attendance profile; total attendance also includes non-reportable records.'
+      ? 'Total attendance by sex across reported activities. Reflects total attendance (reportable and non-reportable records); counts below five are withheld.'
       : 'Selected attendance population; values below five are withheld.';
+  const sexMetrics = select('Female participants', 'Male participants', 'Other participants').map(
+    metric => ({ label: formatCategoryLabel(metric.label, metric.label), value: metric.value })
+  );
   const sex = (
     <MetricPanel
       title="Participant Profile by Sex"
       subtitle={profileNote}
-      metrics={select('Female participants', 'Male participants', 'Other participants')}
+      metrics={sexMetrics}
       type="pie"
     />
   );
@@ -303,65 +307,194 @@ export default function ProductionDashboardView({
               </section>
 
               {route === 'executive-overview' && (
-                <>
-                  <div className="grid gap-6 xl:grid-cols-2">
+                <div className="space-y-6">
+                  {/* Region 1: Programme Progress */}
+                  <section aria-label="Programme Progress region" className="space-y-3">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+                        Programme Progress
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Implementation volume and portfolio contributions from approved aggregate records.
+                      </p>
+                    </div>
+                    <div className="grid gap-6 xl:grid-cols-2">
+                      <MetricPanel
+                        title="Activity / Event Type"
+                        type="pie"
+                        subtitle="Reported implementation contributions by published event type."
+                        metrics={
+                          sections
+                            .find(section => section.key === 'eventtype')
+                            ?.rows.map(row => ({ label: formatCategoryLabel(row.label, row.label), value: row.events })) ?? []
+                        }
+                      />
+                      <MetricPanel
+                        title="Implementation by Project"
+                        subtitle="Reported activities by project portfolio; scroll to view all projects."
+                        metrics={
+                          sections
+                            .find(section => section.key === 'project')
+                            ?.rows.map(row => ({ label: row.label, value: row.events })) ?? []
+                        }
+                      />
+                    </div>
+                    <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50/70 p-3.5 text-xs text-slate-600 flex items-start gap-2.5">
+                      <div className="h-2 w-2 rounded-full bg-slate-400 mt-1 shrink-0" />
+                      <div>
+                        <span className="font-semibold text-slate-700">Periodic Progress &amp; Workplan Baselines: </span>
+                        <span>
+                          Planned vs. completed progress rates, monthly implementation trends, and delayed activity tracking are data not yet available pending approved workplan target baselines.
+                        </span>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Region 2: Indicator Status */}
+                  <section aria-label="Indicator Status region" className="space-y-3">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+                        Indicator Status
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        CPD and UNSDCF programme performance framework alignment.
+                      </p>
+                    </div>
                     <Panel
-                      title="Geographic Coverage"
-                      subtitle="Reported activity density by event location; district aggregates"
+                      title="Indicator Performance &amp; Target Tracking"
+                      subtitle="Status against frozen baseline reporting targets"
+                    >
+                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+                            Data not yet available
+                          </span>
+                          <span className="text-[11px] font-medium text-slate-500">
+                            Fail-closed reporting policy
+                          </span>
+                        </div>
+                        <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                          Indicator-level progress, target achievement percentages, and periodic milestone ratings are not yet available for executive reporting. Activity-to-indicator linkage validation and approved target registries remain in progress. Activity completion totals must not be interpreted as indicator achievement without validated target baselines.
+                        </p>
+                      </div>
+                    </Panel>
+                  </section>
+
+                  {/* Region 3: Geographic Coverage */}
+                  <section aria-label="Geographic Coverage region" className="space-y-3">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+                        Geographic Coverage
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Reported activity density by event location; district aggregates.
+                      </p>
+                    </div>
+                    <Panel
+                      title="Geographic Footprint Mini-Map"
+                      subtitle="Interactive district density across Nepal local units. Event locations, not participant residence."
                     >
                       {map}
                     </Panel>
-                    {sex}
-                    <MetricPanel
-                      title="Age Profile"
-                      subtitle={`${profileNote} Source age bands overlap; do not add them.`}
-                      metrics={demographicMetrics([
-                        'below_15',
-                        'age_15_19',
-                        'age_16_24',
-                        'age_20_24',
-                        'age_25_49',
-                        'age_25_54',
-                        'age_50_and_above',
-                        'age_55_and_above',
-                      ])}
-                    />
-                    <MetricPanel
-                      title="Social Inclusion Profile"
-                      subtitle={profileNote}
-                      metrics={demographicMetrics([
-                        'hilldalit',
-                        'teraidalit',
-                        'hilljanajati',
-                        'teraijanajati',
-                        'madhesi',
-                        'muslim',
-                        'bc',
-                        'other_cast',
-                      ])}
-                    />
-                    <MetricPanel
-                      title="Disability Profile"
-                      subtitle={profileNote}
-                      metrics={demographicMetrics(['withdisability', 'nodisability'])}
-                      type="pie"
-                    />
-                    <MetricPanel
-                      title="Activity / Event Type"
-                      type="pie"
-                      subtitle="Reported implementation contributions by published event type."
-                      metrics={
-                        sections
-                          .find(section => section.key === 'eventtype')
-                          ?.rows.map(row => ({ label: row.label, value: row.events })) ?? []
-                      }
-                    />
-                  </div>
-                  <div className="grid gap-6 xl:grid-cols-2">
-                    {analysis(['project', 'partner'])}
-                  </div>
+                  </section>
+
+                  {/* Region 4: Participant Profiles */}
+                  <section aria-label="Participant profiles region" className="space-y-3">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+                        Participant Profiles
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Attendance disaggregation by sex, age, social inclusion, and disability across reported activities.
+                      </p>
+                    </div>
+                    <div className="grid gap-6 xl:grid-cols-2">
+                      {sex}
+                      <MetricPanel
+                        title="Age Profile"
+                        subtitle="Total attendance profile by published age band. Source age bands overlap; do not add them."
+                        metrics={demographicMetrics([
+                          'below_15',
+                          'age_15_19',
+                          'age_16_24',
+                          'age_20_24',
+                          'age_25_49',
+                          'age_25_54',
+                          'age_50_and_above',
+                          'age_55_and_above',
+                        ])}
+                      />
+                      <MetricPanel
+                        title="Social Inclusion Profile"
+                        subtitle="Total attendance profile by published caste and ethnicity categories."
+                        metrics={demographicMetrics([
+                          'hilldalit',
+                          'teraidalit',
+                          'hilljanajati',
+                          'teraijanajati',
+                          'madhesi',
+                          'muslim',
+                          'bc',
+                          'other_cast',
+                        ])}
+                      />
+                      <MetricPanel
+                        title="Disability Profile"
+                        subtitle="Total attendance profile by disability status."
+                        metrics={demographicMetrics(['withdisability', 'nodisability'])}
+                        type="pie"
+                      />
+                    </div>
+                  </section>
+
+                  {/* Region 5: Partner and Data Quality Attention */}
+                  <section aria-label="Partner and Data Quality attention region" className="space-y-3">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+                        Partner &amp; Data Quality Attention
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Implementing partner operational distribution and data validation status.
+                      </p>
+                    </div>
+                    <div className="grid gap-6 xl:grid-cols-2">
+                      <MetricPanel
+                        title="Partner Implementation Attention"
+                        subtitle="Reported activity volume by implementing partner; scroll to inspect all partners."
+                        metrics={
+                          sections
+                            .find(section => section.key === 'partner')
+                            ?.rows.map(row => ({ label: row.label, value: row.events })) ?? []
+                        }
+                      />
+                      <Panel
+                        title="Data Quality &amp; Evidence Attention"
+                        subtitle="Aggregate completeness and quality snapshot status"
+                      >
+                        <div className="space-y-3">
+                          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3.5">
+                            <div className="flex items-center justify-between text-xs font-semibold text-slate-800">
+                              <span>Reporting Completeness</span>
+                              <span className="text-emerald-700">Enforced</span>
+                            </div>
+                            <p className="mt-1 text-xs text-slate-600">
+                              Fundamental attributes (project, partner, province, district) are verified in current views. Small counts (&lt;5) are withheld.
+                            </p>
+                          </div>
+                          <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50/70 p-3.5 text-xs text-slate-600">
+                            <span className="font-semibold text-slate-700">Validation Trend &amp; Automated Scorecards: </span>
+                            <span>
+                              Partner DQ scoring and automated correction tracking are data not yet available. Displayed validation counts reflect the latest single DQ snapshot only.
+                            </span>
+                          </div>
+                        </div>
+                      </Panel>
+                    </div>
+                  </section>
+
+                  {/* Region 6: Management Decision Summary */}
                   <Panel
-                    title="Management Attention Summary"
+                    title="Management Decision Summary"
                     subtitle="Deterministic portfolio observations. Advisory only; human review required."
                   >
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -394,7 +527,7 @@ export default function ProductionDashboardView({
                       />
                     </div>
                   </Panel>
-                </>
+                </div>
               )}
 
               {route === 'activity-progress' && (
@@ -514,29 +647,86 @@ export default function ProductionDashboardView({
               )}
 
               {route === 'geographic-coverage' && (
-                <>
+                <div className="space-y-6">
                   <Panel
                     title="Reported geographic footprint"
                     subtitle="Event locations, not participant residence. Select a measure and geography to explore."
                   >
                     {map}
                   </Panel>
-                  {['project', 'partner', 'district'].map(key => (
+
+                  <section aria-label="Geographic comparison matrices" className="space-y-6">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+                        Geographic Comparison Matrices
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Multi-dimensional cross-tabulations of implementation geography. Scroll and sort to explore.
+                      </p>
+                    </div>
+
+                    <div className="grid gap-6 xl:grid-cols-2">
+                      {['projectGeography', 'partnerGeography'].map(key => (
+                        <Panel
+                          key={key}
+                          title={
+                            key === 'projectGeography'
+                              ? 'Project by event-location district'
+                              : 'Partner by event-location district'
+                          }
+                          subtitle="Activity implementation locations, not participant residence. All matching combinations are scrollable and sortable."
+                        >
+                          <AnalyticalMatrix
+                            label={key === 'projectGeography' ? 'Project by district' : 'Partner by district'}
+                            rows={sections.find(section => section.key === key)?.rows ?? []}
+                            columns={[
+                              ['label', key === 'projectGeography' ? 'Project' : 'Partner'],
+                              ['province', 'Province'],
+                              ['district', 'District'],
+                              ['events', 'Reported activities'],
+                              ['participants', 'Attendance'],
+                              ['reportable', 'Reportable participants'],
+                            ]}
+                          />
+                        </Panel>
+                      ))}
+                    </div>
+
+                    <div className="grid gap-6 xl:grid-cols-2">
+                      {['project', 'partner'].map(key => (
+                        <Panel
+                          key={key}
+                          title={`${key === 'project' ? 'Project' : 'Partner'} geographic footprint`}
+                          subtitle={`Aggregate coverage across administrative units for each ${key}.`}
+                        >
+                          <AnalyticalMatrix
+                            label={`${key} geographic footprint`}
+                            rows={sections.find(section => section.key === key)?.rows ?? []}
+                            columns={[
+                              ['label', key === 'project' ? 'Project' : 'Partner'],
+                              ['provinces', 'Provinces'],
+                              ['districts', 'Districts'],
+                              ['palikas', 'Palikas'],
+                              ['events', 'Reported activities'],
+                              ['participants', 'Attendance'],
+                              ['reportable', 'Reportable participants'],
+                              ['partners', 'Partners'],
+                              ['projects', 'Projects'],
+                            ]}
+                          />
+                        </Panel>
+                      ))}
+                    </div>
+
                     <Panel
-                      key={key}
-                      title={`${
-                        key === 'project'
-                          ? 'Project'
-                          : key === 'partner'
-                          ? 'Partner'
-                          : 'District'
-                      } geographic footprint`}
+                      title="District geographic footprint"
+                      subtitle="Aggregate coverage and volume metrics by event-location district."
                     >
                       <AnalyticalMatrix
-                        label={`${key} geographic footprint`}
-                        rows={sections.find(section => section.key === key)?.rows ?? []}
+                        label="District geographic footprint"
+                        rows={sections.find(section => section.key === 'district')?.rows ?? []}
                         columns={[
-                          ['label', key === 'project' ? 'Project' : key === 'partner' ? 'Partner' : 'District'],
+                          ['label', 'District'],
                           ['provinces', 'Provinces'],
                           ['districts', 'Districts'],
                           ['palikas', 'Palikas'],
@@ -548,32 +738,8 @@ export default function ProductionDashboardView({
                         ]}
                       />
                     </Panel>
-                  ))}
-                  {['projectGeography', 'partnerGeography'].map(key => (
-                    <Panel
-                      key={key}
-                      title={
-                        key === 'projectGeography'
-                          ? 'Project by event-location district'
-                          : 'Partner by event-location district'
-                      }
-                      subtitle="Activity implementation locations, not participant residence. All matching combinations are scrollable and sortable."
-                    >
-                      <AnalyticalMatrix
-                        label={key === 'projectGeography' ? 'Project by district' : 'Partner by district'}
-                        rows={sections.find(section => section.key === key)?.rows ?? []}
-                        columns={[
-                          ['label', key === 'projectGeography' ? 'Project' : 'Partner'],
-                          ['province', 'Province'],
-                          ['district', 'District'],
-                          ['events', 'Reported activities'],
-                          ['participants', 'Attendance'],
-                          ['reportable', 'Reportable participants'],
-                        ]}
-                      />
-                    </Panel>
-                  ))}
-                </>
+                  </section>
+                </div>
               )}
 
               {route === 'ip-performance' && (

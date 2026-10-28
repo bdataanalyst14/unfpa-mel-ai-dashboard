@@ -215,9 +215,13 @@ function mockData(route: DashboardRouteKey, filters: QueryFilters): DashboardPag
   const routeMetrics: Partial<Record<DashboardRouteKey, DashboardPageMetric[]>> = {
     'executive-overview': [
       countMetric('Reported activities', summary.totalActivities),
-      countMetric('Reportable participants', summary.totalParticipants),
+      countMetric('Total participants', summary.totalParticipants, 'SUM(combined_activity_summary.total_participants); not unique people.'),
+      countMetric('Reportable participants', summary.beneficiaries),
+      countMetric('Districts covered', summary.districts),
+      countMetric('Implementing partners', summary.partners),
       countMetric('Female participants', summary.femaleParticipants),
       countMetric('Male participants', summary.maleParticipants),
+      countMetric('Other participants', summary.otherParticipants),
     ],
     'participant-reach': [
       countMetric('Filtered participants', summary.totalParticipants),

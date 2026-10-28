@@ -1,242 +1,255 @@
 {
-    "date":  "2026-10-28",
-    "baseline":  "41bba0cbc63485b4f81a2d1ea911ca0279eff48d",
-    "codeCommit":  "cc803753b96cbf5ba0ffdfe3250a0d2d88cf4473",
-    "branch":  "release/ui-ux-acceptance-2026-10-28",
-    "reviewBranchAutomaticDeployments": false,
-    "deploymentGuard": { "file": "vercel.json", "commit": "dbfabb1", "verification": "PASS exact branch rule; other branches retain default behavior" },
-    "scope":  "Independent local offline acceptance; screenshots contain synthetic fixtures only",
-    "productionDecision":  "NO-GO pending layout owner decision and authorized production UAT",
-    "liveBigQueryQueriesExecuted":  0,
-    "manualDeployments":  0,
-    "recoveryFilesVerified":  183,
-    "commands":  [
-                     {
-                         "existingWarnings":  13,
-                         "exitCode":  0,
-                         "command":  "npm run lint",
-                         "errors":  0
-                     },
-                     {
-                         "command":  "npm run typecheck",
-                         "exitCode":  0
-                     },
-                     {
-                         "exitCode":  0,
-                         "command":  "npm test",
-                         "recordedSchemaCheck":  "SKIP: snapshot unavailable"
-                     },
-                     {
-                         "componentRouteViewportChecks":  40,
-                         "exitCode":  0,
-                         "command":  "npm run test:browser",
-                         "applicationTestsPassed":  11,
-                         "applicationDuration":  "2.7m"
-                     },
-                     {
-                         "exitCode":  0,
-                         "command":  "npm run build",
-                         "framework":  "Next.js 16.4.3",
-                         "manifest":  "mock/NONE; server-only bundle verified"
-                     },
-                     {
-                         "scope":  "network-enabled registry audit",
-                         "exitCode":  0,
-                         "command":  "npm audit",
-                         "vulnerabilities":  0
-                     }
-                 ],
-    "initialFailures":  [
-                            "Initial browser run: 7 passed, 4 failed",
-                            "Intermediate browser run: 10 passed, 1 hydration failure",
-                            "Initial audit: 13 vulnerabilities (1 critical, 9 high, 3 moderate)",
-                            "Intermediate parallel test/build: missing BUILD_ID; final sequential verification passed"
-                        ],
-    "componentQa":  {
-                        "scope":  "offline production components; no live credentials or API",
-                        "routes":  [
-                                       "executive-overview",
-                                       "activity-progress",
-                                       "participant-reach",
-                                       "indicator-progress",
-                                       "ip-performance",
-                                       "geographic-coverage",
-                                       "gbv-ocmc",
-                                       "data-quality",
-                                       "management-decision-centre",
-                                       "activity-detail"
-                                   ],
-                        "viewports":  [
-                                          1440,
-                                          1024,
-                                          768,
-                                          375
-                                      ],
-                        "mapFeatures":  777,
-                        "csv":  "passed",
-                        "filters":  "passed",
-                        "navigation":  "passed",
-                        "checks":  [
-                                       "rendered donut sectors and scatter points",
-                                       "16px proportional bars",
-                                       "zero and withheld legends",
-                                       "published-category denominator",
-                                       "dimension codes preserved",
-                                       "numeric count and percentage sorting",
-                                       "withheld values sort last",
-                                       "scatter tooltip and keyboard-accessible ratios",
-                                       "keyboard map province focus and Back",
-                                       "municipality-only Reset"
-                                   ],
-                        "runtimeErrors":  [
-
-                                          ]
-                    },
-    "screenshots":  [
-                        {
-                            "sha256":  "8FA158D6E387A540F001D19A411CBBB18D9467F7F6D9B4DA4120860075B4F5AB",
-                            "file":  "before-1440-executive-overview.png",
-                            "bytes":  262951
-                        },
-                        {
-                            "sha256":  "CD0EB6F1CA829A71096DB1C725116F8FA10A998FB2D48092E79C7ED2D3B942C5",
-                            "file":  "1440-executive-overview.png",
-                            "bytes":  314656
-                        },
-                        {
-                            "sha256":  "91E212EACAFD0BEE7FEF07EAE28B9C4F311278702BAABAAE256A5EB6118F5458",
-                            "file":  "375-activity-detail.png",
-                            "bytes":  106630
-                        },
-                        {
-                            "sha256":  "5CE86EA82482A77C3C7B5969A939DB2C875357F04C492981E86E90365C085433",
-                            "file":  "768-geographic-coverage.png",
-                            "bytes":  282115
-                        },
-                        {
-                            "sha256":  "E57D97531856FF9047DC0ABA65298965B16A34BB018CFCC831D8AEED27974358",
-                            "file":  "1024-management-decision-centre.png",
-                            "bytes":  247106
-                        },
-                        {
-                            "sha256":  "D1862D4EF7234A78B81E60E91498D1FCDD0DA616D11860D40BE53829F5F01C3B",
-                            "file":  "chart-edge-cases.png",
-                            "bytes":  82939
-                        }
-                    ],
-    "sourceFiles":  [
-                        {
-                            "sha256":  "8EBAA87358857283103C558143E7A1D996FAA8631628F4CAFADD4409CA47F8EA",
-                            "file":  "next.config.js"
-                        },
-                        {
-                            "sha256":  "2FB8C1CE2DF681EC21A2B1D0A96242F77E29A1AD813BD971C5BDE5D7626BFBE6",
-                            "file":  "package-lock.json"
-                        },
-                        {
-                            "sha256":  "7BE04DE014E84F8D984D7849FB6E23D34447CA69EA4490A647B379B70575CBFF",
-                            "file":  "package.json"
-                        },
-                        {
-                            "sha256":  "EE480335E4CFCAC0787F3A0EFE575C6D18DB5B0372CBEB21594C00523DB80391",
-                            "file":  "playwright.config.ts"
-                        },
-                        {
-                            "sha256":  "19E4E6CC868326B4DB6FFDA674A8362374071CDEF2A8D0A106A74DCF4634C03B",
-                            "file":  "scripts/test-activity-detail.cjs"
-                        },
-                        {
-                            "sha256":  "3BDC56C84B894B7EBCFA9D9EC6AD4DF22CED6590B2FA672D260F821C024F5B5D",
-                            "file":  "scripts/test-analytical-browser.cjs"
-                        },
-                        {
-                            "sha256":  "343261BE6C77E2C77A8493955F698A26ACA5EED461DBC9EDAF90FEBF115C6A66",
-                            "file":  "scripts/test-closing-live.cjs"
-                        },
-                        {
-                            "sha256":  "09834E7FE638E8D3A44C0F121EA091226822895A7A8D2CE9D71B5DEA3F4736C5",
-                            "file":  "scripts/test-final-analytical.cjs"
-                        },
-                        {
-                            "sha256":  "6B71DFA6F026C8ACBAF649C4CD48784E26504B4FF86C0E7FD7B5130303A71755",
-                            "file":  "scripts/test-production-ui.cjs"
-                        },
-                        {
-                            "sha256":  "538A82728D0731894080CCB87288320038B376297C2073451A8CADBB05FA77C8",
-                            "file":  "scripts/test-production-v1.js"
-                        },
-                        {
-                            "sha256":  "564E0950C7FBCAF258380652361E5ECCB6ECD6381833EF69189FA31AEB8D322E",
-                            "file":  "src/components/GeographicCoverageMap.tsx"
-                        },
-                        {
-                            "sha256":  "F4378802C3F70C6839DEC17A61EC377E0D3DC10C9CECEDAD64D23D434215946A",
-                            "file":  "src/components/dashboard/aggregate-activity-table.tsx"
-                        },
-                        {
-                            "sha256":  "8F09F15439A745D64B475FA065E55670AF02EC2D9887FD7CA5BB0CB5E4A6067E",
-                            "file":  "src/components/dashboard/aggregate-bars.tsx"
-                        },
-                        {
-                            "sha256":  "6051D1E74CF7EC2FA20E9DE710458C3292EB4A7229C3D2848A23DDA48E6E073F",
-                            "file":  "src/components/dashboard/aggregate-pie.tsx"
-                        },
-                        {
-                            "sha256":  "01D974C74FB822F0807834C19C2A3D0E3D8A76FC5F1E9F675621C0B63C4577BF",
-                            "file":  "src/components/dashboard/analytical-matrix.tsx"
-                        },
-                        {
-                            "sha256":  "05DE3D28BB98B7F6038BD361F23CAA68796C0E53EBCA62241B1AEE761BD25909",
-                            "file":  "src/components/dashboard/chart-card.tsx"
-                        },
-                        {
-                            "sha256":  "6347C37A250D4ACE09A5D5CFFBD622CC4FA4CE44895EE2EC691234C112732B93",
-                            "file":  "src/components/dashboard/geographic-explorer.tsx"
-                        },
-                        {
-                            "sha256":  "558AB773ACD632C363A73005EDAFB50F01D8933DC1579DC82D6DAA53B4E5FB4D",
-                            "file":  "src/components/dashboard/local-unit-coverage-map.tsx"
-                        },
-                        {
-                            "sha256":  "5D2D32D1D8FA823574BB7854D7C36E78F4CFFBB396B427817E921A4323982BB5",
-                            "file":  "src/components/dashboard/production-dashboard-view.tsx"
-                        },
-                        {
-                            "sha256":  "C0269DED41073D18F90C654894685ACCCA1E0425C669DBCEEC72DCB6D1D4DCA8",
-                            "file":  "src/components/dashboard/reach-scatter.tsx"
-                        },
-                        {
-                            "sha256":  "526BDCEEFACAE09EA8A8673CFD6C30C5B882C589ECAAD689A6C8D81C0B1B2282",
-                            "file":  "src/components/layout/top-filter-bar.tsx"
-                        },
-                        {
-                            "sha256":  "F344072A04831CBBB96E36D21F6FBC84B9CB66743F5E34564CE0719A33E4F78C",
-                            "file":  "src/lib/server/activity-detail-query.ts"
-                        },
-                        {
-                            "sha256":  "5C9D2E1B4AF00ED9DA0F77E7D0FCDDE838E9A65CEBB53996F8ECA3A5E28E9EE3",
-                            "file":  "src/lib/server/activity-detail-service.ts"
-                        },
-                        {
-                            "sha256":  "89767408ECDF650345CA936ABE5844A3743C81E3106AFB5F728D49DECE8D89C5",
-                            "file":  "src/lib/server/dashboard-page-data-service.ts"
-                        },
-                        {
-                            "sha256":  "56CC44957D7B02552CF2AAEFC07B6724CFC96FD6F74FF14B600AAAAE3B9C0E98",
-                            "file":  "tests/ui-harness/entry.tsx"
-                        }
-                    ],
-    "excludedEvidence":  [
-                             "credentials and environment files",
-                             "raw warehouse rows or metadata",
-                             "browser traces and session material",
-                             "temporary scripts and build outputs"
-                         ],
-    "remainingGates":  [
-                           "Locked layout deviations require owner acceptance or separate layout correction",
-                           "Actual Google OAuth/RBAC and production WIF",
-                           "Separately authorized current-data reconciliation and CSV UAT",
-                           "Published freshness acceptance",
-                           "Manual accessibility and disclosure-control review"
-                       ]
+  "date": "2026-10-28",
+  "baseline": "41bba0cbc63485b4f81a2d1ea911ca0279eff48d",
+  "codeCommit": "cc803753b96cbf5ba0ffdfe3250a0d2d88cf4473",
+  "branch": "release/ui-ux-acceptance-2026-10-28",
+  "reviewBranchAutomaticDeployments": false,
+  "deploymentGuard": {
+    "file": "vercel.json",
+    "commit": "dbfabb1",
+    "verification": "PASS exact branch rule; other branches retain default behavior"
+  },
+  "scope": "Independent local offline acceptance; screenshots contain synthetic fixtures only",
+  "productionDecision": "NO-GO pending layout owner decision and authorized production UAT",
+  "liveBigQueryQueriesExecuted": 0,
+  "manualDeployments": 0,
+  "recoveryFilesVerified": 183,
+  "commands": [
+    {
+      "existingWarnings": 13,
+      "exitCode": 0,
+      "command": "npm run lint",
+      "errors": 0
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "exitCode": 0,
+      "command": "npm test",
+      "recordedSchemaCheck": "SKIP: snapshot unavailable"
+    },
+    {
+      "componentRouteViewportChecks": 40,
+      "exitCode": 0,
+      "command": "npm run test:browser",
+      "applicationTestsPassed": 11,
+      "applicationDuration": "2.7m"
+    },
+    {
+      "exitCode": 0,
+      "command": "npm run build",
+      "framework": "Next.js 16.4.3",
+      "manifest": "mock/NONE; server-only bundle verified"
+    },
+    {
+      "scope": "network-enabled registry audit",
+      "exitCode": 0,
+      "command": "npm audit",
+      "vulnerabilities": 0
+    }
+  ],
+  "initialFailures": [
+    "Initial browser run: 7 passed, 4 failed",
+    "Intermediate browser run: 10 passed, 1 hydration failure",
+    "Initial audit: 13 vulnerabilities (1 critical, 9 high, 3 moderate)",
+    "Intermediate parallel test/build: missing BUILD_ID; final sequential verification passed"
+  ],
+  "componentQa": {
+    "scope": "offline production components; no live credentials or API",
+    "routes": [
+      "executive-overview",
+      "activity-progress",
+      "participant-reach",
+      "indicator-progress",
+      "ip-performance",
+      "geographic-coverage",
+      "gbv-ocmc",
+      "data-quality",
+      "management-decision-centre",
+      "activity-detail"
+    ],
+    "viewports": [
+      1440,
+      1024,
+      768,
+      375
+    ],
+    "mapFeatures": 777,
+    "csv": "passed",
+    "filters": "passed",
+    "navigation": "passed",
+    "checks": [
+      "rendered donut sectors and scatter points",
+      "16px proportional bars",
+      "zero and withheld legends",
+      "published-category denominator",
+      "dimension codes preserved",
+      "numeric count and percentage sorting",
+      "withheld values sort last",
+      "scatter tooltip and keyboard-accessible ratios",
+      "keyboard map province focus and Back",
+      "municipality-only Reset"
+    ],
+    "runtimeErrors": []
+  },
+  "screenshots": [
+    {
+      "file": "before-1440-executive-overview.png",
+      "bytes": 262951,
+      "sha256": "8FA158D6E387A540F001D19A411CBBB18D9467F7F6D9B4DA4120860075B4F5AB"
+    },
+    {
+      "file": "1440-executive-overview.png",
+      "bytes": 529299,
+      "sha256": "7E6E7254C7E8B8556830C721CC2DF695E80259A94B3F5124D529A897053EF0C5"
+    },
+    {
+      "file": "375-activity-detail.png",
+      "bytes": 106630,
+      "sha256": "91E212EACAFD0BEE7FEF07EAE28B9C4F311278702BAABAAE256A5EB6118F5458"
+    },
+    {
+      "file": "768-geographic-coverage.png",
+      "bytes": 302887,
+      "sha256": "E58526FAE888AC4E907D9C8C161173125E7465C0136FB92BC5D50C161A7E4E58"
+    },
+    {
+      "file": "1024-management-decision-centre.png",
+      "bytes": 247106,
+      "sha256": "E57D97531856FF9047DC0ABA65298965B16A34BB018CFCC831D8AEED27974358"
+    },
+    {
+      "file": "chart-edge-cases.png",
+      "bytes": 82939,
+      "sha256": "D1862D4EF7234A78B81E60E91498D1FCDD0DA616D11860D40BE53829F5F01C3B"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "next.config.js",
+      "sha256": "8EBAA87358857283103C558143E7A1D996FAA8631628F4CAFADD4409CA47F8EA"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "2FB8C1CE2DF681EC21A2B1D0A96242F77E29A1AD813BD971C5BDE5D7626BFBE6"
+    },
+    {
+      "file": "package.json",
+      "sha256": "7BE04DE014E84F8D984D7849FB6E23D34447CA69EA4490A647B379B70575CBFF"
+    },
+    {
+      "file": "playwright.config.ts",
+      "sha256": "EE480335E4CFCAC0787F3A0EFE575C6D18DB5B0372CBEB21594C00523DB80391"
+    },
+    {
+      "file": "scripts/test-activity-detail.cjs",
+      "sha256": "19E4E6CC868326B4DB6FFDA674A8362374071CDEF2A8D0A106A74DCF4634C03B"
+    },
+    {
+      "file": "scripts/test-analytical-browser.cjs",
+      "sha256": "3BDC56C84B894B7EBCFA9D9EC6AD4DF22CED6590B2FA672D260F821C024F5B5D"
+    },
+    {
+      "file": "scripts/test-closing-live.cjs",
+      "sha256": "343261BE6C77E2C77A8493955F698A26ACA5EED461DBC9EDAF90FEBF115C6A66"
+    },
+    {
+      "file": "scripts/test-final-analytical.cjs",
+      "sha256": "09834E7FE638E8D3A44C0F121EA091226822895A7A8D2CE9D71B5DEA3F4736C5"
+    },
+    {
+      "file": "scripts/test-production-ui.cjs",
+      "sha256": "6B71DFA6F026C8ACBAF649C4CD48784E26504B4FF86C0E7FD7B5130303A71755"
+    },
+    {
+      "file": "scripts/test-production-v1.js",
+      "sha256": "538A82728D0731894080CCB87288320038B376297C2073451A8CADBB05FA77C8"
+    },
+    {
+      "file": "src/components/GeographicCoverageMap.tsx",
+      "sha256": "564E0950C7FBCAF258380652361E5ECCB6ECD6381833EF69189FA31AEB8D322E"
+    },
+    {
+      "file": "src/components/dashboard/aggregate-activity-table.tsx",
+      "sha256": "F4378802C3F70C6839DEC17A61EC377E0D3DC10C9CECEDAD64D23D434215946A"
+    },
+    {
+      "file": "src/components/dashboard/aggregate-bars.tsx",
+      "sha256": "8F09F15439A745D64B475FA065E55670AF02EC2D9887FD7CA5BB0CB5E4A6067E"
+    },
+    {
+      "file": "src/components/dashboard/aggregate-pie.tsx",
+      "sha256": "6051D1E74CF7EC2FA20E9DE710458C3292EB4A7229C3D2848A23DDA48E6E073F"
+    },
+    {
+      "file": "src/components/dashboard/analytical-matrix.tsx",
+      "sha256": "01D974C74FB822F0807834C19C2A3D0E3D8A76FC5F1E9F675621C0B63C4577BF"
+    },
+    {
+      "file": "src/components/dashboard/chart-card.tsx",
+      "sha256": "05DE3D28BB98B7F6038BD361F23CAA68796C0E53EBCA62241B1AEE761BD25909"
+    },
+    {
+      "file": "src/components/dashboard/geographic-explorer.tsx",
+      "sha256": "FF9D3C808C639A64680C6E49698C8ED6C18E1E3B3D8BD1ADCC119CB1676B727F"
+    },
+    {
+      "file": "src/components/dashboard/local-unit-coverage-map.tsx",
+      "sha256": "558AB773ACD632C363A73005EDAFB50F01D8933DC1579DC82D6DAA53B4E5FB4D"
+    },
+    {
+      "file": "src/components/dashboard/production-dashboard-view.tsx",
+      "sha256": "1F21F42A2DE7D0A373DFE73202402F9E1ADFEFBEDA039A9E0BE9DA62F5F682DF"
+    },
+    {
+      "file": "src/components/dashboard/reach-scatter.tsx",
+      "sha256": "C0269DED41073D18F90C654894685ACCCA1E0425C669DBCEEC72DCB6D1D4DCA8"
+    },
+    {
+      "file": "src/components/layout/top-filter-bar.tsx",
+      "sha256": "526BDCEEFACAE09EA8A8673CFD6C30C5B882C589ECAAD689A6C8D81C0B1B2282"
+    },
+    {
+      "file": "src/lib/format-labels.ts",
+      "sha256": "6663BDF3B0FD3A9E0F755B972C10601C9C36841B24EA81F62A9855B980112706"
+    },
+    {
+      "file": "src/lib/server/activity-detail-query.ts",
+      "sha256": "F344072A04831CBBB96E36D21F6FBC84B9CB66743F5E34564CE0719A33E4F78C"
+    },
+    {
+      "file": "src/lib/server/activity-detail-service.ts",
+      "sha256": "5C9D2E1B4AF00ED9DA0F77E7D0FCDDE838E9A65CEBB53996F8ECA3A5E28E9EE3"
+    },
+    {
+      "file": "src/lib/server/dashboard-page-data-service.ts",
+      "sha256": "1C7974B16E560D061DCBF5139EACCFFBB02EC7CA9554F252B6B890DD974893FB"
+    },
+    {
+      "file": "tests/ui-harness/entry.tsx",
+      "sha256": "76422E0D0EE392D042413DAA70319E13061C7F28E82E47C31E3F5BEF6B799DA0"
+    }
+  ],
+  "excludedEvidence": [
+    "credentials and environment files",
+    "raw warehouse rows or metadata",
+    "browser traces and session material",
+    "temporary scripts and build outputs"
+  ],
+  "remainingGates": [
+    "Actual Google OAuth/RBAC sign-in verification with authorized users and deny-by-default roles",
+    "Authorized production BigQuery/WIF dataset connectivity in asia-south1",
+    "Production data reconciliation with live pipeline sync; current sums, native rows, and 7-filter integrity",
+    "Real full and visible-column CSV download tests against live BigQuery dataset",
+    "Published freshness validation (acceptance of upstream sync timestamps)",
+    "Human accessibility, keyboard screen-reader navigation, and disclosure-control review with real production data"
+  ],
+  "resolvedReviewFindings": [
+    "Executive sex-profile population reconciled with total attendance (9,800) and reportable attendance (8,820); misleading caption corrected; synthetic fixtures reconciled",
+    "Locked Executive Overview hierarchy restored: Compact KPI cards -> Programme Progress -> Indicator Status -> Geographic Coverage -> Participant Profiles -> Partner & Data Quality Attention -> Management Decision Summary",
+    "Geographic Coverage layout updated for desktop: Large custom Nepal map on left, interactive district ranking on right, paired comparison matrices below; stacks cleanly on small devices",
+    "Technical category keys converted to user-facing labels (Hill Dalit, Terai Dalit, Brahmin / Chhetri, Other Caste, With/Without Disability, 15-19, etc.) without altering BigQuery schema fields"
+  ]
 }

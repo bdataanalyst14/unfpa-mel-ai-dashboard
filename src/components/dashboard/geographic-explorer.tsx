@@ -103,57 +103,126 @@ export default function GeographicExplorer({
         </nav>
       </div>
 
-      <LocalUnitCoverageMap
-        districts={districts.map(row => ({ label: row.label, value: row[measure] }))}
-        measure={measures[measure]}
-        compact={compact}
-        selectedDistrict={filters.district}
-        onSelect={(district, province) => {
-          const name = options.district.find(value => value.toLowerCase() === district.toLowerCase());
-          const provinceLabel = provinceNames[province] ?? province;
-          const provinceName = options.province.find(value => value.toLowerCase() === provinceLabel.toLowerCase());
-          if (!filters.province && provinceName) select(provinceName);
-          else if (name) select(filters.province || provinceName || '', name);
-        }}
-      />
+      {compact ? (
+        <div className="space-y-4">
+          <LocalUnitCoverageMap
+            districts={districts.map(row => ({ label: row.label, value: row[measure] }))}
+            measure={measures[measure]}
+            compact={compact}
+            selectedDistrict={filters.district}
+            onSelect={(district, province) => {
+              const name = options.district.find(value => value.toLowerCase() === district.toLowerCase());
+              const provinceLabel = provinceNames[province] ?? province;
+              const provinceName = options.province.find(value => value.toLowerCase() === provinceLabel.toLowerCase());
+              if (!filters.province && provinceName) select(provinceName);
+              else if (name) select(filters.province || provinceName || '', name);
+            }}
+          />
 
-      <p className="text-xs text-slate-500">
-        Select a reported district polygon to focus its province, then select again to filter the district. All polygons carry district values. Municipality selection is available only through the event-location filter.
-      </p>
+          <p className="text-xs text-slate-500">
+            Select a reported district polygon to focus its province, then select again to filter the district. All polygons carry district values. Municipality selection is available only through the event-location filter.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* LEFT: Large custom Nepal Programme Coverage Map */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-3">
+            <LocalUnitCoverageMap
+              districts={districts.map(row => ({ label: row.label, value: row[measure] }))}
+              measure={measures[measure]}
+              compact={false}
+              selectedDistrict={filters.district}
+              onSelect={(district, province) => {
+                const name = options.district.find(value => value.toLowerCase() === district.toLowerCase());
+                const provinceLabel = provinceNames[province] ?? province;
+                const provinceName = options.province.find(value => value.toLowerCase() === provinceLabel.toLowerCase());
+                if (!filters.province && provinceName) select(provinceName);
+                else if (name) select(filters.province || provinceName || '', name);
+              }}
+            />
+            <p className="text-xs text-slate-500">
+              Select a reported district polygon to focus its province, then select again to filter the district. All polygons carry district values. Municipality selection is available only through the event-location filter.
+            </p>
+          </div>
 
-      {!compact && (
-        <div className="grid gap-4 sm:grid-cols-2 pt-2">
-          {['province', 'district'].map(key => (
-            <div key={key} className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
-              <h3 className="mb-2 text-xs font-semibold text-slate-800">
-                {key === 'province' ? 'Provinces' : 'Districts'} · {measures[measure]}
-              </h3>
-              <div className="max-h-64 overflow-auto rounded border border-slate-200 bg-white">
-                {sections
-                  .find(section => section.key === key)
-                  ?.rows.map(row => (
+          {/* RIGHT: District activity/reach ranking & province summary */}
+          <div className="lg:col-span-5 xl:col-span-4 space-y-4">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-3.5">
+              <div className="mb-2.5 flex items-center justify-between border-b border-slate-200 pb-2">
+                <div>
+                  <h3 className="text-xs font-semibold text-slate-800">
+                    District Ranking · {measures[measure]}
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    Scroll to inspect; click to filter district
+                  </p>
+                </div>
+                <span className="text-[11px] font-medium text-slate-500">
+                  {districts.length} reported
+                </span>
+              </div>
+              <div
+                tabIndex={0}
+                aria-label="District activity and reach ranking"
+                className="max-h-[380px] overflow-y-auto divide-y divide-slate-100 rounded border border-slate-200 bg-white text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#004B87]"
+              >
+                {districts.map(row => {
+                  const isSelected = filters.district?.toLowerCase() === row.label.toLowerCase();
+                  return (
                     <button
                       key={row.label}
                       disabled={pending || row.label === 'Unspecified'}
-                      className="flex min-h-10 w-full items-center justify-between gap-3 border-b border-slate-100 p-2.5 text-left text-xs transition-colors hover:bg-blue-50/40 disabled:opacity-50 last:border-b-0"
-                      onClick={() =>
-                        select(
-                          key === 'province' ? row.label : filters.province,
-                          key === 'district' ? row.label : ''
-                        )
-                      }
+                      className={`flex min-h-10 w-full items-center justify-between gap-3 p-2.5 text-left transition-colors hover:bg-blue-50/40 disabled:opacity-50 ${
+                        isSelected ? 'bg-blue-50 font-semibold text-[#004B87]' : 'text-slate-700'
+                      }`}
+                      onClick={() => select(filters.province, row.label)}
                     >
-                      <span className="font-medium text-slate-700">{row.label}</span>
+                      <span className="truncate">{row.label}</span>
                       <span className="font-semibold tabular-nums text-slate-900">
                         {/^\d+$/.test(row[measure])
                           ? Number(row[measure]).toLocaleString('en-US')
                           : row[measure]}
                       </span>
                     </button>
-                  ))}
+                  );
+                })}
               </div>
             </div>
-          ))}
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-3.5">
+              <h3 className="mb-2 text-xs font-semibold text-slate-800">
+                Provinces · {measures[measure]}
+              </h3>
+              <div
+                tabIndex={0}
+                aria-label="Province ranking"
+                className="max-h-36 overflow-y-auto divide-y divide-slate-100 rounded border border-slate-200 bg-white text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#004B87]"
+              >
+                {sections
+                  .find(section => section.key === 'province')
+                  ?.rows.map(row => {
+                    const isSelected = filters.province?.toLowerCase() === row.label.toLowerCase();
+                    return (
+                      <button
+                        key={row.label}
+                        disabled={pending || row.label === 'Unspecified'}
+                        className={`flex min-h-8 w-full items-center justify-between gap-2 p-2 text-left transition-colors hover:bg-blue-50/40 disabled:opacity-50 ${
+                          isSelected ? 'bg-blue-50 font-semibold text-[#004B87]' : 'text-slate-700'
+                        }`}
+                        onClick={() => select(row.label, '')}
+                      >
+                        <span className="truncate">{row.label}</span>
+                        <span className="font-semibold tabular-nums text-slate-900">
+                          {/^\d+$/.test(row[measure])
+                            ? Number(row[measure]).toLocaleString('en-US')
+                            : row[measure]}
+                        </span>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

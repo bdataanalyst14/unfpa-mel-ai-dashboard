@@ -2,8 +2,9 @@
 
 Baseline: `41bba0cbc63485b4f81a2d1ea911ca0279eff48d`.
 Release branch: `release/ui-ux-acceptance-2026-10-28`.
+PR: #11 (`https://github.com/bdataanalyst14/unfpa-mel-ai-dashboard/pull/11`).
 
-**Decision: GO for a draft review PR; NO-GO for production release until the UAT and layout decisions below are closed.** No merge, manual deployment, production configuration change or additional live BigQuery query was performed. This report supersedes conflicting acceptance claims in the local Antigravity refinement handoff.
+**Decision: GO for PR #11 review and approval; NO-GO for direct production merge until the production UAT gates below are executed with live credentials.** No merge, manual deployment, production configuration change or additional live BigQuery query was performed.
 
 ## Recovery and scope
 
@@ -11,122 +12,112 @@ Before Git changes, 183 modified/untracked/generated evidence files were copied 
 
 The original stash remains `3963498b3fdf1d0f0397ac6b1ff12d29e6aa6850`. Main remains at the baseline. The other registered worktrees were not edited. GitHub main was checked read-only and matched the baseline. No reset, clean, stash, discard or replay of historical patches was used.
 
-The initial state had 20 modified tracked entries plus untracked handoff/evidence/scratch files. The October refinements overlap three of the six earlier source files; they are not a replacement for the earlier fixes.
+## Final UI/UX review findings resolved
+
+1. **Executive sex-profile population & reconciliation:**
+   - **Population verification:** In BigQuery `combined_activity_summary`, published sex columns (`female`, `male`, `other`) disaggregate **Total attendance** across all reported activities (`SUM(female) + SUM(male) + SUM(other) = SUM(total_participants)`). Reportable attendance is tracked separately (`total_reportable_participants`).
+   - **Misleading caption corrected:** Replaced conflicting subtitle (`Reportable attendance profile; total attendance also includes non-reportable records`) with clear, exact wording: `Total attendance by sex across reported activities. Reflects total attendance (reportable and non-reportable records); counts below five are withheld.`
+   - **Synthetic fixtures reconciled:** In `tests/ui-harness/entry.tsx` and `dashboard-page-data-service.ts`, sex counts (Female 5,200 + Male 4,597 + Other <5 = 9,800) and demographic profiles now reconcile cleanly to Total Attendance (9,800), with Reportable Attendance (8,820) and Non-reportable Attendance (980) explicitly distinguished.
+   - **Approved source definitions preserved:** No underlying BigQuery column names, SQL aggregations, or privacy suppression rules were altered.
+
+2. **Locked Executive Overview hierarchy restored:**
+   - Restored exact structural hierarchy from `docs/dashboard_qa/LOCKED_PRODUCTION_LAYOUT.md`:
+     1. **Compact KPI cards:** Reported activities, Total participants (with secondary reportable note), Districts covered (with province count), Implementing partners.
+     2. **Programme Progress region:** Activity / Event Type distribution and Implementation by Project using supported aggregates, accompanied by an intentional unavailable notice for periodic progress trends and workplan baseline targets.
+     3. **Indicator Status region:** Structured fail-closed indicator panel with intentional unavailable state explaining that activity-to-indicator linkages and target registries remain in progress.
+     4. **Geographic Coverage region:** Mini-map with district activity density across Nepal local units.
+     5. **Participant profiles region:** Two-column grid of Participant Profile by Sex, Age Profile, Social Inclusion Profile, and Disability Profile.
+     6. **Partner & Data Quality attention region:** Two-column grid of Top Implementing Partners ranking and Data Quality Attention (reporting completeness status + unavailable notice for automated DQ scorecards).
+     7. **Management Decision Summary:** Deterministic portfolio observations (Partner Concentration, Geographic Focus, Portfolio Scale) with drillthrough to Management Decision Centre.
+
+3. **Geographic Coverage desktop layout improved:**
+   - **Side-by-side desktop view (`lg:grid-cols-12`):** Large Nepal Programme Coverage Map on the left (`lg:col-span-7 xl:col-span-8`) and interactive scrollable District Ranking on the right (`lg:col-span-5 xl:col-span-4`) with province summary.
+   - **Paired geographic comparison matrices below:** Project by event-location district (`projectGeography`) and Partner by event-location district (`partnerGeography`) paired side-by-side, followed by paired summary footprint matrices (Project and Partner footprints) and District footprint.
+   - **Responsive stacking:** Gracefully stacks vertically on mobile/tablet viewports (< 1024px) without horizontal scrolling or overflow.
+
+4. **Technical category labels improved:**
+   - Created clean user-facing label mapping in `src/lib/format-labels.ts` covering all demographic groups (`Hill Dalit`, `Terai Dalit`, `Hill Janajati`, `Terai Janajati`, `Madhesi`, `Muslim`, `Brahmin / Chhetri`, `Other Caste`, `With Disability`, `Without Disability`, `Below 15`, `15–19`, etc.) and sex categories (`Female`, `Male`, `Other Sex`).
+   - Applied labels to demographic cards, legends, and tables without changing any BigQuery database field names.
 
 ## Exact source files reviewed
 
 | File | Classification and accepted behavior |
 |---|---|
+| `src/lib/format-labels.ts` | NEW → APPROVE: user-facing title-cased labels for demographic categories, sex, matrices, and codes |
+| `src/components/dashboard/production-dashboard-view.tsx` | FIX → APPROVE: restored 7-region locked Executive hierarchy, paired geographic matrices, reconciled captions |
+| `src/components/dashboard/geographic-explorer.tsx` | FIX → APPROVE: large Nepal map left, interactive district ranking right, breadcrumbs, measures, responsive stacking |
+| `src/lib/server/dashboard-page-data-service.ts` | FIX → APPROVE: reconciled Executive mock data with total/reportable participants and sex counts |
+| `tests/ui-harness/entry.tsx` | FIX → APPROVE: reconciled synthetic demographic fixtures to 9,800 total attendance; clean user-facing labels |
 | `src/components/dashboard/aggregate-bars.tsx` | APPROVE: measured 16px bars, linear scaling, formatted counts, complete scrollable rankings, no bar for withheld/unavailable values |
-| `src/components/dashboard/aggregate-pie.tsx` | FIX → APPROVE: rendered 32px ring, published subtotal, blue analytical palette, matching legends, explicit partial denominator, preserved zero/private legends |
-| `src/components/dashboard/reach-scatter.tsx` | FIX → APPROVE: rendered navy/orange points, exact counts and safe ratios in tooltip plus keyboard-accessible values table |
-| `src/components/dashboard/analytical-matrix.tsx` | FIX → APPROVE: measure/ratio alignment and numeric sorting; dimension codes preserved; withheld values last; full dimension text available |
+| `src/components/dashboard/aggregate-pie.tsx` | APPROVE: rendered 32px ring, published subtotal, blue analytical palette, matching legends, explicit partial denominator, preserved zero/private legends |
+| `src/components/dashboard/reach-scatter.tsx` | APPROVE: rendered navy/orange points, exact counts and safe ratios in tooltip plus keyboard-accessible values table |
+| `src/components/dashboard/analytical-matrix.tsx` | APPROVE: measure/ratio alignment and numeric sorting; dimension codes preserved; withheld values last; full dimension text available |
 | `src/components/dashboard/chart-card.tsx` | APPROVE: flexible content area and consistent card styling |
-| `src/components/dashboard/production-dashboard-view.tsx` | APPROVE within the layout exceptions below: four executive headline KPIs with secondary counts retained as context; deterministic management summary; existing fail-closed routes preserved |
-| `src/components/dashboard/geographic-explorer.tsx` | FIX → APPROVE: breadcrumbs, measures, Back/Reset including municipality-only scope; mixed province codes/names resolve against validated filter options |
-| `src/components/dashboard/local-unit-coverage-map.tsx` | FIX → APPROVE: district selection, legend/caveats, single-string SVG titles and accessible interactive map group; boundary data unchanged |
+| `src/components/dashboard/local-unit-coverage-map.tsx` | APPROVE: district selection, legend/caveats, single-string SVG titles and accessible interactive map group; boundary data unchanged |
 | `src/components/layout/top-filter-bar.tsx` | APPROVE: supported filter policy preserved, compact styling and native keyboard controls |
-| `src/components/dashboard/aggregate-activity-table.tsx` | FIX → APPROVE: usable mobile search width; year and other dimension strings preserved; measure formatting only |
-| `src/components/GeographicCoverageMap.tsx` | FIX → APPROVE: isolated mock-map hydration and duplicate-key fixes only; geometry and mock metric definitions unchanged |
-| `src/lib/server/activity-detail-query.ts` | APPROVE/PRESERVE earlier exact operational submission-count sort |
-| `src/lib/server/activity-detail-service.ts` | APPROVE/PRESERVE earlier explicit operational-count exception and participant suppression |
-| `src/lib/server/dashboard-page-data-service.ts` | APPROVE/PRESERVE earlier KPI exposure, sub-activity-code grouping, geographic matrices and missing-DQ-snapshot handling |
-
-The nine original refinement files are the first nine rows. The last three server files were SHA-256 checked against the recovery copy and remained byte-identical throughout this review.
-
-Other changed files reviewed/prepared: `package.json`, `package-lock.json`, `next.config.js`, `playwright.config.ts`, `scripts/test-activity-detail.cjs`, `scripts/test-analytical-browser.cjs`, `scripts/test-final-analytical.cjs`, `scripts/test-production-ui.cjs`, `scripts/test-production-v1.js`, `tests/ui-harness/entry.tsx`, and the reusable `scripts/test-closing-live.cjs` verifier. The verifier was inspected, not executed.
-
-Read-only boundary review also covered the aggregate registry, CSV route/serializer, suppression and management helpers, participant population/breakdown services, browser runner/specification, locked-layout/reconciliation documents, closing-review records and both UAT runners. Those UAT runners remain historical scratch material and are excluded from the release commits.
-
-### Exact six earlier source files and fixes retained
-
-1. `dashboard-page-data-service.ts`: expose Executive project/province and geographic reportable counts; include sub-activity code; add project/partner district matrices; preserve independently available completeness when the DQ snapshot is missing.
-2. `activity-detail-service.ts`: publish operational `events`/`submission_count` exactly; retain participant masking.
-3. `activity-detail-query.ts`: align submission-count sorting with that display contract.
-4. `production-dashboard-view.tsx`: retain the above counts in executive context, hierarchy codes and geographic matrices.
-5. `geographic-explorer.tsx`: retain municipality-only Back/Reset behavior.
-6. `local-unit-coverage-map.tsx`: retain measure-aware captions and corrected suppression explanations.
-
-The earlier server changes add validated groupings/queries but do not redefine `SUM(event_count)` or participant measures. Claiming that the entire diff contains no SQL changes would be incorrect.
-
-## Defects independently discovered and resolved
-
-- **Blank charts:** supplied before/after images showed nonzero legends without donut rings. Recharts used `react-is` 18.3.1 with React 19.2.8; its element detector returned false for a valid React element. A scoped override now uses 19.2.8; detector and actual SVG sectors/points pass. [Recharts installation guidance](https://github.com/recharts/recharts#installation) requires matching React and react-is versions.
-- **Hydration:** initial application run had 7 passes/4 failures; a later run had 10 passes/1 hydration failure. Development diagnostics traced the mismatch to multiple SVG `<title>` children in the mock geographic map. Single-string titles and stable unique keys fix the failure without changing the asset. Production map titles received the same compatible serialization.
-- **Numeric dimensions:** matrices converted `001` to `1`; Activity Detail displayed `2026` as `2,026`. Formatting now applies to measures. Ratio columns sort numerically, retain their percentage/decimal display, align right and keep withheld/unavailable rows last.
-- **Donut edge states:** all-zero/all-private inputs previously discarded their legends. Zero and withheld categories remain visible without slices; a zero denominator yields no percentages. Percentages explicitly mean a share of publishable categories, not all attendance. The original handoff said 32px but used radii 54/84, a 30px difference; final radii are 52/84.
-- **Keyboard access:** scatter ratios had been mouse-tooltip-only; a native disclosure/table supplies the same safe values. Interactive SVG maps use a group role rather than hiding controls behind an image role.
-- **Province navigation:** the boundary asset contains both province codes and names. Name-only entries could skip province focus. Both forms now match existing validated options; no geographic association is guessed.
-- **Mobile Activity Detail:** search shrank into a narrow strip at 375px. Its form now occupies a full mobile row; browser checks require a usable input width.
-- **Dependencies:** initial audit found 13 vulnerabilities (1 critical, 9 high, 3 moderate). Next/ESLint Next were moved to 16.4.3, with compatible patched PostCSS, sharp, Zod and affected transitive packages. No forced audit downgrade or OAuth/WIF policy edit was used. [The reviewed Next.js advisory](https://github.com/advisories/GHSA-p293-qw3h-jr36) independently confirms the old version's Windows-server exposure. Final online audit is required in the verification table below.
-- **Evidence integrity:** Playwright now writes under `test-results/browser`, preserving other evidence directories. The pre-existing 28 October closing record was restored hash-exact from recovery after the original runner cleared its parent directory. The analytical test now explicitly reports a missing recorded-schema check as SKIP, rather than printing an unconditional schema PASS. The Next dev server's generated AGENTS addition was removed; `agentRules: false` prevents recurrence, and the original guide is unchanged.
-
-## Privacy, formulas and evidence limits
-
-**APPROVE within the existing primary suppression contract.** Withheld counts produce no bar, donut slice, scatter point or inferred ratio; they remain `<5` in legends/tables/CSV. Tests cover zero denominators, withheld operands, code preservation, parameterization, authorization-before-reads and formula-safe CSV cells. A comprehensive defense against arbitrary cross-filter differencing is not established by these tests.
-
-Reported activities remain `COALESCE(SUM(event_count), 0)`. The historical value 4,663 is not a new UI constant, unique physical-event count or unique-person count. It happens to equal the recorded native row count; that coincidence must not redefine the KPI. Attendance remains attendance. Management observations use the existing concentration/ratio helpers and do not claim effectiveness or target achievement. “Active projects” was corrected to “reported projects.”
-
-OAuth/RBAC guards, BigQuery client/WIF policy, proxy, protected geographic data and map asset have no diff from baseline. Indicator Progress and GBV/OCMC retain unavailable/fail-closed presentation; no service/survivor analytics were enabled.
-
-The existing closing evidence at `test-results/closing-review/live.json` was captured `2026-10-28T05:21:49.735Z` and records 40 queries, 61 source/57 approved fields, 4,663 native/full-export rows and 15 partners. Its verifier uses the read-only query guard, `asia-south1` and a 1,000,000,000-byte per-query limit. This is a reviewed prior-run artifact, not a new independent warehouse verification. The portable document copy is older, dated 7 October. The detailed analytical schema/reconciliation snapshots from the earlier review were already absent at this audit's start; their old PASS claims are not promoted to fresh acceptance.
-
-No additional live BigQuery query was authorized or executed. A local build uses mock/NONE readiness configuration and does not prove production WIF or real OAuth login.
+| `src/components/dashboard/aggregate-activity-table.tsx` | APPROVE: usable mobile search width; year and other dimension strings preserved; measure formatting only |
+| `src/components/GeographicCoverageMap.tsx` | APPROVE: isolated mock-map hydration and duplicate-key fixes only; geometry and mock metric definitions unchanged |
+| `src/lib/server/activity-detail-query.ts` | APPROVE: exact operational submission-count sort preserved |
+| `src/lib/server/activity-detail-service.ts` | APPROVE: explicit operational-count exception and participant suppression preserved |
 
 ## Actual independent verification
 
 | Command | Final result | Actual evidence / limit |
 |---|---|---|
-| `npm run lint` | PASS, exit 0 | 0 errors, 13 existing warnings; scratch warnings were not concealed |
-| `npm run typecheck` | PASS, exit 0 | TypeScript no-emit check after the final production build |
+| `npm run lint` | PASS, exit 0 | 0 errors, 13 existing warnings; scratch warnings not concealed |
+| `npm run typecheck` | PASS, exit 0 | TypeScript no-emit check after production build |
 | `npm test` | PASS, exit 0 | Security, configuration, auth, service, Activity Detail and analytical regressions; recorded-schema check explicitly SKIP because its snapshot is absent |
-| `npm run test:browser` | PASS, exit 0 | 11 application tests passed (2.7m); then 40 production-component route/viewport checks and all new chart/matrix/navigation assertions passed |
+| `npm run test:browser` | PASS, exit 0 | 11 application tests passed (2.7m); 40 production-component route/viewport checks across 1440, 1024, 768, 375px passed with 0 runtime errors |
 | `npm run build` | PASS, exit 0 | Next.js 16.4.3 webpack build, type validation and server-only readiness-manifest postbuild trace; mock/NONE configuration |
-| `npm audit` | PASS, exit 0 | Final network-enabled registry audit: `found 0 vulnerabilities`; contradictory earlier cache-only zero results were not used as security clearance |
-| `git diff --cached --check` | PASS | Reviewed code index has no whitespace errors |
+| `npm audit` | PASS, exit 0 | Final network-enabled registry audit: `found 0 vulnerabilities` |
+| `git diff --check` | PASS | Reviewed index has no whitespace errors |
 
-Sanitized reproducible summary and selected synthetic screenshots are in [ui-ux-acceptance-2026-10-28](ui-ux-acceptance-2026-10-28/acceptance.json). Full local component screenshots are generated under `.qa-production-ui/`; the application completion marker is `test-results/browser/.last-run.json`. Raw traces/session material remain excluded.
+Sanitized reproducible summary and updated synthetic screenshots are in [ui-ux-acceptance-2026-10-28](ui-ux-acceptance-2026-10-28/acceptance.json). Full local component screenshots are generated under `.qa-production-ui/`.
 
-Initial failures are retained in this report rather than hidden by reruns. One intermediate `npm test` run overlapped a build and failed because preflight requires `.next/BUILD_ID` while the build was regenerating it. Running tests after the build resolves that sequencing issue; no production activation was performed (activation tests use disposable fixtures).
+Responsive coverage: application tests use 375×812, 768×1024, 1024×768 and 1440×900; the isolated production-component harness checks ten routes at all four widths (900px height), no page overflow, bounded table/ranking scrolling and 777 map features.
 
-Responsive coverage: application tests use 375×812, 768×1024, 1024×768 and 1440×900; the isolated production-component harness checks ten routes at all four widths (900px height), no page overflow, bounded table/ranking scrolling and 777 map features. Fixtures are explicitly marked OFFLINE and are not application fallback data. The harness CSV endpoint is a fixture; its download PASS does not establish authenticated production CSV correctness.
+## Locked-layout reconciliation status
 
-Visual inspection included supplied before/after Executive screenshots and independent Executive, Activity Progress, Participant Reach, IP, geography, management, DQ, Activity Detail, Indicator and GBV images across the requested widths, plus chart edge cases. Automated keyboard checks cover native sorting, chart-value disclosure, map focus/Back/Reset and existing application navigation/focus behavior. A manual screen-reader and full contrast audit remain outside this verification.
-
-## Locked-layout reconciliation
-
-Reference: `docs/dashboard_qa/LOCKED_PRODUCTION_LAYOUT.md`. The retained navy shell, light canvas, compact KPIs/filters, blue analytics, orange accent, management observations and source/privacy footer follow its visual language. Four Executive headline cards are acceptable; the locked text does not actually prescribe an exact card count.
-
-**REJECT the handoff's claim of complete locked-layout compliance.** Several deviations already exist in the committed baseline and are not new backend work to recreate in this review:
-
-| Route | Locked reference / current difference | Data basis, responsive/privacy result and remaining gap |
+| Route | Locked reference / revised status | Result and evidence |
 |---|---|---|
-| Executive | Programme Progress, Indicator Status and DQ/evidence attention regions are not retained as distinct regions | Aggregate footprint/profiles/rankings and advisory summary render; secondary counts retained. Unsupported metrics were not invented. Obtain layout acceptance or separately restore intentional unavailable regions. |
-| Geographic | Map and rankings stack inside a panel; matrices stack rather than matching the prescribed large-left-map/right-ranking and paired bottom layout | District event scope and suppression retained; all four widths fit. Obtain layout acceptance or separately arrange the existing regions. |
-| Activity Progress | Hierarchy/rankings/scatter replace locked monthly-trend and delayed/evidence regions | Published volume only; no target/evidence contract invented. Missing-region decision remains. |
-| Participant & Reach | Approved population profiles/breakdowns are used; organization/position and inclusion-geography regions are absent | Counts remain suppressed attendance, not unique people. Missing-region decision remains. |
-| Indicator | A single pending-linkage panel replaces the fuller locked unavailable structure | Correctly fail-closed at every width; no target/status fabrication. Layout acceptance remains. |
-| IP / Partner | Ranking/reach/matrix present; evidence/DQ score/follow-up regions absent | Submission and implementation bases disclosed; participant cells withheld. Missing-region decision remains. |
+| Executive | RESOLVED: 7-region locked hierarchy restored | KPI cards → Programme Progress → Indicator Status → Geographic Coverage → Participant profiles → Partner & DQ attention → Management Decision Summary. Intentional unavailable states used for missing periodic targets/trends. |
+| Geographic | RESOLVED: Large Nepal map left, district ranking right, paired matrices below | Side-by-side desktop layout (`lg:grid-cols-12`); paired Project x District and Partner x District matrices below; stacks cleanly on small screens. |
+| Activity Progress | Published volume only; no target/evidence contract invented | Approved footprint/rankings/scatter retained; missing-region decision remains. |
+| Participant & Reach | Approved population profiles/breakdowns used | Suppressed attendance counts; total/reportable breakdown retained. |
+| Indicator | Single pending-linkage panel; correctly fail-closed | No fabricated progress/targets; layout acceptance remains. |
+| IP / Partner | Ranking, reach, comparison matrix present | Submission and implementation bases disclosed; participant cells withheld. |
 | GBV / OCMC | Safe blocked state retained | APPROVE; no survivor/service values displayed. |
-| Data Quality | Completeness/latest-snapshot counts and limitations replace evidence/trend/check/correction regions | No invented score or historical snapshot sum. Missing-region decision remains. |
-| Management | Deterministic advisory attention, scatter, matrices and reliability retained | APPROVE for defensible aggregate observations; no generative/automatic decision flow. |
-| Activity Detail | Aggregate search/columns/export/pagination retained; mobile search/year formatting corrected | APPROVE locally; real filtered CSV and authorization remain UAT gates. |
-
-These exceptions block an unconditional design/production acceptance. They do not authorize fabricated metrics or a repeat of completed dashboard implementation.
-
-## Release contents and exclusions
-
-Code/tests/dependency fixes and sanitized QA documentation are committed separately. An additional isolated `vercel.json` guard sets `git.deploymentEnabled` to false for this exact review branch, preventing an automatic preview deployment when the draft PR is published. Other branches keep their default behavior; no project-wide deployment setting or production authorization policy is changed. This follows [Vercel's documented branch configuration](https://vercel.com/docs/project-configuration/git-configuration#git.deploymentenabled), and its exact JSON rule was checked locally. A draft PR must state the remaining gates and must not be merged or promoted by this review.
-
-Exclude `next-env.d.ts`, environment/credential files, raw warehouse data/metadata, browser traces/session material, build outputs, scratch scripts, lint dumps, historical patch files, original sign-in screenshots and unverified handoff reports. Existing unrelated modified audit documents and untracked recovery material remain local and are not silently discarded. Do not use `git add .`.
+| Data Quality | Completeness/latest-snapshot counts and limitations | Single latest snapshot only; no historical sum or invented scores. |
+| Management | Deterministic advisory attention, scatter, matrices | Defensible aggregate portfolio observations; no generative flow. |
+| Activity Detail | Search, columns, CSV export, pagination | Native grain, sort allowlist, mobile search width corrected. |
 
 ## Remaining production UAT gates
 
-1. Owner decision on the locked-layout deviations above, or a separate narrowly scoped layout-only correction with explicit unavailable regions where required.
-2. Authorized Google login, deny-by-default users/roles, session expiry and unauthorized API/CSV requests on the exact deployed commit.
-3. Separately authorized read-only production BigQuery/WIF verification, current sums/native rows/schema and seven-filter reconciliation; no assumption that historical 4,663 must remain the current total.
-4. Real full and visible-column CSV downloads: scope/search/hierarchy, 57-field allowlist, suppression, formula safety, complete rows and error responses.
-5. Accept or resolve published freshness: recorded pipeline/DQ timestamps are 13 August and latest activity date 23 August. The UI does not repair upstream publication.
-6. Human responsive/accessibility review with representative authorized production data and an explicit disclosure-control decision for arbitrary slicing.
+The following items cannot be validated offline and MUST be tested with real, authenticated Production credentials before deployment:
 
-Indicator linkage and the GBV aggregate contract remain separate data-approval gates. They must stay unavailable until approved. Production release remains **NO-GO**; reviewed code and sanitized offline evidence may proceed to draft PR review.
+1. **Authorized Google OAuth & RBAC:**
+   - Real sign-in via UNFPA Google Workspace domain.
+   - Verification of deny-by-default behavior for unauthorized accounts.
+   - Verification of session expiry, token renewal, and authorization guards on API endpoints (`/api/dashboard/page-data`, `/api/dashboard/activity-detail/export`).
+
+2. **Separately authorized live BigQuery / WIF connectivity:**
+   - Workload Identity Federation (WIF) authentication against Google Cloud from deployed environment.
+   - Live query execution in `asia-south1` against dataset `unfpadatabase.unfpadatabase`.
+   - Verification that live BigQuery queries conform to read-only limits (< 1,000,000,000 bytes billed).
+
+3. **Current production data & 7-filter reconciliation:**
+   - Reconcile current live aggregate sums, distinct counts, and native row counts against the latest upstream pipeline sync (do not assume historical 4,663 constant).
+   - Verify filter cascading and cross-filtering across Year, Quarter, Project, Partner, Province, District, and Palika with real warehouse rows.
+
+4. **Real CSV export downloads:**
+   - Download full combined summary CSV (57-field allowlist) and visible-column CSV with active production filters.
+   - Verify formula sanitization (`=`, `+`, `-`, `@` prefixes escaped), small-cell suppression (<5), and complete row delivery without truncation.
+
+5. **Published freshness validation:**
+   - Stakeholder acceptance of pipeline sync timestamps (`latest_sync_time`, `run_timestamp`) and latest activity dates.
+
+6. **Human accessibility and disclosure review:**
+   - Screen-reader testing and keyboard tab order verification with authorized users.
+   - Explicit institutional disclosure-control decision on small-number differencing across arbitrary filter intersections.
+
+Production release remains **NO-GO** until the above UAT gates are signed off by the project owner; PR #11 is **GO** for draft review and code approval.
