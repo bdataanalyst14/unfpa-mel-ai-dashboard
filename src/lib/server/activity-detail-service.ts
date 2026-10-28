@@ -8,7 +8,7 @@ import type { DashboardFilterState } from '@/lib/dashboard-filters';
 export function safeActivityRow(row: Record<string, unknown>): AggregateRow {
   return Object.fromEntries(activityFields.map(field => {
     const value = row[field.key];
-    const isOperational = /activities|districts|partners|projects|submissions|rows|gaps|events/i.test(field.key);
+    const isOperational = field.key === 'events' || field.key === 'submission_count';
     return [field.key, field.kind === 'measure'
       ? suppressCount(value == null ? null : Number(value), isOperational).displayValue
       : typeof value === 'string' && value.trim() ? value : 'Unspecified'];

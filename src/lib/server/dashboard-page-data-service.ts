@@ -438,6 +438,8 @@ async function queryCombinedRoute(
       countMetric('Reportable participants', asNumber(row.reportable_participants)),
       countMetric('Districts covered', asNumber(row.districts)),
       countMetric('Implementing partners', asNumber(row.partners)),
+      countMetric('Projects', asNumber(row.projects)),
+      countMetric('Provinces covered', asNumber(row.provinces)),
       countMetric('Female participants', asNumber(row.female_participants)),
       countMetric('Male participants', asNumber(row.male_participants)),
       countMetric('Other participants', asNumber(row.other_participants)),
@@ -459,6 +461,7 @@ async function queryCombinedRoute(
       countMetric('Districts covered', asNumber(row.districts)),
       countMetric('Palikas covered', asNumber(row.palikas)),
       countMetric('Total participants', asNumber(row.total_participants)),
+      countMetric('Reportable participants', asNumber(row.reportable_participants)),
       countMetric('Reported activities', asNumber(row.total_events)),
     ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
   }
@@ -509,10 +512,19 @@ async function addAnalysis(data: DashboardPageData, filters: DashboardFilterStat
     };
   }
   if (data.route === 'activity-progress') {
-    const rows = await runSafeBigQuery<CountRow>(`SELECT project1 AS project, outcome1 AS outcome, output1 AS output, activity1 AS activity, subact1 AS subact, ${counts}
-      FROM ${combined} ${where} GROUP BY project1, outcome1, output1, activity1, subact1 ORDER BY project1, outcome1, output1, activity1, subact1 LIMIT 10001`, params);
+    const rows = await runSafeBigQuery<CountRow>(`SELECT project1 AS project, outcome1 AS outcome, output1 AS output, activity1 AS activity, subactcode1 AS subactcode, subact1 AS subact, ${counts}
+      FROM ${combined} ${where} GROUP BY project1, outcome1, output1, activity1, subactcode1, subact1 ORDER BY project1, outcome1, output1, activity1, subactcode1, subact1 LIMIT 10001`, params);
     if (rows.length > 10000) throw new Error('Hierarchy exceeds response bound');
     data.sections.push({ key: 'hierarchy', title: 'Programme hierarchy', rows: rows.map(safeRow) });
+  }
+  if (data.route === 'geographic-coverage') {
+    const crossSections = await Promise.all([['project', 'project1'], ['partner', 'ip_name']].map(async ([key, column]) => {
+      const rows = await runSafeBigQuery<CountRow>(`SELECT ${column} AS label, province1 AS province, district1 AS district, ${counts}
+        FROM ${combined} ${where} GROUP BY ${column}, province1, district1 ORDER BY ${column}, province1, district1 LIMIT 10001`, params);
+      if (rows.length > 10000) throw new Error('Geographic matrix exceeds response bound');
+      return { key: `${key}Geography`, title: `${key === 'project' ? 'Project' : 'Partner'} by event-location district`, rows: rows.map(safeRow) };
+    }));
+    data.sections.push(...crossSections);
   }
   data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. Sensitive participant counts 1 to 4 are withheld. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
   return data;
@@ -574,7 +586,7 @@ async function queryDataQuality(filters: DashboardFilterState): Promise<Dashboar
     countMetric('Geographic gaps', missingGeo, 'Aggregate rows missing province or district'),
     countMetric('Project gaps', missingProject, 'Aggregate rows missing project association'),
     countMetric('Partner gaps', missingPartner, 'Aggregate rows missing implementing partner'),
-    countMetric('Validated rows', asNumber(dqRow.total_rows), 'Rows checked in latest system-wide DQ snapshot; not a quality score')
+    { label: 'Validated rows', value: dqRow?.total_rows == null ? 'N/A' : String(asNumber(dqRow.total_rows)), note: 'Rows checked in latest system-wide DQ snapshot; not a quality score' }
   ], filters, dqFreshness, 'Transparent activity completeness metrics derived from live reporting views. A composite Data Quality Score is not used. Validation tracking and evidence linkages are disabled pending an approved integration contract.');
 }
 

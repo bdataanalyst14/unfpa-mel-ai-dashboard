@@ -3,9 +3,11 @@
 import { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { ArrowUpDown } from 'lucide-react';
-import { allActivityColumns, activityPresets, activityColumnGroups, defaultVisibleColumns, activityExtraFilters, type AggregateRow, type ActivityPage } from '@/lib/aggregate-contract';
+import { allActivityColumns, activityFields, activityPresets, activityColumnGroups, defaultVisibleColumns, activityExtraFilters, type AggregateRow, type ActivityPage } from '@/lib/aggregate-contract';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+
+const measureKeys = new Set(activityFields.filter(field => field.kind === 'measure').map(field => field.key));
 
 export default function AggregateActivityTable({ rows, page }: { rows: AggregateRow[]; page: ActivityPage }) {
   const router = useRouter();
@@ -56,7 +58,7 @@ export default function AggregateActivityTable({ rows, page }: { rows: Aggregate
         </DialogContent></Dialog>
     </div>
     <div className="mb-4 flex flex-wrap items-end gap-2">
-      <form className="flex min-w-0 flex-1 items-end gap-2" onSubmit={event => { event.preventDefault(); update({ search }); }}>
+      <form className="flex w-full min-w-0 basis-full items-end gap-2 sm:w-auto sm:flex-1 sm:basis-64" onSubmit={event => { event.preventDefault(); update({ search }); }}>
         <label className="min-w-0 flex-1 text-xs font-medium">Search activities, locations or projects<input type="search" value={search} onChange={event => setSearch(event.target.value)} maxLength={200} placeholder="Activity, partner, outcome or location" className="mt-1 min-h-11 w-full rounded-lg border px-3 text-sm" /></label>
         <Button type="submit" variant="outline" disabled={pending}>Search</Button>
       </form>
@@ -76,7 +78,7 @@ export default function AggregateActivityTable({ rows, page }: { rows: Aggregate
     <p role="status" className="mb-3 text-xs text-slate-600">{pending ? 'Updating filtered aggregates…' : `${page.totalRows.toLocaleString()} matching aggregate rows. Full CSV includes all matching rows and all approved fields.`}{exporting ? ' Preparing CSV…' : ''}</p>
     <div className="max-h-[65vh] max-w-full overflow-auto rounded-lg border" role="region" aria-label="Scrollable activity table" tabIndex={0}>
       <table className="w-full text-left text-sm"><caption className="sr-only">Filtered activity aggregates. Column headings sort all matching rows.</caption><thead className="sticky top-0 z-10 bg-slate-50"><tr>{columns.map(([key, label]) => <th key={key} scope="col" className="border-b bg-slate-50 px-3 py-2" aria-sort={page.request.sort === key ? page.request.direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button disabled={pending} className="flex min-h-11 items-center gap-1 whitespace-nowrap text-xs font-semibold" onClick={() => update({ sort: key, direction: page.request.sort === key && page.request.direction === 'asc' ? 'desc' : 'asc' })}>{label}<ArrowUpDown className="h-3 w-3" /></button></th>)}</tr></thead>
-        <tbody className="divide-y">{rows.map((row, index) => <tr key={index} className="align-top hover:bg-slate-50">{columns.map(([key]) => <td key={key} className={`px-3 py-3 tabular-nums ${['activity', 'subact', 'outcome', 'output'].includes(key) ? 'min-w-[18rem] max-w-[26rem] whitespace-normal break-words' : 'min-w-[7rem]'}`}><span title={row[key]} className={['activity', 'subact', 'outcome', 'output'].includes(key) ? 'line-clamp-3' : ''}>{/^\d+$/.test(row[key] ?? '') ? Number(row[key]).toLocaleString('en-US') : row[key] ?? 'N/A'}</span></td>)}</tr>)}</tbody>
+        <tbody className="divide-y">{rows.map((row, index) => <tr key={index} className="align-top hover:bg-slate-50">{columns.map(([key]) => <td key={key} className={`px-3 py-3 tabular-nums ${['activity', 'subact', 'outcome', 'output'].includes(key) ? 'min-w-[18rem] max-w-[26rem] whitespace-normal break-words' : 'min-w-[7rem]'}`}><span title={row[key]} className={['activity', 'subact', 'outcome', 'output'].includes(key) ? 'line-clamp-3' : ''}>{measureKeys.has(key) && /^\d+$/.test(row[key] ?? '') ? Number(row[key]).toLocaleString('en-US') : row[key] ?? 'N/A'}</span></td>)}</tr>)}</tbody>
       </table>{!rows.length && <p className="p-5 text-sm">No activity groups match this search.</p>}
     </div>
     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600"><span>Page {page.request.page} of {page.totalPages}</span><label>Rows per page<select value={page.request.pageSize} disabled={pending} onChange={event => update({ pageSize: event.target.value })} className="ml-2 min-h-11 rounded border px-2">{[25, 50, 100].map(size => <option key={size}>{size}</option>)}</select></label><div className="flex gap-2"><Button variant="outline" disabled={pending || page.request.page === 1} onClick={() => update({ page: String(page.request.page - 1) })}>Previous</Button><Button variant="outline" disabled={pending || page.request.page >= page.totalPages} onClick={() => update({ page: String(page.request.page + 1) })}>Next</Button></div></div>

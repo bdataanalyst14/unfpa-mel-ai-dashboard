@@ -30,7 +30,7 @@ async function main() {
     browser=await chromium.launch({headless:true});
     const page=await browser.newPage();
     page.on('pageerror',err=>{errors.push(err.message);console.error(err.message);});
-    for(const width of [1440,390]) {
+    for(const width of [1440, 1024, 768, 375]) {
       await page.setViewportSize({width,height:900});
       for(const route of routes) {
         await page.goto(`${base}/dashboard/${route}`);
@@ -41,11 +41,15 @@ async function main() {
         }
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${route} ${width} overflow`);
         assert.equal(await page.getByText('Not supported',{exact:true}).count(),0);
+        if (['executive-overview','participant-reach'].includes(route)) await page.locator('.recharts-pie-sector').first().waitFor();
+        if (['activity-progress','management-decision-centre'].includes(route)) await page.locator('.recharts-scatter-symbol').first().waitFor();
         await page.screenshot({path:path.join(out,`${width}-${route}.png`),fullPage:true});
         console.log(`PASS ${width} ${route}`);
       }
     }
     await page.goto(`${base}/dashboard/activity-detail`);
+    assert.equal(await page.locator('tbody tr').first().locator('td').first().innerText(),'2026');
+    assert.ok(await page.getByRole('searchbox').evaluate(node=>node.getBoundingClientRect().width>=160),'Mobile activity search must remain usable');
     const scroller = page.getByRole('region',{name:'Scrollable activity table'});
     assert.equal(await scroller.evaluate(node=>node.scrollWidth>node.clientWidth),true);
     await scroller.evaluate(node=>{node.scrollLeft=node.scrollWidth;});
@@ -78,9 +82,63 @@ async function main() {
     await page.goto(`${base}/dashboard/executive-overview?state=unavailable`);
     await page.getByRole('heading',{name:'No production data available',exact:true}).waitFor();
     assert.equal(await page.getByRole('region',{name:'Aggregate metrics'}).count(),0);
-    assert.deepEqual(errors.filter(e => !e.includes("Unexpected token '<'")),[]);
-    fs.writeFileSync(path.join(out,'qa.json'),JSON.stringify({scope:'offline production components; no live credentials or API',routes,viewports:[1440,390],mapFeatures:777,csv:'passed',filters:'passed',navigation:'passed',runtimeErrors:errors},null,2));
-    console.log('PASS production component interactions, CSV, suppression, cascades, mobile navigation, no-data state');
+    await page.goto(`${base}/dashboard/executive-overview?chartCases=1`);
+    const mixed = page.locator('div[aria-label="Mixed counts"]');
+    await mixed.locator('.recharts-pie-sector').first().waitFor();
+    assert.equal(await mixed.locator('.recharts-pie-sector').count(),2);
+    assert.match(await mixed.innerText(),/75\.0%/);
+    assert.match(await mixed.innerText(),/25\.0%/);
+    assert.match(await mixed.innerText(),/0\.0%/);
+    assert.match(await mixed.innerText(),/excluding withheld/);
+    const zero = page.locator('div[aria-label="Zero counts"]');
+    assert.equal(await zero.locator('.recharts-pie-sector').count(),0);
+    assert.match(await zero.innerText(),/Known zero/);
+    assert.match(await zero.innerText(),/<5/);
+    const privateChart = page.locator('div[aria-label="Private counts"]');
+    assert.match(await privateChart.innerText(),/Private category/);
+    assert.match(await privateChart.innerText(),/<5/);
+    assert.equal(await privateChart.locator('.recharts-pie-sector').count(),0);
+    const bars = page.locator('dl[aria-label="Bar cases"]');
+    const barSizes = await bars.locator('div[aria-hidden="true"]').evaluateAll(tracks=>tracks.map(track=>({height:track.getBoundingClientRect().height,width:track.firstElementChild.getBoundingClientRect().width})));
+    assert.deepEqual(barSizes.map(bar=>bar.height),[16,16,16]);
+    assert.ok(Math.abs(barSizes[1].width/barSizes[0].width-1/3)<0.01);
+    assert.equal(barSizes[2].width,0);
+    const matrix = page.getByRole('region',{name:'Matrix cases',exact:true});
+    assert.equal(await matrix.locator('tbody tr').first().locator('td').first().innerText(),'001');
+    await matrix.getByRole('button',{name:'Activities',exact:true}).click();
+    assert.equal(await matrix.locator('tbody tr').first().locator('td').nth(1).innerText(),'20');
+    await matrix.getByRole('button',{name:'Activities',exact:true}).click();
+    assert.equal(await matrix.locator('tbody tr').first().locator('td').nth(1).innerText(),'1,000');
+    assert.equal(await matrix.locator('tbody tr').last().locator('td').nth(1).innerText(),'<5');
+    await matrix.getByRole('button',{name:'Share',exact:true}).focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await matrix.locator('tbody tr').first().locator('td').first().innerText(),'002');
+    assert.equal(await matrix.locator('tbody tr').first().locator('td').nth(2).evaluate(node=>getComputedStyle(node).textAlign),'right');
+    const values = page.locator('summary').filter({hasText:'Partner chart values and ratios'});
+    await values.focus(); await page.keyboard.press('Enter');
+    const chartValues = page.getByRole('region',{name:'Partner chart values',exact:true});
+    assert.equal(await chartValues.locator('tbody tr').count(),2);
+    assert.doesNotMatch(await chartValues.innerText(),/Private partner/);
+    assert.match(await chartValues.innerText(),/2\.0/);
+    assert.match(await chartValues.innerText(),/Not available/);
+    await page.locator('.recharts-scatter-symbol').first().hover();
+    await page.getByText('2.0 participants / activity',{exact:true}).waitFor();
+    await page.screenshot({path:path.join(out,'chart-edge-cases.png'),fullPage:true});
+    await page.goto(`${base}/dashboard/geographic-coverage`);
+    await page.getByLabel('Map measure',{exact:true}).selectOption('participants');
+    await page.locator('svg path[role="button"]').first().waitFor();
+    assert.match(await page.locator('svg title').first().textContent(),/Participant attendance/);
+    const polygon = page.locator('svg path[role="button"][aria-label="Select KATHMANDU"]').first();
+    await polygon.focus(); await page.keyboard.press('Enter');
+    await page.waitForURL(/province=/);
+    await page.getByRole('button',{name:'Back',exact:true}).click();
+    await page.waitForURL(url=>!url.searchParams.has('province'));
+    await page.goto(`${base}/dashboard/geographic-coverage?municipality=QA%20municipality`);
+    await page.getByRole('button',{name:'Reset geography',exact:true}).click();
+    await page.waitForURL(url=>!url.searchParams.has('municipality'));
+    assert.deepEqual(errors,[]);
+    fs.writeFileSync(path.join(out,'qa.json'),JSON.stringify({scope:'offline production components; no live credentials or API',routes,viewports:[1440,1024,768,375],mapFeatures:777,csv:'passed',filters:'passed',navigation:'passed',checks:['rendered donut sectors and scatter points','16px proportional bars','zero and withheld legends','published-category denominator','dimension codes preserved','numeric count and percentage sorting','withheld values sort last','scatter tooltip and keyboard-accessible ratios','keyboard map province focus and Back','municipality-only Reset'],runtimeErrors:errors},null,2));
+    console.log('PASS production component interactions, CSV, suppression, cascades, mobile navigation, no-data state, rendered donut/scatter geometry, zero/private counts, matrix codes/ratios, keyboard map navigation');
   } finally { if(browser)await browser.close();await new Promise(resolve=>server.close(resolve)); }
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

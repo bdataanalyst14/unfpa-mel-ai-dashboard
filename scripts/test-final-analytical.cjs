@@ -23,4 +23,5 @@ if (fs.existsSync(schemaPath)) {
   const excluded = ['event_row_key','repeat_index','actdetails1','indicator1'];
   assert.deepEqual(fields.map(field => field.name).filter(name => !excluded.includes(name)).sort(),activityFields.map(field => field.source).sort());
 }
-console.log('PASS concentration, ratios, suppressed-input refusal, zero denominators, native grain, presets and live schema coverage.');
+console.log('PASS concentration, ratios, suppressed-input refusal, zero denominators, native grain and presets.');
+console.log(fs.existsSync(schemaPath) ? 'PASS exact field coverage against the recorded schema snapshot (not a live query).' : 'SKIP recorded schema coverage: snapshot unavailable; no live query executed.');

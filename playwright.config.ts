@@ -21,7 +21,7 @@ export default defineConfig({
     ['line'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
   ],
-  outputDir: 'test-results',
+  outputDir: 'test-results/browser',
   use: {
     baseURL,
     browserName: 'chromium',

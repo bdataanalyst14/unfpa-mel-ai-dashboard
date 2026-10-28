@@ -37,6 +37,7 @@ async function main() {
   let invalid = false;
   let small = false;
   let oversized = false;
+  let missingSnapshot = false;
   const dimensions = { reporting_year1: '2029', report_quarter1: 'Q4', project1: 'Live only project', ip_name: 'Live partner', province1: 'Live province', district1: 'Live district', palika1: 'Live palika' };
   const totals = { activity: 'Approved activity', indicators: 5, matched_rows: 2, total_participants: 137, reportable_participants: 111, total_events: 9, female_participants: 70, male_participants: 63, other_participants: 4, participants_with_disability: 8, projects: 6, partners: 7, provinces: 5, districts: 8, palikas: 12, freshness_timestamp: '2026-09-07T00:00:00Z', total_rows: 200, records_with_quality_issue: 20, reporting_partners: 7, total_submissions: 10 };
   const service = load('src/lib/server/dashboard-page-data-service.ts', {
@@ -57,7 +58,7 @@ async function main() {
         if (fail && !sql.includes('SELECT DISTINCT')) throw new Error('private failure');
         if (sql.includes('SELECT DISTINCT')) return [dimensions];
         if (sql.includes('AS reviewed_rows')) return [{ reviewed_rows: 100, missingGeography: 0, missingProject: 0, missingPartner: 0, latestActivityDate: '2026-08-23' }];
-        if (sql.includes('data_quality_summary')) return [{total_rows:100, issues:10, ts:'2026-08-13'}];
+        if (sql.includes('data_quality_summary')) return missingSnapshot ? [{total_rows:null, issues:null, ts:null}] : [{total_rows:100, issues:10, ts:'2026-08-13'}];
         if (/ AS participants\b/.test(sql) && !sql.includes(' AS events') && !sql.startsWith('WITH grouped')) return [{label:'beneficiary',participants:100}];
         if (sql.includes('participant_type_name AS value')) return [{ value: 'beneficiary', records: 100 }];
         if (sql.includes(' AS totalParticipants')) {
@@ -87,6 +88,8 @@ async function main() {
     const metrics = Object.fromEntries(result.metrics.map((m) => [m.label, m.value]));
     assert.equal(metrics['Total participants'], '137');
     assert.equal(metrics['Reportable participants'], '111');
+    assert.equal(metrics['Projects'], '6');
+    assert.equal(metrics['Provinces covered'], '5');
     assert.equal(metrics['Other participants'], '<5');
     assert.match(calls.findLast(call => call.sql.includes(' AS events')).sql, /SUM\(total_participants\)/);
     assert.match(calls.findLast(call => call.sql.includes(' AS events')).sql, /SUM\(total_reportable_participants\)/);
@@ -109,6 +112,18 @@ async function main() {
   const grouped = await service.getDashboardPageData('activity-progress', selected);
   assert.equal(grouped.sections.length, 8);
   assert.ok(grouped.sections.every(section => section.rows[0].events === '3' && section.rows[0].participants === '<5'));
+  assert.match(calls.at(-1).sql, /subactcode1 AS subactcode/);
+  const geographic = await service.getDashboardPageData('geographic-coverage', selected);
+  for (const key of ['projectGeography', 'partnerGeography']) {
+    const section = geographic.sections.find(section => section.key === key);
+    assert.equal(section.rows[0].events, '3');
+    assert.equal(section.rows[0].participants, '<5');
+    assert.equal(section.rows[0].reportable, '<5');
+  }
+  for (const call of calls.slice(-2)) {
+    assert.deepEqual(call.params, selected);
+    assert.match(call.sql, /GROUP BY (project1|ip_name), province1, district1/);
+  }
   small = false;
   oversized = true;
   const blockedExport = await service.getDashboardPageData('activity-detail');
@@ -141,6 +156,13 @@ async function main() {
   const quality = await service.getDashboardPageData('data-quality');
   assert.equal(quality.metadata.responseStatus, 200);
   assert.ok(quality.metrics.length > 0);
+  missingSnapshot = true;
+  const withoutSnapshot = await service.getDashboardPageData('data-quality');
+  assert.equal(withoutSnapshot.metadata.componentState, 'live_bigquery');
+  assert.equal(withoutSnapshot.metadata.freshnessTimestamp, null);
+  assert.equal(withoutSnapshot.metrics.find(metric => metric.label === 'Validated rows').value, 'N/A');
+  assert.ok(withoutSnapshot.metrics.some(metric => metric.label === 'Aggregate rows reviewed'));
+  missingSnapshot = false;
   assert.equal((await service.getDashboardPageData('indicator-progress', { implementingPartner: 'Live partner' })).metadata.responseStatus, 422);
   assert.equal((await service.getDashboardPageData('ip-performance', { implementingPartner: 'Live partner' })).metadata.responseStatus, 200);
   empty = true;
