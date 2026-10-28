@@ -116,7 +116,7 @@ These exceptions block an unconditional design/production acceptance. They do no
 
 ## Release contents and exclusions
 
-Prepare separate commits: **(1) code/tests/dependency fixes**, including the six preserved files and verified refinement fixes; **(2) this sanitized acceptance report, summary and selected synthetic QA images**. A draft PR should state the remaining gates and must not be merged or promoted by this review.
+Code/tests/dependency fixes and sanitized QA documentation are committed separately. An additional isolated `vercel.json` guard sets `git.deploymentEnabled` to false for this exact review branch, preventing an automatic preview deployment when the draft PR is published. Other branches keep their default behavior; no project-wide deployment setting or production authorization policy is changed. This follows [Vercel's documented branch configuration](https://vercel.com/docs/project-configuration/git-configuration#git.deploymentenabled), and its exact JSON rule was checked locally. A draft PR must state the remaining gates and must not be merged or promoted by this review.
 
 Exclude `next-env.d.ts`, environment/credential files, raw warehouse data/metadata, browser traces/session material, build outputs, scratch scripts, lint dumps, historical patch files, original sign-in screenshots and unverified handoff reports. Existing unrelated modified audit documents and untracked recovery material remain local and are not silently discarded. Do not use `git add .`.
 

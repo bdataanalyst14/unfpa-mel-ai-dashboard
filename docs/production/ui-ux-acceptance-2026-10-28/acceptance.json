@@ -3,6 +3,8 @@
     "baseline":  "41bba0cbc63485b4f81a2d1ea911ca0279eff48d",
     "codeCommit":  "cc803753b96cbf5ba0ffdfe3250a0d2d88cf4473",
     "branch":  "release/ui-ux-acceptance-2026-10-28",
+    "reviewBranchAutomaticDeployments": false,
+    "deploymentGuard": { "file": "vercel.json", "commit": "dbfabb1", "verification": "PASS exact branch rule; other branches retain default behavior" },
     "scope":  "Independent local offline acceptance; screenshots contain synthetic fixtures only",
     "productionDecision":  "NO-GO pending layout owner decision and authorized production UAT",
     "liveBigQueryQueriesExecuted":  0,
