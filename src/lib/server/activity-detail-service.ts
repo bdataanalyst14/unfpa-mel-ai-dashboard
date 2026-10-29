@@ -1,14 +1,53 @@
 import 'server-only';
 import { activityFields, activityExtraFilters, type AggregateRow } from '@/lib/aggregate-contract';
 import { runSafeBigQuery } from './bigquery-client';
-import { suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 import { activitySource, activityWhere, activityGroupedSql, activityOrder, parseActivityRequest } from './activity-detail-query';
 import type { DashboardFilterState } from '@/lib/dashboard-filters';
 
 export function safeActivityRow(row: Record<string, unknown>): AggregateRow {
+  const sexKeys = ['female', 'male', 'other_sex'] as const;
+  const disabilityKeys = ['withdisability', 'nodisability'] as const;
+  const casteKeys = ['hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast'] as const;
+
+  const totalParticipants = row.participants != null ? Number(row.participants) : row.total_participants != null ? Number(row.total_participants) : undefined;
+
+  const sexCounts = Object.fromEntries(sexKeys.map(k => [k, row[k] == null ? null : Number(row[k])])) as Record<typeof sexKeys[number], number | null>;
+  const sexTotal = row.gender_total != null ? Number(row.gender_total) : totalParticipants;
+  const sexSuppressed = suppressCategoryGroup(sexCounts, sexTotal);
+
+  const disabilityCounts = Object.fromEntries(disabilityKeys.map(k => [k, row[k] == null ? null : Number(row[k])])) as Record<typeof disabilityKeys[number], number | null>;
+  const disabilityTotal = row.pwd_total != null ? Number(row.pwd_total) : totalParticipants;
+  const disabilitySuppressed = suppressCategoryGroup(disabilityCounts, disabilityTotal);
+
+  const casteCounts = Object.fromEntries(casteKeys.map(k => [k, row[k] == null ? null : Number(row[k])])) as Record<typeof casteKeys[number], number | null>;
+  const casteTotal = row.caste_total != null ? Number(row.caste_total) : totalParticipants;
+  const casteSuppressed = suppressCategoryGroup(casteCounts, casteTotal);
+
+  const anySexSuppressed = Object.values(sexSuppressed).some(r => r.suppressed);
+  const anyCasteSuppressed = Object.values(casteSuppressed).some(r => r.suppressed);
+
   return Object.fromEntries(activityFields.map(field => {
     const value = row[field.key];
-    const isOperational = /activities|districts|partners|projects|submissions|rows|gaps|events/i.test(field.key);
+    const isOperational = field.key === 'events' || field.key === 'submission_count';
+    if (field.key.endsWith('_check')) return [field.key, 'Suppressed'];
+
+    if (field.key in sexSuppressed) {
+      return [field.key, sexSuppressed[field.key as keyof typeof sexSuppressed].displayValue];
+    }
+    if (field.key in disabilitySuppressed) {
+      return [field.key, disabilitySuppressed[field.key as keyof typeof disabilitySuppressed].displayValue];
+    }
+    if (field.key in casteSuppressed) {
+      return [field.key, casteSuppressed[field.key as keyof typeof casteSuppressed].displayValue];
+    }
+    if (field.key === 'gender_disagg_sum' && anySexSuppressed) {
+      return [field.key, 'Suppressed'];
+    }
+    if (field.key === 'caste_disagg_sum' && anyCasteSuppressed) {
+      return [field.key, 'Suppressed'];
+    }
+
     return [field.key, field.kind === 'measure'
       ? suppressCount(value == null ? null : Number(value), isOperational).displayValue
       : typeof value === 'string' && value.trim() ? value : 'Unspecified'];

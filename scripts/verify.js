@@ -92,7 +92,7 @@ function assertInvalidCount(result) {
 }
 
 function main() {
-  const { suppressCount, suppressPercentage, suppressRecord } =
+  const { suppressCount, suppressPercentage, suppressRecord, applyComplementarySuppression, suppressCategoryGroup } =
     loadSuppressionModule();
 
   check('suppressCount(0) remains unsuppressed', () => {
@@ -160,6 +160,15 @@ function main() {
       assert.equal(result.displayValue, '<5');
       assert(!['1', '2', '3', '4'].includes(result.displayValue));
     }
+  });
+
+  check('category protection removes bounds and all exact components when any cell is withheld', () => {
+    for (const counts of [[5200, 4597, 3], [8, 1, 1], [5, 1, 0], [2, 640], [2, 1]]) {
+      const result = applyComplementarySuppression(counts.map(value => suppressCount(value)), counts.reduce((a, b) => a + b, 0));
+      assert.ok(result.every(cell => cell.displayValue === 'Suppressed' && cell.value === null));
+    }
+    const group = suppressCategoryGroup({ female: 8, male: 1, other: 1 }, 10);
+    assert.ok(Object.values(group).every(cell => cell.displayValue === 'Suppressed'));
   });
 
   check('suppressRecord handles nested payloads safely', () => {

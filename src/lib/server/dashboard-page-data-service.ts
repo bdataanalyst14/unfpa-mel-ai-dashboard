@@ -15,7 +15,7 @@ import {
   getDashboardDataMode,
   runSafeBigQuery,
 } from './bigquery-client';
-import { suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 import { mainData } from '@/data/mock/main-data';
 import {
   buildDashboardFilterOptions,
@@ -129,7 +129,7 @@ function response(
   metrics: DashboardPageMetric[],
   metadata: DashboardPageMetadata,
 ): DashboardPageData {
-  return { route, pageName: pageNames[route], metrics, metadata };
+  return { route, pageName: pageNames[route], metrics, metadata: { ...metadata, suppressionApplied: true, message: metadata.message + ' Participant counts, category bounds and related margins are withheld across all scopes pending an approved joint disclosure policy.' } };
 }
 
 function emptyFilterState(): DashboardFilterState {
@@ -213,18 +213,36 @@ function mockData(route: DashboardRouteKey, filters: QueryFilters): DashboardPag
     countMetric('Implementing partners', summary.partners),
   ];
   const routeMetrics: Partial<Record<DashboardRouteKey, DashboardPageMetric[]>> = {
-    'executive-overview': [
-      countMetric('Reported activities', summary.totalActivities),
-      countMetric('Reportable participants', summary.totalParticipants),
-      countMetric('Female participants', summary.femaleParticipants),
-      countMetric('Male participants', summary.maleParticipants),
-    ],
-    'participant-reach': [
-      countMetric('Filtered participants', summary.totalParticipants),
-      countMetric('Female participants', summary.femaleParticipants),
-      countMetric('Male participants', summary.maleParticipants),
-      countMetric('Other participants', summary.otherParticipants),
-    ],
+    'executive-overview': (() => {
+      const sexSuppressed = suppressCategoryGroup({
+        female: summary.femaleParticipants,
+        male: summary.maleParticipants,
+        other: summary.otherParticipants,
+      }, summary.totalParticipants);
+      return [
+        countMetric('Reported activities', summary.totalActivities),
+        countMetric('Total participants', summary.totalParticipants, 'SUM(combined_activity_summary.total_participants); not unique people.'),
+        countMetric('Reportable participants', summary.beneficiaries),
+        countMetric('Districts covered', summary.districts),
+        countMetric('Implementing partners', summary.partners),
+        { label: 'Female participants', value: sexSuppressed.female.displayValue },
+        { label: 'Male participants', value: sexSuppressed.male.displayValue },
+        { label: 'Other participants', value: sexSuppressed.other.displayValue },
+      ];
+    })(),
+    'participant-reach': (() => {
+      const sexSuppressed = suppressCategoryGroup({
+        female: summary.femaleParticipants,
+        male: summary.maleParticipants,
+        other: summary.otherParticipants,
+      }, summary.totalParticipants);
+      return [
+        countMetric('Filtered participants', summary.totalParticipants),
+        { label: 'Female participants', value: sexSuppressed.female.displayValue },
+        { label: 'Male participants', value: sexSuppressed.male.displayValue },
+        { label: 'Other participants', value: sexSuppressed.other.displayValue },
+      ];
+    })(),
     'data-quality': [
       countMetric('Filtered rows checked', summary.totalActivities),
       countMetric('Missing evidence', summary.missingEvidence),
@@ -432,24 +450,40 @@ async function queryCombinedRoute(
     countMetric('Districts covered', asNumber(row.districts)),
   ];
   if (route === 'executive-overview') {
+    const totalCount = asNumber(row.total_participants);
+    const sexSuppressed = suppressCategoryGroup({
+      female: asNumber(row.female_participants),
+      male: asNumber(row.male_participants),
+      other: asNumber(row.other_participants),
+    }, totalCount);
+
     return liveData(route, [
       countMetric('Reported activities', asNumber(row.total_events)),
-      countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
+      countMetric('Total participants', totalCount, 'SUM(combined_activity_summary.total_participants); not unique people.'),
       countMetric('Reportable participants', asNumber(row.reportable_participants)),
       countMetric('Districts covered', asNumber(row.districts)),
       countMetric('Implementing partners', asNumber(row.partners)),
-      countMetric('Female participants', asNumber(row.female_participants)),
-      countMetric('Male participants', asNumber(row.male_participants)),
-      countMetric('Other participants', asNumber(row.other_participants)),
+      countMetric('Projects', asNumber(row.projects)),
+      countMetric('Provinces covered', asNumber(row.provinces)),
+      { label: 'Female participants', value: sexSuppressed.female.displayValue },
+      { label: 'Male participants', value: sexSuppressed.male.displayValue },
+      { label: 'Other participants', value: sexSuppressed.other.displayValue },
     ], filters, freshness, 'Live aggregate operational metrics from approved BigQuery views. Trend, target, AI, and prototype narrative components are disabled.');
   }
   if (route === 'participant-reach') {
+    const totalCount = asNumber(row.total_participants);
+    const sexSuppressed = suppressCategoryGroup({
+      female: asNumber(row.female_participants),
+      male: asNumber(row.male_participants),
+      other: asNumber(row.other_participants),
+    }, totalCount);
+
     return liveData(route, [
-      countMetric('Total participants', asNumber(row.total_participants), 'SUM(combined_activity_summary.total_participants); not unique people.'),
+      countMetric('Total participants', totalCount, 'SUM(combined_activity_summary.total_participants); not unique people.'),
       countMetric('Reportable participants', asNumber(row.reportable_participants)),
-      countMetric('Female participants', asNumber(row.female_participants)),
-      countMetric('Male participants', asNumber(row.male_participants)),
-      countMetric('Other participants', asNumber(row.other_participants)),
+      { label: 'Female participants', value: sexSuppressed.female.displayValue },
+      { label: 'Male participants', value: sexSuppressed.male.displayValue },
+      { label: 'Other participants', value: sexSuppressed.other.displayValue },
       countMetric('Participants with disability', asNumber(row.participants_with_disability)),
     ], filters, freshness, 'Participant Profile by Sex is derived directly from approved aggregate counts with small-cell suppression. Individual Participant Records, Individual Reportable Participants, and Summary-mode Participants are disabled pending verified upstream aggregate formulas. Unsupported disaggregations are disabled.');
   }
@@ -459,6 +493,7 @@ async function queryCombinedRoute(
       countMetric('Districts covered', asNumber(row.districts)),
       countMetric('Palikas covered', asNumber(row.palikas)),
       countMetric('Total participants', asNumber(row.total_participants)),
+      countMetric('Reportable participants', asNumber(row.reportable_participants)),
       countMetric('Reported activities', asNumber(row.total_events)),
     ], filters, freshness, 'Live aggregate coverage counts are shown. The prototype map and coverage gap claims are disabled pending geographic validation.');
   }
@@ -483,6 +518,28 @@ async function addAnalysis(data: DashboardPageData, filters: DashboardFilterStat
     metricKeys.includes(key) ? suppressCount(asNumber(value), isOperational(key)).displayValue : typeof value === 'string' && value.trim() ? value : 'Unspecified',
   ]));
 
+  function protectSectionRows(sectionRows: AggregateRow[]): AggregateRow[] {
+    const smallParticipants = sectionRows.filter(r => r.participants === '<5');
+    if (smallParticipants.length === 1) {
+      const candidate = sectionRows
+        .filter(r => r.participants !== '<5' && r.participants !== 'Suppressed' && r.participants !== '0' && r.participants !== 'N/A' && !Number.isNaN(Number(r.participants)) && Number(r.participants) > 0)
+        .sort((a, b) => Number(a.participants) - Number(b.participants))[0];
+      if (candidate) {
+        candidate.participants = 'Suppressed';
+      }
+    }
+    const smallReportable = sectionRows.filter(r => r.reportable === '<5');
+    if (smallReportable.length === 1) {
+      const candidate = sectionRows
+        .filter(r => r.reportable !== '<5' && r.reportable !== 'Suppressed' && r.reportable !== '0' && r.reportable !== 'N/A' && !Number.isNaN(Number(r.reportable)) && Number(r.reportable) > 0)
+        .sort((a, b) => Number(a.reportable) - Number(b.reportable))[0];
+      if (candidate) {
+        candidate.reportable = 'Suppressed';
+      }
+    }
+    return sectionRows;
+  }
+
   {
     const dimensions = data.route === 'geographic-coverage'
       ? [['province', 'province1', 'Implementation by province'], ['district', 'district1', 'Implementation by district'], ['project', 'project1', 'Project footprint'], ['partner', 'ip_name', 'Partner footprint']]
@@ -493,7 +550,7 @@ async function addAnalysis(data: DashboardPageData, filters: DashboardFilterStat
       const rows = await runSafeBigQuery<CountRow>(`SELECT COALESCE(NULLIF(${column}, ''), 'Unspecified') AS label, ${counts} , COUNT(DISTINCT NULLIF(district1, '')) AS districts, COUNT(DISTINCT NULLIF(project1, '')) AS projects, COUNT(DISTINCT NULLIF(province1, '')) AS provinces, COUNT(DISTINCT NULLIF(ip_name, '')) AS partners, COUNT(DISTINCT IF(NULLIF(palika1, '') IS NOT NULL, TO_JSON_STRING(STRUCT(province1, district1, palika1)), NULL)) AS palikas
         FROM ${combined} ${where} GROUP BY ${column} ORDER BY events DESC, label LIMIT 10001`, params);
       if (rows.length > 10000) throw new Error('Aggregate grouping exceeds response bound');
-      return { key, title, rows: rows.map(safeRow) };
+      return { key, title, rows: protectSectionRows(rows.map(safeRow)) };
     }));
   }
   const [reliability] = await runSafeBigQuery<CountRow>(`SELECT COUNT(*) AS reviewed_rows,
@@ -509,12 +566,21 @@ async function addAnalysis(data: DashboardPageData, filters: DashboardFilterStat
     };
   }
   if (data.route === 'activity-progress') {
-    const rows = await runSafeBigQuery<CountRow>(`SELECT project1 AS project, outcome1 AS outcome, output1 AS output, activity1 AS activity, subact1 AS subact, ${counts}
-      FROM ${combined} ${where} GROUP BY project1, outcome1, output1, activity1, subact1 ORDER BY project1, outcome1, output1, activity1, subact1 LIMIT 10001`, params);
+    const rows = await runSafeBigQuery<CountRow>(`SELECT project1 AS project, outcome1 AS outcome, output1 AS output, activity1 AS activity, subactcode1 AS subactcode, subact1 AS subact, ${counts}
+      FROM ${combined} ${where} GROUP BY project1, outcome1, output1, activity1, subactcode1, subact1 ORDER BY project1, outcome1, output1, activity1, subactcode1, subact1 LIMIT 10001`, params);
     if (rows.length > 10000) throw new Error('Hierarchy exceeds response bound');
     data.sections.push({ key: 'hierarchy', title: 'Programme hierarchy', rows: rows.map(safeRow) });
   }
-  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. Sensitive participant counts 1 to 4 are withheld. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
+  if (data.route === 'geographic-coverage') {
+    const crossSections = await Promise.all([['project', 'project1'], ['partner', 'ip_name']].map(async ([key, column]) => {
+      const rows = await runSafeBigQuery<CountRow>(`SELECT ${column} AS label, province1 AS province, district1 AS district, ${counts}
+        FROM ${combined} ${where} GROUP BY ${column}, province1, district1 ORDER BY ${column}, province1, district1 LIMIT 10001`, params);
+      if (rows.length > 10000) throw new Error('Geographic matrix exceeds response bound');
+      return { key: `${key}Geography`, title: `${key === 'project' ? 'Project' : 'Partner'} by event-location district`, rows: protectSectionRows(rows.map(safeRow)) };
+    }));
+    data.sections.push(...crossSections);
+  }
+  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. All participant counts and related margins are withheld across scopes pending an approved joint disclosure policy. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
   return data;
 }
 
@@ -574,7 +640,7 @@ async function queryDataQuality(filters: DashboardFilterState): Promise<Dashboar
     countMetric('Geographic gaps', missingGeo, 'Aggregate rows missing province or district'),
     countMetric('Project gaps', missingProject, 'Aggregate rows missing project association'),
     countMetric('Partner gaps', missingPartner, 'Aggregate rows missing implementing partner'),
-    countMetric('Validated rows', asNumber(dqRow.total_rows), 'Rows checked in latest system-wide DQ snapshot; not a quality score')
+    { label: 'Validated rows', value: dqRow?.total_rows == null ? 'N/A' : String(asNumber(dqRow.total_rows)), note: 'Rows checked in latest system-wide DQ snapshot; not a quality score' }
   ], filters, dqFreshness, 'Transparent activity completeness metrics derived from live reporting views. A composite Data Quality Score is not used. Validation tracking and evidence linkages are disabled pending an approved integration contract.');
 }
 

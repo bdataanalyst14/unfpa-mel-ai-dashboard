@@ -1,6 +1,8 @@
 # UNFPA Nepal MEL Dashboard - BigQuery Production Runbook
 
-Current production path: users → Vercel → server-side Next.js → four read-only BigQuery aggregate views. Pipeline recovery, KoBo ingestion, and Ubuntu operations are separate from Vercel.
+> **PR #11 status, 29 October 2026: historical four-view/earlier-runtime record, not current deployment authorization.** Use [the corrected decision package](PR11_PRODUCTION_GO_NO_GO_PACKAGE.md), [configuration/readiness matrix](PR11_CONFIGURATION_AND_READINESS_MATRIX.md) and [protected staging checklist](PR11_PROTECTED_STAGING_UAT_CHECKLIST.md). Current code accepts six objects (repeatdata, activity_summary, combined_activity_summary, indicator_progress_summary, data_quality_summary, ip_submission_status); that technical expansion requires explicit project-owner and data-governance approval. Historical approval is not extended by this notice. No mock fallback, old activation/rollback command or earlier participant-publication claim below authorizes a PR #11 release.
+
+Historical four-view production path: users → Vercel → server-side Next.js → four read-only BigQuery aggregate views. This is not the current six-object PR #11 approval boundary. Pipeline recovery, KoBo ingestion, and Ubuntu operations are separate from Vercel.
 
 ## 1. System Architecture
 The dashboard connects to Google Cloud BigQuery using a service account credentials key file and aggregates reporting data from four approved tables/views:

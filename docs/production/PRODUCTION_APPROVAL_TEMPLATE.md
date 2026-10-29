@@ -1,5 +1,7 @@
 # UNFPA Nepal MEL Dashboard - Production Approval Template
 
+> **PR #11 status, 29 October 2026: historical four-view/earlier-runtime record, not current deployment authorization.** Use [the corrected decision package](PR11_PRODUCTION_GO_NO_GO_PACKAGE.md), [configuration/readiness matrix](PR11_CONFIGURATION_AND_READINESS_MATRIX.md) and [protected staging checklist](PR11_PROTECTED_STAGING_UAT_CHECKLIST.md). Current code accepts six objects (repeatdata, activity_summary, combined_activity_summary, indicator_progress_summary, data_quality_summary, ip_submission_status); that technical expansion requires explicit project-owner and data-governance approval. Historical approval is not extended by this notice. No mock fallback, old activation/rollback command or earlier participant-publication claim below authorizes a PR #11 release. This earlier template does not replace joint restricted-publication/six-view approval or the exact-SHA Preview/read/Production gates; all current approvals remain pending.
+
 This approval template is required to govern changes to the production and UAT environments of the dashboard. Separate approvals must be granted for each phase. Do not pre-approve any section.
 
 ---

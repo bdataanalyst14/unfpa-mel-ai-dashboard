@@ -1,4 +1,6 @@
 import {
+  applyComplementarySuppression,
+  suppressCategoryGroup,
   suppressComplementaryValue,
   suppressCount,
   suppressPercentage,
@@ -185,6 +187,16 @@ describe('server suppression utilities', () => {
       value: null,
       suppressed: true,
       suppression_reason: 'small_cell',
+    });
+  });
+
+  it('withholds all category bounds with a published margin', () => {
+    for (const counts of [[8, 1, 1], [5, 1, 0], [2, 1]]) {
+      expect(applyComplementarySuppression(counts.map(value => suppressCount(value)), counts.reduce((a, b) => a + b, 0)))
+        .toEqual(counts.map(() => suppressComplementaryValue()));
+    }
+    expect(suppressCategoryGroup({ female: 8, male: 1, other: 1 }, 10)).toEqual({
+      female: suppressComplementaryValue(), male: suppressComplementaryValue(), other: suppressComplementaryValue(),
     });
   });
 });

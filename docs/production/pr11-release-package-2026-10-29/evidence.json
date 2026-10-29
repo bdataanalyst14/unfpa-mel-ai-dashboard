@@ -1,0 +1,362 @@
+{
+  "date": "2026-10-29",
+  "reviewedPrHead": "74365c680ec5291ae48fdfb12563571092283d74",
+  "recordedTestedImplementation": "8047bbf839b8801a7e139ea5e9b9df3b534bf09d",
+  "observedMain": "41bba0cbc63485b4f81a2d1ea911ca0279eff48d",
+  "scope": "Documentation correction and metadata-only inspection; not new runtime, connectivity or UAT acceptance",
+  "sourcePreservation": {
+    "srcTree": "ea0c6cb0ede77f37e202c5416825656c9e6b2a09",
+    "scriptsTree": "53921b5a50d6f4fb039e23f24eed0b894f34b56f",
+    "testsTree": "a8e9702dc415d99f8a52f18d70e726e5f826a6f5",
+    "packageJsonBlob": "ff91c4c1c795b19baea183ac5e79c9c75cede86c",
+    "packageLockBlob": "62662d1038f92ebe158ae587fb409e3bbee667a8",
+    "vercelConfigBlob": "3ae1477568e8663e141f7ff0ccba0c4bcedb9414",
+    "nextConfigBlob": "f7fcd9e65da72f028c515afa2bcfdbd67a9dc999"
+  },
+  "originalDraftSha256": "6188CAD27EADABF476D8517427C7B74B221E25F671CFA3F481CAD41A06639FD9",
+  "metadataInspection": {
+    "provider": "Vercel filter_project_envs",
+    "project": "unfpa-mel-ai-dashboard",
+    "scope": "bdataanalyst14s-projects",
+    "decryptionRequested": false,
+    "valuesRetained": false,
+    "fieldsRetained": [
+      "key",
+      "target",
+      "gitBranch",
+      "type",
+      "customEnvironmentIds"
+    ],
+    "inventory": [
+      {
+        "key": "DATA_MODE",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_LOCATION",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_DATASET_ID",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_PROJECT_ID",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_SERVICE_ACCOUNT_EMAIL",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_WORKLOAD_IDENTITY_POOL_ID",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_PROJECT_NUMBER",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DASHBOARD_ADMIN_EMAILS",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "AUTH_SECRET",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DASHBOARD_AUTH_REQUIRED",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DASHBOARD_AUTHORIZED_EMAILS",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "NEXTAUTH_URL",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GOOGLE_OAUTH_CLIENT_SECRET",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GOOGLE_OAUTH_CLIENT_ID",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null,
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "NEXTAUTH_URL",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "ops/google-auth-preview-uat",
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DASHBOARD_AUTH_REQUIRED",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "ops/google-auth-preview-uat",
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DASHBOARD_AUTHORIZED_EMAILS",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "ops/google-auth-preview-uat",
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GOOGLE_OAUTH_CLIENT_SECRET",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "ops/google-auth-preview-uat",
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "AUTH_SECRET",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "ops/google-auth-preview-uat",
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GOOGLE_OAUTH_CLIENT_ID",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "ops/google-auth-preview-uat",
+        "type": "sensitive",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DASHBOARD_DATA_MODE",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_WORKLOAD_IDENTITY_POOL_ID",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_CACHE_TTL_SECONDS",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_PROJECT_NUMBER",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "ENABLE_GBV_SUPPRESSION",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_LOCATION",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_PROJECT_ID",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "BIGQUERY_DATASET_ID",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "GCP_SERVICE_ACCOUNT_EMAIL",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      },
+      {
+        "key": "DATA_MODE",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": null,
+        "type": "plain",
+        "customEnvironmentIds": []
+      }
+    ]
+  },
+  "findings": [
+    "F1 current six-view technical contract versus historical approval",
+    "F2 configuration names, effective branch scope and explicit cost cap",
+    "F3 bounded participant publication policy and joint owner acceptance",
+    "F4 correct auth, SUM(event_count), filter and freshness UAT assertions",
+    "F5 separately authorized exact-head protected Preview only",
+    "F6 privacy-safe rollback or unavailable contingency; no mock substitution",
+    "F7 provenance, approval separation and restricted evidence retention"
+  ],
+  "approvals": {
+    "projectOwner": "PENDING",
+    "dataGovernance": "PENDING",
+    "sixViewAccess": "PENDING",
+    "previewConfigurationAndProtection": "PENDING",
+    "previewDeployment": "NOT_AUTHORIZED_BY_THIS_TASK",
+    "boundedReadUat": "NOT_AUTHORIZED_BY_THIS_TASK",
+    "productionRelease": "PENDING"
+  },
+  "documentationValidation": {
+    "markdownFilesChecked": 9,
+    "relativeLinksVerified": 27,
+    "findingsEnumerated": 7,
+    "metadataRowsSanitized": 32,
+    "technicalSixObjectContract": "PASS",
+    "metadataFieldWhitelist": "PASS",
+    "trackedSourceImplementationDiff": "EMPTY",
+    "whitespaceCheck": "PASS"
+  },
+  "newRuntimeTestsExecuted": 0,
+  "liveBigQueryQueriesExecuted": 0,
+  "environmentOrCredentialChanges": 0,
+  "deploymentsExecuted": 0,
+  "mergesExecuted": 0,
+  "stagingDecision": "NO-GO until required configuration, protections and separate written approvals are complete",
+  "productionDecision": "NO-GO",
+  "limits": [
+    "Metadata presence does not attest values, nonemptiness, membership, IAM, connectivity or protection",
+    "Historical offline test results are not rerun or promoted to current Production UAT",
+    "No claim of universal confidentiality or zero disclosure risk",
+    "Final publication head must be checked after push; only documentation paths may differ from reviewedPrHead"
+  ]
+}

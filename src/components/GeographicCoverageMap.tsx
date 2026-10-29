@@ -150,14 +150,14 @@ export default function GeographicCoverageMap({
         >
           {/* Base Layer: Nepal Boundaries - stronger outline */}
           <g className="map-base">
-            {nepalMapBoundaries.map((boundary) => (
+            {nepalMapBoundaries.map((boundary, index) => (
               <path
-                key={boundary.id}
+                key={`${boundary.id}-${index}`}
                 d={boundary.path}
                 className="fill-gray-50 stroke-gray-600 hover:fill-gray-100 transition-colors duration-200"
                 strokeWidth="1.5"
               >
-                <title>{boundary.localUnit}, {boundary.district}, Province {boundary.province}</title>
+                <title>{`${boundary.localUnit}, ${boundary.district}, Province ${boundary.province}`}</title>
               </path>
             ))}
           </g>
@@ -202,7 +202,7 @@ export default function GeographicCoverageMap({
                     className="stroke-white hover:fill-opacity-100 transition-all duration-200"
                     strokeWidth="2"
                   >
-                    <title>{metric.district}: {metric.activityCount} activities</title>
+                    <title>{`${metric.district}: ${metric.activityCount} activities`}</title>
                   </circle>
                   {/* District Label - show on hover */}
                   <text

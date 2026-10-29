@@ -83,6 +83,52 @@ export function suppressComplementaryValue(): SuppressionResult {
   };
 }
 
+export function applyComplementarySuppression(
+  results: SuppressionResult[],
+  total?: SuppressionResult | number | null,
+): SuppressionResult[] {
+  if (!results.some(result => result.suppressed)) return results;
+  if (results.length === 1 && total != null && (typeof total === 'number' || !total.suppressed)) {
+    throw new Error('Cannot protect a single category with a published margin.');
+  }
+  return results.map(() => suppressComplementaryValue());
+}
+
+export function suppressPublishedCount(count: unknown, operational = false): SuppressionResult {
+  return operational ? suppressCount(count, true) : suppressComplementaryValue();
+}
+
+export function suppressPublishedCategoryGroup<K extends string>(
+  counts: Record<K, unknown>,
+  _total?: SuppressionResult | number | null,
+): Record<K, SuppressionResult> {
+  void _total;
+  return Object.fromEntries(Object.keys(counts).map(key => [key, suppressComplementaryValue()])) as Record<K, SuppressionResult>;
+}
+
+export function suppressPublishedPercentage(_numerator: unknown, _denominator: unknown): SuppressionResult {
+  void _numerator;
+  void _denominator;
+  return suppressComplementaryValue();
+}
+
+export function suppressCategoryGroup<K extends string>(
+  counts: Record<K, unknown>,
+  total?: SuppressionResult | number | null,
+  operationalKeys: string[] = [],
+): Record<K, SuppressionResult> {
+  const keys = Object.keys(counts) as K[];
+  const suppressionResults = keys.map((key) =>
+    suppressCount(counts[key], operationalKeys.includes(key)),
+  );
+  const protectedResults = applyComplementarySuppression(suppressionResults, total);
+  const output = {} as Record<K, SuppressionResult>;
+  keys.forEach((key, index) => {
+    output[key] = protectedResults[index];
+  });
+  return output;
+}
+
 export function suppressPercentage(
   numerator: unknown,
   denominator: unknown,

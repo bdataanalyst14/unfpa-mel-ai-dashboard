@@ -4,7 +4,7 @@ import type { DashboardFilterState } from '@/lib/dashboard-filters';
 import type { ParticipantData } from '@/lib/participant-contract';
 import { runSafeBigQuery } from './bigquery-client';
 import { combinedScope, combinedSource, globalColumns } from './analytical-scope';
-import { suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 
 export const profileLabels: Record<string, string> = {
   female: 'Female', male: 'Male', other: 'Other sex', below_15: 'Below 15 (source 0–15)',
@@ -69,7 +69,32 @@ export async function participantAnalysis(filters: DashboardFilterState, values:
     add(row);
   }
   counts.nonReportableParticipants = counts.totalParticipants - counts.reportableParticipants;
-  const metrics = (labels: Record<string, string>) => Object.entries(labels).map(([key, label]) => ({ key, label, ...suppressCount(counts[key]) }));
+  const sexGroup = suppressCategoryGroup({
+    female: counts.female,
+    male: counts.male,
+    other: counts.other,
+  }, counts.totalParticipants);
+  const disabilityGroup = suppressCategoryGroup({
+    withdisability: counts.withdisability,
+    nodisability: counts.nodisability,
+  }, counts.totalParticipants);
+  const casteGroup = suppressCategoryGroup({
+    hilldalit: counts.hilldalit,
+    teraidalit: counts.teraidalit,
+    hilljanajati: counts.hilljanajati,
+    teraijanajati: counts.teraijanajati,
+    madhesi: counts.madhesi,
+    muslim: counts.muslim,
+    bc: counts.bc,
+    other_cast: counts.other_cast,
+  }, counts.totalParticipants);
+  const getMetricResult = (key: string) => {
+    if (key in sexGroup) return sexGroup[key as keyof typeof sexGroup];
+    if (key in disabilityGroup) return disabilityGroup[key as keyof typeof disabilityGroup];
+    if (key in casteGroup) return casteGroup[key as keyof typeof casteGroup];
+    return suppressCount(counts[key]);
+  };
+  const metrics = (labels: Record<string, string>) => Object.entries(labels).map(([key, label]) => ({ key, label, ...getMetricResult(key) }));
   return { metrics: metrics({ totalParticipants: 'Total participants', reportableParticipants: 'Reportable participants', nonReportableParticipants: 'Non-reportable participants', withdisability: 'Participants with disability', female: 'Female participants', male: 'Male participants', other: 'Other participants' }),
     demographics: [{ name: 'Selected attendance population', metrics: metrics(profileLabels) }], districts: [], monthly: [], activities: [], filters,
     metadata: { dataSource: 'bigquery', note: `All participant KPIs and profiles use the same selected attendance population. ${includeSummary ? 'Includes summary-mode attendance, classified as reportable by the published contract.' : 'Summary-mode attendance excluded; participant type is not available for summary records.'} ${includeRepeat ? 'Includes matching name-list attendance.' : 'Name-list attendance excluded.'} Counts are not unique people. Source age bands overlap; do not add them.` } };
@@ -101,7 +126,17 @@ export async function participantBreakdowns(filters: DashboardFilterState, value
       for (const row of rows) totals.set(row.label, (totals.get(row.label) ?? 0) + Number(row.participants));
     }
     if (Array.from(totals.values()).some(value => !Number.isSafeInteger(value) || value < 0)) throw new Error('Invalid participant breakdown');
-    sections.push({ key, title, rows: Array.from(totals).sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, participants: suppressCount(count).displayValue })) });
+    const mappedRows = Array.from(totals).sort((a, b) => a[0].localeCompare(b[0])).map(([label, count]) => ({ label, participants: suppressCount(count).displayValue }));
+    const smallCountRows = mappedRows.filter(r => r.participants === '<5');
+    if (smallCountRows.length === 1) {
+      const candidate = mappedRows
+        .filter(r => r.participants !== '<5' && r.participants !== 'Suppressed' && r.participants !== '0' && r.participants !== 'N/A')
+        .sort((a, b) => Number(a.participants) - Number(b.participants))[0];
+      if (candidate) {
+        candidate.participants = 'Suppressed';
+      }
+    }
+    sections.push({ key, title, rows: mappedRows });
   }
   return sections;
 }

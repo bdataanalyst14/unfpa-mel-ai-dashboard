@@ -1,6 +1,8 @@
 # Vercel Preview to Google Cloud authentication
 
-This is the approved future keyless runtime path:
+> **PR #11 status, 29 October 2026: historical four-view/earlier-runtime record, not current deployment authorization.** Use [the corrected decision package](PR11_PRODUCTION_GO_NO_GO_PACKAGE.md), [configuration/readiness matrix](PR11_CONFIGURATION_AND_READINESS_MATRIX.md) and [protected staging checklist](PR11_PROTECTED_STAGING_UAT_CHECKLIST.md). Current code accepts six objects (repeatdata, activity_summary, combined_activity_summary, indicator_progress_summary, data_quality_summary, ip_submission_status); that technical expansion requires explicit project-owner and data-governance approval. Historical approval is not extended by this notice. No mock fallback, old activation/rollback command or earlier participant-publication claim below authorizes a PR #11 release.
+
+Historical planned keyless runtime path under the earlier four-view boundary (not a PR #11 approval):
 
 `Vercel Preview request -> Vercel OIDC token -> Google Workload Identity Provider -> service-account impersonation -> read-only BigQuery identity -> four stable aggregate views`
 

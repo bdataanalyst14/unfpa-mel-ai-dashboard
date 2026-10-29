@@ -1,5 +1,7 @@
 # Activity Detail combined_summary Audit and Data Contract Expansion
 
+> Historical report. Field exclusions, search, CSV limits and row-grain descriptions below are superseded by the [7 October closing review](CLOSING_GAP_REVIEW.md). The current implementation exposes 57 of 61 fields at native grain, with server-side search and full filtered exports.
+
 ## 1. Complete `combined_summary` Schema & Privacy Classification
 
 The dashboard queries `combined_activity_summary` for aggregate activity reporting.

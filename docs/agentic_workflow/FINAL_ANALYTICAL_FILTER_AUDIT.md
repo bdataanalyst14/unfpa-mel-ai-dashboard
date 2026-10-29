@@ -1,5 +1,7 @@
 # Final Analytical Filter Audit & Implementation Report
 
+> Historical report. Use the [7 October closing review](CLOSING_GAP_REVIEW.md) for verified field mappings, route-specific filter restrictions, DQ timestamp names, and remaining work. In particular, partner submission reporting supports only partner scope and DQ is system-wide; global filters are not universally available.
+
 ## combined_activity_summary Field Inventory
 The `combined_activity_summary` view serves as the foundation for the dashboard.
 Available analytical fields mapped and verified:

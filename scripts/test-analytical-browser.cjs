@@ -44,6 +44,54 @@ async function main() {
       return response.json();
     };
     const open = async (route, query = '') => { await page.goto(`${base}/dashboard/${route}?${query}`); await page.getByRole('region',{name:'Aggregate metrics'}).waitFor(); };
+    const verifyMap = async () => {
+      await open('geographic-coverage');
+      await page.getByLabel('Map measure',{exact:true}).selectOption('participants');
+      await page.locator('svg path[role="button"]').first().waitFor();
+      assert.ok((await page.locator('svg title').first().textContent()).includes('Participant attendance'));
+      const clickReportedPolygon = async () => {
+        await page.locator('svg[aria-label="Nepal reported activity density by event location"]').scrollIntoViewIfNeeded();
+        const point = await page.locator('svg path[role="button"]').evaluateAll(paths => {
+          for (const path of paths) {
+            const box = path.getBoundingClientRect();
+            for (const dx of [0.5, 0.25, 0.75]) for (const dy of [0.5, 0.25, 0.75]) {
+              const x = box.x + box.width * dx, y = box.y + box.height * dy;
+              if (document.elementFromPoint(x, y) === path) return { x, y };
+            }
+          }
+          return null;
+        });
+        assert.ok(point, 'A reported polygon must have a visible pointer target');
+        await page.mouse.click(point.x, point.y);
+      };
+      await clickReportedPolygon();
+      await page.waitForURL(/province=/);
+      await page.getByRole('region',{name:'Aggregate metrics'}).waitFor();
+      await clickReportedPolygon();
+      await page.waitForURL(/district=/);
+      assert.ok(await page.getByRole('navigation',{name:'Geographic drill state'}).innerText());
+      await page.getByRole('button',{name:'Reset geography',exact:true}).click();
+      await page.waitForURL(url => !url.searchParams.has('province') && !url.searchParams.has('district'));
+      const municipality = await page.getByLabel('Municipality / LG',{exact:true}).locator('option').nth(1).getAttribute('value');
+      assert.ok(municipality);
+      await open('geographic-coverage',`municipality=${encodeURIComponent(municipality)}`);
+      await page.getByRole('button',{name:'Back',exact:true}).click();
+      await page.waitForURL(url => !url.searchParams.has('municipality'));
+      await open('geographic-coverage',`municipality=${encodeURIComponent(municipality)}`);
+      await page.getByRole('button',{name:'Reset geography',exact:true}).click();
+      await page.waitForURL(url => !url.searchParams.has('municipality'));
+      for (const label of ['Project by district','Partner by district']) assert.ok(await page.getByRole('region',{name:label,exact:true}).isVisible());
+    };
+    if (process.argv.includes('--map-only')) {
+      for (const width of [1440,390]) {
+        await page.setViewportSize({width,height:900});
+        await verifyMap();
+      }
+      assert.deepEqual(errors,[]);
+      fs.writeFileSync(path.join(out,'map-verification.json'),JSON.stringify({status:'PASS',checks:['desktop and mobile real pointer map drill','map measure','geography reset','municipality-only back and reset','project and partner district matrices','no browser errors']},null,2));
+      console.log('PASS local live map and closing UI verification');
+      return;
+    }
     await open('executive-overview');
     for(const title of ['Age Profile','Social Inclusion Profile','Disability Profile','Activity / Event Type']) await page.getByRole('heading',{name:title,exact:true}).waitFor();
     const before = await page.getByRole('region',{name:'Aggregate metrics'}).innerText();
@@ -129,17 +177,7 @@ async function main() {
     await page.getByRole('button',{name:'Download Visible Columns CSV',exact:true}).click();
     const visibleCsv = fs.readFileSync(await (await visibleDownload).path(),'utf8');
     assert.match(visibleCsv,/Province/);assert.doesNotMatch(visibleCsv,/Reported activities/);
-    await open('geographic-coverage');
-    await page.getByLabel('Map measure',{exact:true}).selectOption('participants');
-    await page.locator('svg path[role="button"]').first().waitFor();
-    assert.ok((await page.locator('svg title').first().textContent()).includes('Participant attendance'));
-    await page.locator('svg path[role="button"]').first().click();
-    await page.waitForURL(/province=/);
-    await page.locator('svg path[role="button"]').first().click();
-    await page.waitForURL(/district=/);
-    assert.ok(await page.getByRole('navigation',{name:'Geographic drill state'}).innerText());
-    await page.getByRole('button',{name:'Reset geography',exact:true}).click();
-    await page.waitForURL(url => !url.searchParams.has('province') && !url.searchParams.has('district'));
+    await verifyMap();
     assert.deepEqual(errors,[]);
     fs.writeFileSync(path.join(out,'verification.json'),JSON.stringify({status:'PASS',checks:['local authenticated routes','project filter updates headline and map','four executive profiles','desktop/mobile overflow','classification updates participants','cascading hierarchy','57 columns','complete filtered CSV','ten routes at desktop/mobile','map measures and click drill','four column presets','visible column CSV','no browser errors','unauthorized export denied']},null,2));
     console.log('PASS local live analytical browser verification');

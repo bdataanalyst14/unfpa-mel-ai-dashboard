@@ -13,9 +13,10 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit --incremental false",
-    "test": "npm run test:verify && npm run test:dashboard-bigquery-readonly && npm run test:vercel-wif && npm run test:vercel-manifest && npm run test:google-auth && npm run test:production-v1 && npm run test:pre-uat-validation && npm run test:analytical-filters",
+    "test": "npm run test:disclosure && npm run test:verify && npm run test:dashboard-bigquery-readonly && npm run test:vercel-wif && npm run test:vercel-manifest && npm run test:google-auth && npm run test:production-v1 && npm run test:pre-uat-validation && npm run test:analytical-filters",
     "test:pre-uat-validation": "node scripts/test-pre-uat-validation.js && node scripts/test-activity-detail.cjs",
     "test:production-v1": "node scripts/test-production-v1.js",
+    "test:disclosure": "node scripts/test-disclosure-closure.cjs",
     "test:verify": "node scripts/verify.js",
     "test:release-safety": "node scripts/test-release-safety.js",
     "test:dashboard-readiness": "node scripts/test-dashboard-readiness.js",
@@ -44,7 +45,7 @@
     "test:browser:report": "playwright show-report",
     "prepare:local-unit-map": "node scripts/prepare-local-unit-map.js",
     "validate:local-unit-map": "node scripts/validate-local-unit-map.js",
-    "test:analytical-filters": "node scripts/test-analytical-filters.cjs"
+    "test:analytical-filters": "node scripts/test-analytical-filters.cjs && node scripts/test-final-analytical.cjs"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^8.3.1",
@@ -84,7 +85,7 @@
     "google-auth-library": "10.7.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.487.0",
-    "next": "16.2.11",
+    "next": "16.4.3",
     "next-auth": "^4.24.15",
     "next-themes": "^0.4.6",
     "react": "19.2.8",
@@ -96,7 +97,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^2.3.0",
     "vaul": "^1.1.2",
-    "zod": "^4.4.3"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
@@ -106,18 +107,22 @@
     "@types/react-dom": "19.2.3",
     "autoprefixer": "10.4.19",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.2.11",
-    "postcss": "8.5.22",
+    "eslint-config-next": "16.4.3",
+    "postcss": "8.5.32",
     "tailwindcss": "3.4.4",
     "typescript": "5.5.4"
   },
   "overrides": {
-    "postcss": "8.5.22",
-    "sharp": "0.35.3",
+    "postcss": "8.5.32",
+    "sharp": "0.35.5",
+    "recharts": { "react-is": "19.2.8" },
+    "@vercel/cli-config": { "zod": "4.6.7" },
     "minimatch@3.1.5": "10.2.5",
-    "brace-expansion@5.0.8": "5.0.9",
+    "brace-expansion@>=4.0.0 <5.0.12": "5.0.12",
     "browserslist@4.28.2": "4.28.7",
-    "js-yaml@4.3.0": "4.3.1",
+    "js-yaml@4": "4.3.2",
+    "source-map-js": "1.2.2",
+    "postcss-selector-parser@6": "6.1.5",
     "nanoid@3.3.16": "3.3.18"
   },
   "allowScripts": {

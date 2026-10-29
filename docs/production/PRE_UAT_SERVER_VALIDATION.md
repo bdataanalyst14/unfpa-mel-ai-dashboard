@@ -1,5 +1,7 @@
 # Server-only pre-UAT validation procedure
 
+> **PR #11 status, 29 October 2026: historical four-view/earlier-runtime record, not current deployment authorization.** Use [the corrected decision package](PR11_PRODUCTION_GO_NO_GO_PACKAGE.md), [configuration/readiness matrix](PR11_CONFIGURATION_AND_READINESS_MATRIX.md) and [protected staging checklist](PR11_PROTECTED_STAGING_UAT_CHECKLIST.md). Current code accepts six objects (repeatdata, activity_summary, combined_activity_summary, indicator_progress_summary, data_quality_summary, ip_submission_status); that technical expansion requires explicit project-owner and data-governance approval. Historical approval is not extended by this notice. No mock fallback, old activation/rollback command or earlier participant-publication claim below authorizes a PR #11 release. The current validator checks six views with up to twelve SELECTs and requires an explicit cap no greater than 1,000,000,000 bytes per job; an existing lower authorized limit still applies. The old four/eight-job and 100,000,000-byte statements below are historical, not a new read authorization.
+
 Status: PREPARED; live execution NOT RUN. The current shell presence-only check found live mode not requested and required WIF fields incomplete. This does not establish the configuration of any remote environment. Do not retrieve, copy, source or modify credentials or enable live mode to make this procedure run.
 
 ## Locked model and allowed sources
