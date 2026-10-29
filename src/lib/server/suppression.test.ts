@@ -1,4 +1,6 @@
 import {
+  applyComplementarySuppression,
+  suppressCategoryGroup,
   suppressComplementaryValue,
   suppressCount,
   suppressPercentage,
@@ -187,4 +189,48 @@ describe('server suppression utilities', () => {
       suppression_reason: 'small_cell',
     });
   });
+
+  it('applies complementary suppression when exactly one cell is small', () => {
+    const results = [
+      suppressCount(5200),
+      suppressCount(4597),
+      suppressCount(3),
+    ];
+    const protectedResults = applyComplementarySuppression(results, 9800);
+    expect(protectedResults[0]).toMatchObject({ displayValue: '5200', suppressed: false });
+    expect(protectedResults[1]).toMatchObject({ displayValue: 'Suppressed', suppressed: true, suppression_reason: 'complementary_cell' });
+    expect(protectedResults[2]).toMatchObject({ displayValue: '<5', suppressed: true, suppression_reason: 'small_cell' });
+  });
+
+  it('does not complementarily suppress when total is already suppressed', () => {
+    const results = [suppressCount(2), suppressCount(1)];
+    const protectedResults = applyComplementarySuppression(results, 3);
+    expect(protectedResults[0]).toMatchObject({ displayValue: '<5', suppressed: true });
+    expect(protectedResults[1]).toMatchObject({ displayValue: '<5', suppressed: true });
+  });
+
+  it('suppresses categories as a named group with total margin protection', () => {
+    const group = suppressCategoryGroup({
+      female: 5200,
+      male: 4597,
+      other: 3,
+    }, 9800);
+    expect(group.female.displayValue).toBe('5200');
+    expect(group.male.displayValue).toBe('Suppressed');
+    expect(group.male.suppressed).toBe(true);
+    expect(group.other.displayValue).toBe('<5');
+    expect(group.other.suppressed).toBe(true);
+  });
+
+  it('prevents narrow filter inference in small groups', () => {
+    const group = suppressCategoryGroup({
+      female: 5,
+      male: 1,
+      other: 0,
+    }, 6);
+    expect(group.female.displayValue).toBe('Suppressed');
+    expect(group.male.displayValue).toBe('<5');
+    expect(group.other.displayValue).toBe('0');
+  });
+
 });

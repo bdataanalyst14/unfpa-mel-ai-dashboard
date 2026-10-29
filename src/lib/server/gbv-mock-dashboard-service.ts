@@ -8,6 +8,7 @@ import type {
   SafeGbvValue,
 } from '@/lib/gbv-safe-types';
 import {
+  applyComplementarySuppression,
   suppressComplementaryValue,
   suppressCount,
   suppressPercentage,
@@ -27,28 +28,6 @@ type CountCategory = {
   count: number;
   color?: string;
 };
-
-function applyComplementarySuppression(
-  results: SuppressionResult[],
-  total: SuppressionResult,
-): SuppressionResult[] {
-  const primarySuppressed = results
-    .map((result, index) => ({ result, index }))
-    .filter(({ result }) => result.suppression_reason === 'small_cell');
-
-  if (total.suppressed || primarySuppressed.length !== 1) return results;
-
-  const complement = results
-    .map((result, index) => ({ result, index }))
-    .filter(({ result }) => !result.suppressed && result.value !== null)
-    .sort((left, right) => (left.result.value ?? 0) - (right.result.value ?? 0))[0];
-
-  if (!complement) return results;
-
-  return results.map((result, index) =>
-    index === complement.index ? suppressComplementaryValue() : result,
-  );
-}
 
 function safeCountSeries(
   categories: CountCategory[],

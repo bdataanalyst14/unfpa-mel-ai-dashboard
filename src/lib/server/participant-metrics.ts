@@ -3,7 +3,7 @@ import 'server-only';
 import type { ExecutiveOverviewFilters } from '@/lib/types';
 import { participantFilterColumns, participantFilters, type ParticipantData, type ParticipantMetric } from '@/lib/participant-contract';
 import { getBigQueryConfigStatus, getBigQueryDatasetId, getBigQueryProjectId, runSafeBigQuery } from './bigquery-client';
-import { suppressCount } from './suppression';
+import { suppressCategoryGroup, suppressCount } from './suppression';
 
 export const participantKpis = {
   totalParticipants: 'Total Participants',
@@ -36,11 +36,49 @@ export function participantAggregateSql() {
     COALESCE(SUM(IF(participant_entry_mode = 'summary', total_participants, 0)), 0) AS summaryModeParticipants`;
 }
 
-function metrics(row: Record<string, unknown>, labels: Record<string, string>): ParticipantMetric[] {
+function metrics(row: Record<string, unknown>, labels: Record<string, string>, totalCount?: number): ParticipantMetric[] {
+  const sexKeys = ['female', 'male', 'other'];
+  const disabilityKeys = ['withdisability', 'nodisability'];
+  const casteKeys = ['hilldalit', 'teraidalit', 'hilljanajati', 'teraijanajati', 'madhesi', 'muslim', 'bc', 'other_cast'];
+
+  const rawCounts = Object.fromEntries(
+    Object.keys(labels).map(key => {
+      const raw = row[key];
+      const value = typeof raw === 'number' ? raw : typeof raw === 'string' && /^\d+$/.test(raw) ? Number(raw) : null;
+      return [key, value];
+    })
+  );
+
+  const hasSex = sexKeys.every(k => k in labels);
+  const hasDisability = disabilityKeys.every(k => k in labels);
+  const hasCaste = casteKeys.every(k => k in labels);
+
+  const sexSuppressed: Record<string, import('./suppression').SuppressionResult> = hasSex ? suppressCategoryGroup(
+    Object.fromEntries(sexKeys.map(k => [k, rawCounts[k]])),
+    totalCount
+  ) : {};
+
+  const disabilitySuppressed: Record<string, import('./suppression').SuppressionResult> = hasDisability ? suppressCategoryGroup(
+    Object.fromEntries(disabilityKeys.map(k => [k, rawCounts[k]])),
+    totalCount
+  ) : {};
+
+  const casteSuppressed: Record<string, import('./suppression').SuppressionResult> = hasCaste ? suppressCategoryGroup(
+    Object.fromEntries(casteKeys.map(k => [k, rawCounts[k]])),
+    totalCount
+  ) : {};
+
   return Object.entries(labels).map(([key, label]) => {
-    const raw = row[key];
-    const value = typeof raw === 'number' ? raw : typeof raw === 'string' && /^\d+$/.test(raw) ? Number(raw) : null;
-    return { key, label, ...suppressCount(value) };
+    if (key in sexSuppressed) {
+      return { key, label, ...sexSuppressed[key] };
+    }
+    if (key in disabilitySuppressed) {
+      return { key, label, ...disabilitySuppressed[key] };
+    }
+    if (key in casteSuppressed) {
+      return { key, label, ...casteSuppressed[key] };
+    }
+    return { key, label, ...suppressCount(rawCounts[key]) };
   });
 }
 
@@ -79,9 +117,10 @@ export async function getParticipantMetrics(input: ExecutiveOverviewFilters = {}
     const groups = (kind: string) => rows.filter(row => row.kind === kind).map(row => ({
       name: String(row.name), metrics: metrics(row, participantKpis),
     })).sort((a, b) => a.name.localeCompare(b.name));
+    const totalParticipantCount = Number(total.totalParticipants);
     return {
       metrics: metrics(total, participantKpis),
-      demographics: [{ name: 'Canonical demographic categories', metrics: metrics(total, demographicColumns) }],
+      demographics: [{ name: 'Canonical demographic categories', metrics: metrics(total, demographicColumns, totalParticipantCount) }],
       districts: groups('district'), monthly: groups('month'), activities: groups('activity'), filters: params,
       metadata: { dataSource: 'bigquery', note: 'Locked combined_activity_summary view. Participant counts are attendance records, not unique people. Age bands remain as supplied and can overlap; do not add them together. Counts below five are suppressed.' },
     };

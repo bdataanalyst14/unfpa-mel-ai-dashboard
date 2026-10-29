@@ -48,4 +48,25 @@ const route = fs.readFileSync('src/app/api/dashboard/activity-detail/export/rout
 assert.ok(route.indexOf('await requireDashboardApiAccess()') < route.indexOf('await getDashboardPageData'));
 assert.match(route,/getDashboardPageData\('activity-detail', input, input, true\)/);
 assert.doesNotMatch(sql,/JOIN|SELECT \*|LIMIT/i);
+
+const rowWithSmallCell = service.safeActivityRow({
+  events: 1, submission_count: 1, participants: 24, gender_total: 24, gender_disagg_sum: 24,
+  female: 20, male: 4, other_sex: 0,
+  pwd_total: 24, withdisability: 2, nodisability: 22,
+  caste_total: 24, caste_disagg_sum: 24,
+  hilldalit: 10, teraidalit: 2, hilljanajati: 12, teraijanajati: 0, madhesi: 0, muslim: 0, bc: 0, other_cast: 0
+});
+assert.equal(rowWithSmallCell.male, '<5');
+assert.equal(rowWithSmallCell.female, 'Suppressed');
+assert.equal(rowWithSmallCell.other_sex, '0');
+assert.equal(rowWithSmallCell.gender_disagg_sum, 'Suppressed');
+assert.equal(rowWithSmallCell.withdisability, '<5');
+assert.equal(rowWithSmallCell.nodisability, 'Suppressed');
+assert.equal(rowWithSmallCell.teraidalit, '<5');
+assert.equal(rowWithSmallCell.hilldalit, 'Suppressed');
+assert.equal(rowWithSmallCell.caste_disagg_sum, 'Suppressed');
+const protectedCsv = createCsv(registry.allActivityColumns.map(([,label])=>label), [registry.allActivityColumns.map(([key])=>rowWithSmallCell[key])]);
+assert.ok(protectedCsv.includes('Suppressed'));
+assert.ok(protectedCsv.includes('<5'));
+
 console.log('PASS Activity Detail registry, privacy, parameterization, all filters, search, sort allowlist, pagination bounds, stable grain, suppression and CSV formula protection.');

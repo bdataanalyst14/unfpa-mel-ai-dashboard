@@ -83,6 +83,62 @@ export function suppressComplementaryValue(): SuppressionResult {
   };
 }
 
+export function applyComplementarySuppression(
+  results: SuppressionResult[],
+  total?: SuppressionResult | number | null,
+): SuppressionResult[] {
+  const primarySuppressed = results
+    .map((result, index) => ({ result, index }))
+    .filter(({ result }) => result.suppression_reason === 'small_cell');
+
+  const isTotalSuppressed =
+    total !== undefined &&
+    total !== null &&
+    (typeof total === 'object'
+      ? total.suppressed
+      : typeof total === 'number' && (total < 5 || !Number.isFinite(total)));
+
+  if (isTotalSuppressed || primarySuppressed.length !== 1) {
+    return results;
+  }
+
+  const candidates = results
+    .map((result, index) => ({ result, index }))
+    .filter(
+      ({ result }) =>
+        !result.suppressed &&
+        result.value !== null &&
+        Number.isFinite(result.value) &&
+        result.value > 0,
+    )
+    .sort((left, right) => (left.result.value ?? 0) - (right.result.value ?? 0));
+
+  if (candidates.length === 0) return results;
+
+  const complement = candidates[0];
+
+  return results.map((result, index) =>
+    index === complement.index ? suppressComplementaryValue() : result,
+  );
+}
+
+export function suppressCategoryGroup<K extends string>(
+  counts: Record<K, unknown>,
+  total?: SuppressionResult | number | null,
+  operationalKeys: string[] = [],
+): Record<K, SuppressionResult> {
+  const keys = Object.keys(counts) as K[];
+  const suppressionResults = keys.map((key) =>
+    suppressCount(counts[key], operationalKeys.includes(key)),
+  );
+  const protectedResults = applyComplementarySuppression(suppressionResults, total);
+  const output = {} as Record<K, SuppressionResult>;
+  keys.forEach((key, index) => {
+    output[key] = protectedResults[index];
+  });
+  return output;
+}
+
 export function suppressPercentage(
   numerator: unknown,
   denominator: unknown,
