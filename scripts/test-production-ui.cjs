@@ -7,6 +7,13 @@ const { chromium } = require('@playwright/test');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, '.qa-production-ui');
 const routes = ['executive-overview','activity-progress','participant-reach','indicator-progress','ip-performance','geographic-coverage','gbv-ocmc','data-quality','management-decision-centre','activity-detail'];
+const load = require('./activity-test-loader.cjs').loader();
+const privacy = load('src/lib/server/suppression.ts');
+const { activityFields } = load('src/lib/aggregate-contract.ts');
+const rawDisclosureRow = Object.fromEntries(activityFields.map(field => [field.key, field.kind === 'measure' ? ['events', 'submission_count'].includes(field.key) ? 7 : 938271 : field.key.endsWith('_check') ? 'private-938271' : 'QA dimension']));
+const disclosureRow = load('src/lib/server/activity-detail-service.ts').safeActivityRow(rawDisclosureRow);
+const disclosureMetrics = ['Total participants', 'Reportable participants', 'Female participants', 'Male participants', 'Other participants'].map(label => ({ label, value: privacy.suppressPublishedCount(938271).displayValue }));
+const disclosureFixture = { data: { metrics: [{ label: 'Reported activities', value: '7' }, ...disclosureMetrics], activityRows: [disclosureRow], sections: [], activityPage: { request: load('src/lib/server/activity-detail-query.ts').parseActivityRequest(), totalRows: 1, totalPages: 1, options: {} } }, participants: { metrics: [], districts: [], monthly: [], activities: [], filters: {}, metadata: { dataSource: 'bigquery', note: 'OFFLINE sanitized fixture' }, demographics: [{ name: 'QA', metrics: ['female', 'male', 'other'].map(key => ({ key, label: key, ...privacy.suppressPublishedCount(938271) })) }] } };
 async function main() {
   fs.mkdirSync(out, {recursive:true});
   const css = await require('postcss')([require('tailwindcss')(require('../tailwind.config.js'))]).process(fs.readFileSync(path.join(root,'src/app/globals.css'),'utf8'),{from:path.join(root,'src/app/globals.css')});
@@ -20,7 +27,8 @@ async function main() {
     }
     const file=name==='/bundle.js'?path.join(out,'bundle.js'):name==='/style.css'?path.join(out,'style.css'):name==='/maps/local-units.geojson'?path.join(root,'public/maps/local-units.geojson'):null;
     res.setHeader('Content-Type',name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':name.endsWith('.geojson')?'application/json':'text/html');
-    res.end(file?fs.readFileSync(file):'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body><div id="root"></div><script src="/bundle.js"></script></body></html>');
+    const fixtureScript = req.url.includes('disclosureCase=1') ? `<script>window.disclosureFixture=${JSON.stringify(disclosureFixture)}</script>` : '';
+    res.end(file?fs.readFileSync(file):'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body><div id="root"></div>' + fixtureScript + '<script src="/bundle.js"></script></body></html>');
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const base=`http://127.0.0.1:${server.address().port}`;
@@ -136,6 +144,16 @@ async function main() {
     await page.goto(`${base}/dashboard/geographic-coverage?municipality=QA%20municipality`);
     await page.getByRole('button',{name:'Reset geography',exact:true}).click();
     await page.waitForURL(url=>!url.searchParams.has('municipality'));
+    for (const route of ['executive-overview', 'activity-detail']) {
+      await page.goto(`${base}/dashboard/${route}?disclosureCase=1`);
+      await page.locator('h1').waitFor();
+      assert.match(await page.locator('body').innerText(), /Suppressed/);
+      assert.doesNotMatch(await page.content(), /938271|938,271/);
+      assert.equal(await page.locator('.recharts-pie-sector').count(), 0);
+      assert.equal(await page.locator('.recharts-scatter-symbol').count(), 0);
+      await page.screenshot({ path: path.join(out, `disclosure-${route}.png`), fullPage: true });
+    }
+    console.log('PASS server-sanitized disclosure fixtures: table, JSON-in-HTML, accessible text and chart geometry contain no raw person sentinel');
     assert.deepEqual(errors,[]);
     fs.writeFileSync(path.join(out,'qa.json'),JSON.stringify({scope:'offline production components; no live credentials or API',routes,viewports:[1440,1024,768,375],mapFeatures:777,csv:'passed',filters:'passed',navigation:'passed',checks:['rendered donut sectors and scatter points','16px proportional bars','zero and withheld legends','published-category denominator','dimension codes preserved','numeric count and percentage sorting','withheld values sort last','scatter tooltip and keyboard-accessible ratios','keyboard map province focus and Back','municipality-only Reset'],runtimeErrors:errors},null,2));
     console.log('PASS production component interactions, CSV, suppression, cascades, mobile navigation, no-data state, rendered donut/scatter geometry, zero/private counts, matrix codes/ratios, keyboard map navigation');

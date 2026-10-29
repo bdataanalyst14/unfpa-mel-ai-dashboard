@@ -86,11 +86,11 @@ async function main() {
     assert.deepEqual(calls.at(-1).params, expected);
     for (const key of Object.keys(expected)) assert.ok(calls.at(-1).sql.includes(`${columns[key]} = @${key}`));
     const metrics = Object.fromEntries(result.metrics.map((m) => [m.label, m.value]));
-    assert.equal(metrics['Total participants'], '137');
-    assert.equal(metrics['Reportable participants'], '111');
+    assert.equal(metrics['Total participants'], 'Suppressed');
+    assert.equal(metrics['Reportable participants'], 'Suppressed');
     assert.equal(metrics['Projects'], '6');
     assert.equal(metrics['Provinces covered'], '5');
-    assert.equal(metrics['Other participants'], '<5');
+    assert.equal(metrics['Other participants'], 'Suppressed');
     assert.match(calls.findLast(call => call.sql.includes(' AS events')).sql, /SUM\(total_participants\)/);
     assert.match(calls.findLast(call => call.sql.includes(' AS events')).sql, /SUM\(total_reportable_participants\)/);
   }
@@ -105,20 +105,20 @@ async function main() {
   small = true;
   const detail = await service.getDashboardPageData('activity-detail', selected);
   assert.equal(detail.activityRows[0].events, '3');
-  assert.equal(detail.activityRows[0].participants, '<5');
-  assert.equal(detail.activityRows[0].reportable, '<5');
+  assert.equal(detail.activityRows[0].participants, 'Suppressed');
+  assert.equal(detail.activityRows[0].reportable, 'Suppressed');
   assert.deepEqual(calls.at(-2).params, selected);
   assert.doesNotMatch(calls.at(-2).sql, /name_list|survivor|actdetails1|event_row_key|SELECT \*/i);
   const grouped = await service.getDashboardPageData('activity-progress', selected);
   assert.equal(grouped.sections.length, 8);
-  assert.ok(grouped.sections.every(section => section.rows[0].events === '3' && section.rows[0].participants === '<5'));
+  assert.ok(grouped.sections.every(section => section.rows[0].events === '3' && section.rows[0].participants === 'Suppressed'));
   assert.match(calls.at(-1).sql, /subactcode1 AS subactcode/);
   const geographic = await service.getDashboardPageData('geographic-coverage', selected);
   for (const key of ['projectGeography', 'partnerGeography']) {
     const section = geographic.sections.find(section => section.key === key);
     assert.equal(section.rows[0].events, '3');
-    assert.equal(section.rows[0].participants, '<5');
-    assert.equal(section.rows[0].reportable, '<5');
+    assert.equal(section.rows[0].participants, 'Suppressed');
+    assert.equal(section.rows[0].reportable, 'Suppressed');
   }
   for (const call of calls.slice(-2)) {
     assert.deepEqual(call.params, selected);

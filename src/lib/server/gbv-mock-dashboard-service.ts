@@ -10,8 +10,8 @@ import type {
 import {
   applyComplementarySuppression,
   suppressComplementaryValue,
-  suppressCount,
-  suppressPercentage,
+  suppressPublishedCount as suppressCount,
+  suppressPublishedPercentage as suppressPercentage,
   type SuppressionResult,
 } from './suppression';
 

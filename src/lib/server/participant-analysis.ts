@@ -4,7 +4,7 @@ import type { DashboardFilterState } from '@/lib/dashboard-filters';
 import type { ParticipantData } from '@/lib/participant-contract';
 import { runSafeBigQuery } from './bigquery-client';
 import { combinedScope, combinedSource, globalColumns } from './analytical-scope';
-import { suppressCategoryGroup, suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 
 export const profileLabels: Record<string, string> = {
   female: 'Female', male: 'Male', other: 'Other sex', below_15: 'Below 15 (source 0–15)',
@@ -126,7 +126,7 @@ export async function participantBreakdowns(filters: DashboardFilterState, value
       for (const row of rows) totals.set(row.label, (totals.get(row.label) ?? 0) + Number(row.participants));
     }
     if (Array.from(totals.values()).some(value => !Number.isSafeInteger(value) || value < 0)) throw new Error('Invalid participant breakdown');
-    const mappedRows = Array.from(totals).sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, participants: suppressCount(count).displayValue }));
+    const mappedRows = Array.from(totals).sort((a, b) => a[0].localeCompare(b[0])).map(([label, count]) => ({ label, participants: suppressCount(count).displayValue }));
     const smallCountRows = mappedRows.filter(r => r.participants === '<5');
     if (smallCountRows.length === 1) {
       const candidate = mappedRows

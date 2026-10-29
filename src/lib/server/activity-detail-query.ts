@@ -45,6 +45,6 @@ export function activityGroupedSql(where: string) {
 export function activityOrder(request: ActivityRequest) {
   if (!activityFields.some(field => field.key === request.sort)) throw new Error('Invalid activity sort');
   const field = activityFields.find(field => field.key === request.sort)!;
-  const safeOrder = (item: typeof field) => item.kind === 'measure' && !['events', 'submission_count'].includes(item.key) ? `CASE WHEN \`${item.key}\` BETWEEN 1 AND 4 THEN NULL ELSE \`${item.key}\` END` : `\`${item.key}\``;
+  const safeOrder = (item: typeof field) => (item.kind === 'measure' && !['events', 'submission_count'].includes(item.key)) || item.key.endsWith('_check') ? 'NULL' : `\`${item.key}\``;
   return `${safeOrder(field)} ${request.direction === 'desc' ? 'DESC' : 'ASC'} NULLS LAST, ${activityFields.map(safeOrder).join(', ')}`;
 }

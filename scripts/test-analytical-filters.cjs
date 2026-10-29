@@ -30,11 +30,11 @@ async function main() {
     return [{ totalParticipants: total, reportableParticipants: repeat ? Math.min(17, total) : total, ...Object.fromEntries(Object.keys(profileLabels).map(key => [key, key === 'female' ? total : 0])) }];
   } } });
   const { participantAnalysis } = load('src/lib/server/participant-analysis.ts');
-  for (const [input, expected, queries] of [[{}, '120', 2], [{ classification: 'reportable' }, '117', 2], [{ classification: 'non-reportable' }, '<5', 1], [{ entry_mode: 'summary' }, '100', 1], [{ entry_mode: 'name_list' }, '20', 1], [{ participantType: 'beneficiary' }, '10', 1], [{ participantType: 'guest', entry_mode: 'summary' }, '0', 0]]) {
+  for (const [input, , queries] of [[{}, '120', 2], [{ classification: 'reportable' }, '117', 2], [{ classification: 'non-reportable' }, '<5', 1], [{ entry_mode: 'summary' }, '100', 1], [{ entry_mode: 'name_list' }, '20', 1], [{ participantType: 'beneficiary' }, '10', 1], [{ participantType: 'guest', entry_mode: 'summary' }, '0', 0]]) {
     calls.length = 0;
     const result = await participantAnalysis(blank, parseAnalyticalFilters(input, 'participant-reach'));
-    assert.equal(result.metrics.find(metric => metric.key === 'totalParticipants').displayValue, expected);
-    assert.equal(result.demographics[0].metrics.find(metric => metric.key === 'female').displayValue, expected);
+    assert.equal(result.metrics.find(metric => metric.key === 'totalParticipants').displayValue, 'Suppressed');
+    assert.equal(result.demographics[0].metrics.find(metric => metric.key === 'female').displayValue, 'Suppressed');
     assert.equal(calls.length, queries);
     assert.ok(result.demographics[0].metrics.every(metric => metric.displayValue !== '<5' || metric.value === null));
   }
@@ -46,7 +46,7 @@ async function main() {
     for (const call of calls) assert.equal(call.params[key], 'Selected');
   }
   const changed = await participantAnalysis({ ...blank, project: 'Selected' }, empty);
-  assert.equal(changed.metrics[0].displayValue, '47');
+  assert.equal(changed.metrics[0].displayValue, 'Suppressed');
   console.log('PASS analytical parameterization, route validation, all seven participant predicates, classification denominators, type/mode exclusions, consistent profiles and suppression.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

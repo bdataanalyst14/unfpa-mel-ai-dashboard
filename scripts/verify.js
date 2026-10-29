@@ -162,47 +162,13 @@ function main() {
     }
   });
 
-  check('applyComplementarySuppression suppresses smallest positive cell for single small cell', () => {
-    const results = [suppressCount(5200), suppressCount(4597), suppressCount(3)];
-    const protectedResults = applyComplementarySuppression(results, 9800);
-    assert.equal(protectedResults[0].displayValue, '5200');
-    assert.equal(protectedResults[0].suppressed, false);
-    assert.equal(protectedResults[1].displayValue, 'Suppressed');
-    assert.equal(protectedResults[1].suppressed, true);
-    assert.equal(protectedResults[1].suppression_reason, 'complementary_cell');
-    assert.equal(protectedResults[2].displayValue, '<5');
-    assert.equal(protectedResults[2].suppressed, true);
-  });
-
-  check('applyComplementarySuppression does not complementarily suppress when total is suppressed', () => {
-    const results = [suppressCount(2), suppressCount(1)];
-    const protectedResults = applyComplementarySuppression(results, 3);
-    assert.equal(protectedResults[0].displayValue, '<5');
-    assert.equal(protectedResults[1].displayValue, '<5');
-  });
-
-  check('suppressCategoryGroup protects Executive sex-profile against subtraction disclosure', () => {
-    const group = suppressCategoryGroup({ female: 5200, male: 4597, other: 3 }, 9800);
-    assert.equal(group.female.displayValue, '5200');
-    assert.equal(group.male.displayValue, 'Suppressed');
-    assert.equal(group.male.suppressed, true);
-    assert.equal(group.other.displayValue, '<5');
-    assert.equal(group.other.suppressed, true);
-  });
-
-  check('suppressCategoryGroup protects narrow filter combinations', () => {
-    const group = suppressCategoryGroup({ female: 5, male: 1, other: 0 }, 6);
-    assert.equal(group.female.displayValue, 'Suppressed');
-    assert.equal(group.male.displayValue, '<5');
-    assert.equal(group.other.displayValue, '0');
-    assert.equal(group.other.suppressed, false);
-  });
-
-  check('suppressCategoryGroup protects disability partitions', () => {
-    const group = suppressCategoryGroup({ withdisability: 2, nodisability: 640 }, 642);
-    assert.equal(group.withdisability.displayValue, '<5');
-    assert.equal(group.nodisability.displayValue, 'Suppressed');
-    assert.equal(group.nodisability.suppressed, true);
+  check('category protection removes bounds and all exact components when any cell is withheld', () => {
+    for (const counts of [[5200, 4597, 3], [8, 1, 1], [5, 1, 0], [2, 640], [2, 1]]) {
+      const result = applyComplementarySuppression(counts.map(value => suppressCount(value)), counts.reduce((a, b) => a + b, 0));
+      assert.ok(result.every(cell => cell.displayValue === 'Suppressed' && cell.value === null));
+    }
+    const group = suppressCategoryGroup({ female: 8, male: 1, other: 1 }, 10);
+    assert.ok(Object.values(group).every(cell => cell.displayValue === 'Suppressed'));
   });
 
   check('suppressRecord handles nested payloads safely', () => {

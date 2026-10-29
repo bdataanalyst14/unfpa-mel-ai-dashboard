@@ -87,39 +87,29 @@ export function applyComplementarySuppression(
   results: SuppressionResult[],
   total?: SuppressionResult | number | null,
 ): SuppressionResult[] {
-  const primarySuppressed = results
-    .map((result, index) => ({ result, index }))
-    .filter(({ result }) => result.suppression_reason === 'small_cell');
-
-  const isTotalSuppressed =
-    total !== undefined &&
-    total !== null &&
-    (typeof total === 'object'
-      ? total.suppressed
-      : typeof total === 'number' && (total < 5 || !Number.isFinite(total)));
-
-  if (isTotalSuppressed || primarySuppressed.length !== 1) {
-    return results;
+  if (!results.some(result => result.suppressed)) return results;
+  if (results.length === 1 && total != null && (typeof total === 'number' || !total.suppressed)) {
+    throw new Error('Cannot protect a single category with a published margin.');
   }
+  return results.map(() => suppressComplementaryValue());
+}
 
-  const candidates = results
-    .map((result, index) => ({ result, index }))
-    .filter(
-      ({ result }) =>
-        !result.suppressed &&
-        result.value !== null &&
-        Number.isFinite(result.value) &&
-        result.value > 0,
-    )
-    .sort((left, right) => (left.result.value ?? 0) - (right.result.value ?? 0));
+export function suppressPublishedCount(count: unknown, operational = false): SuppressionResult {
+  return operational ? suppressCount(count, true) : suppressComplementaryValue();
+}
 
-  if (candidates.length === 0) return results;
+export function suppressPublishedCategoryGroup<K extends string>(
+  counts: Record<K, unknown>,
+  _total?: SuppressionResult | number | null,
+): Record<K, SuppressionResult> {
+  void _total;
+  return Object.fromEntries(Object.keys(counts).map(key => [key, suppressComplementaryValue()])) as Record<K, SuppressionResult>;
+}
 
-  const complement = candidates[0];
-
-  return results.map((result, index) =>
-    index === complement.index ? suppressComplementaryValue() : result,
-  );
+export function suppressPublishedPercentage(_numerator: unknown, _denominator: unknown): SuppressionResult {
+  void _numerator;
+  void _denominator;
+  return suppressComplementaryValue();
 }
 
 export function suppressCategoryGroup<K extends string>(

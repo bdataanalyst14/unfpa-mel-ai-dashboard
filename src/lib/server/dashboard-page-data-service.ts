@@ -15,7 +15,7 @@ import {
   getDashboardDataMode,
   runSafeBigQuery,
 } from './bigquery-client';
-import { suppressCategoryGroup, suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 import { mainData } from '@/data/mock/main-data';
 import {
   buildDashboardFilterOptions,
@@ -129,7 +129,7 @@ function response(
   metrics: DashboardPageMetric[],
   metadata: DashboardPageMetadata,
 ): DashboardPageData {
-  return { route, pageName: pageNames[route], metrics, metadata };
+  return { route, pageName: pageNames[route], metrics, metadata: { ...metadata, suppressionApplied: true, message: metadata.message + ' Participant counts, category bounds and related margins are withheld across all scopes pending an approved joint disclosure policy.' } };
 }
 
 function emptyFilterState(): DashboardFilterState {
@@ -580,7 +580,7 @@ async function addAnalysis(data: DashboardPageData, filters: DashboardFilterStat
     }));
     data.sections.push(...crossSections);
   }
-  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. Sensitive participant counts 1 to 4 are withheld. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
+  data.metadata.message = 'Approved published aggregate views; active filters apply to all displayed analysis. Participants are attendance records, not unique people. All participant counts and related margins are withheld across scopes pending an approved joint disclosure policy. Source freshness is the latest published partner sync, not a guarantee of reporting completeness.';
   return data;
 }
 

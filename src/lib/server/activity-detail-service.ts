@@ -1,7 +1,7 @@
 import 'server-only';
 import { activityFields, activityExtraFilters, type AggregateRow } from '@/lib/aggregate-contract';
 import { runSafeBigQuery } from './bigquery-client';
-import { suppressCategoryGroup, suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 import { activitySource, activityWhere, activityGroupedSql, activityOrder, parseActivityRequest } from './activity-detail-query';
 import type { DashboardFilterState } from '@/lib/dashboard-filters';
 
@@ -30,6 +30,7 @@ export function safeActivityRow(row: Record<string, unknown>): AggregateRow {
   return Object.fromEntries(activityFields.map(field => {
     const value = row[field.key];
     const isOperational = field.key === 'events' || field.key === 'submission_count';
+    if (field.key.endsWith('_check')) return [field.key, 'Suppressed'];
 
     if (field.key in sexSuppressed) {
       return [field.key, sexSuppressed[field.key as keyof typeof sexSuppressed].displayValue];

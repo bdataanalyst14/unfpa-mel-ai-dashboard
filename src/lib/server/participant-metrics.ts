@@ -3,7 +3,7 @@ import 'server-only';
 import type { ExecutiveOverviewFilters } from '@/lib/types';
 import { participantFilterColumns, participantFilters, type ParticipantData, type ParticipantMetric } from '@/lib/participant-contract';
 import { getBigQueryConfigStatus, getBigQueryDatasetId, getBigQueryProjectId, runSafeBigQuery } from './bigquery-client';
-import { suppressCategoryGroup, suppressCount } from './suppression';
+import { suppressPublishedCategoryGroup as suppressCategoryGroup, suppressPublishedCount as suppressCount } from './suppression';
 
 export const participantKpis = {
   totalParticipants: 'Total Participants',
