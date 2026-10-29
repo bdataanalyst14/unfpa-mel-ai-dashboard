@@ -1,0 +1,253 @@
+{
+  "date": "2026-10-29",
+  "pr": 11,
+  "branch": "release/ui-ux-acceptance-2026-10-28",
+  "initialLocalAndVerifiedRemoteHead": "b04db3a47a86b0ad08fe98c9b22f27aad6650aac",
+  "testedCodeRevision": "8047bbf839b8801a7e139ea5e9b9df3b534bf09d",
+  "finalEvidenceCommitScope": "Only documentation/evidence changes follow testedCodeRevision. Final pushed PR head is verified against local HEAD after publication; see PR body and task completion response.",
+  "productionDecision": "NO-GO pending disclosure-policy owner acceptance and authorized Production UAT",
+  "reviewDecision": "Targeted fail-closed corrections ready for review; no blanket disclosure-safety certification",
+  "assumptions": [
+    "Fixed reporting rows, dimension labels, category availability and operational measures",
+    "Nonnegative integer person counts; no historical or externally supplied person margins",
+    "Operational activity/submission counts are not assumed to determine attendance; that relationship needs owner review"
+  ],
+  "liveWarehouseQueries": 0,
+  "warehouseMutations": 0,
+  "merges": 0,
+  "manualDeployments": 0,
+  "checks": [
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "errors": 0,
+      "warnings": 13
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "disclosurePartitionWitnesses": 9,
+      "disclosureGridWitnesses": 2,
+      "compatibleFixedTotalGrids": 1330,
+      "verificationChecks": 28,
+      "recordedSchemaCoverage": "SKIP: snapshot unavailable"
+    },
+    {
+      "command": "npm run test:browser",
+      "exitCode": 0,
+      "applicationTests": 11,
+      "applicationDuration": "2.9m",
+      "responsiveComponentChecks": 40,
+      "additionalSanitizedDisclosureScreens": 2,
+      "runtimeErrors": 0,
+      "limit": "Offline mock application and isolated components; warehouse and authorization mocked for API regression tests"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "framework": "Next.js 16.4.3 webpack",
+      "readinessManifest": "mock/NONE; server-only bundle trace verified"
+    },
+    {
+      "command": "npm audit",
+      "exitCode": 0,
+      "vulnerabilities": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "sources": [
+    {
+      "path": "package.json",
+      "testedWorktreeSha256": "b16e87d91354479692832a1da821ff08cf96306d76910e62ff01218edc922b5e",
+      "testedCommitBlobSha256": "a6457037ad677db61dc824c62ebe67eb8a10c82c8fe3ea0128bb99e64c0db314",
+      "expectedHeadBlobSha256": "73ef5253ddd1c08467cd266aea36e1f75151b11a2da63459b4239c45fdc43dbb"
+    },
+    {
+      "path": "scripts/test-activity-detail.cjs",
+      "testedWorktreeSha256": "856d5704dc455ad1579b737f4c02ed57f742cdd34d363ade9f2a2c8bd87c39f8",
+      "testedCommitBlobSha256": "ed28d5117a13d73d8478189a594ae8bb3c20117cd388075023df2661ea60534e",
+      "expectedHeadBlobSha256": "dd07107cb5c7296eeca531f934c9f9b80c9a6e8c89864f461ff24b96f16a3287"
+    },
+    {
+      "path": "scripts/test-analytical-filters.cjs",
+      "testedWorktreeSha256": "a17901d5e9fe575448915f9313338a17fe11a251f60cb38700f1ff1515d9bd2c",
+      "testedCommitBlobSha256": "aff9568dd899cddff2a53fb48c06a1a5e4d9543d0fc822d3fdeac9364678677d",
+      "expectedHeadBlobSha256": "49f95bc63e40fe12a9850ef308a28f1e14cd610805235be1c009ea41873d186c"
+    },
+    {
+      "path": "scripts/test-disclosure-closure.cjs",
+      "testedWorktreeSha256": "000137dbd664d4d6a55742af116d404fc900a15a3b3a9344d21236e73dfc3d15",
+      "testedCommitBlobSha256": "000137dbd664d4d6a55742af116d404fc900a15a3b3a9344d21236e73dfc3d15",
+      "expectedHeadBlobSha256": null
+    },
+    {
+      "path": "scripts/test-production-ui.cjs",
+      "testedWorktreeSha256": "501ade74f15e789c1d270583fa01c40904832f3d82bb1fae6336d443f5ce17cf",
+      "testedCommitBlobSha256": "abdbef8877b60bce1946e8c55c056d43f54b7940fc3d3e93991cd38452f62bb8",
+      "expectedHeadBlobSha256": "feae7d73af9c2bd5056eaa178b242099eab91d6a12f8b4620652d4b69b7a5a06"
+    },
+    {
+      "path": "scripts/test-production-v1.js",
+      "testedWorktreeSha256": "baa3f042462a18c2e896c05ab7da8fc671c72907943f487ffcf357b8865f7d71",
+      "testedCommitBlobSha256": "5db8c7018bd7ba7dbc685aa31644136718b9c10cb2c18584114079a332935d56",
+      "expectedHeadBlobSha256": "f0af53ff07c753deca0bb5f123569903ab8c8a90993edeaa18fae7975128c6b6"
+    },
+    {
+      "path": "scripts/verify.js",
+      "testedWorktreeSha256": "4df93f9a3eb726c967200508a314200c97a28e1cef822508ab84c0c74cb6a40e",
+      "testedCommitBlobSha256": "e4de0c309a168be78acc4a3be3c6c26eb5bd509edd1cdc482edccc8afd1573a5",
+      "expectedHeadBlobSha256": "3b61a34d21a8d124348d24791fed0566cfeb488124ea33d5ca0b5b2a9978c318"
+    },
+    {
+      "path": "src/app/api/dashboard/activity-detail/export/route.ts",
+      "testedWorktreeSha256": "29b0b905c5651a75b0037cf951cbb5682be3ccb5cc31eb00701e017f59aec55c",
+      "testedCommitBlobSha256": "29b0b905c5651a75b0037cf951cbb5682be3ccb5cc31eb00701e017f59aec55c",
+      "expectedHeadBlobSha256": "29b0b905c5651a75b0037cf951cbb5682be3ccb5cc31eb00701e017f59aec55c"
+    },
+    {
+      "path": "src/app/api/dashboard/page-data/route.ts",
+      "testedWorktreeSha256": "7c1a69e7005c6f1d36f9e2bf312447cc50e84cdabf88aabd569aaee21cbe617a",
+      "testedCommitBlobSha256": "e936bee4be781324e3913db77787d4f540b59147f096fff906f6e7334a1457f8",
+      "expectedHeadBlobSha256": "e936bee4be781324e3913db77787d4f540b59147f096fff906f6e7334a1457f8"
+    },
+    {
+      "path": "src/app/api/dashboard/participants/route.ts",
+      "testedWorktreeSha256": "74330d2967b91204af02d9d1d807bff9c06ca0733d5d15522f65b89e9318b242",
+      "testedCommitBlobSha256": "5876eb052874a467cedadcdb7a11db9feef38d8e1025b351eed3934f7418d3c9",
+      "expectedHeadBlobSha256": "5876eb052874a467cedadcdb7a11db9feef38d8e1025b351eed3934f7418d3c9"
+    },
+    {
+      "path": "src/components/charts/gbv-summary-chart.tsx",
+      "testedWorktreeSha256": "7ed036d6180e04f707fbd782370c73e86e58c8186c48d29c608aceecd3838f97",
+      "testedCommitBlobSha256": "397524ee2ac1676f638bd8e3191ea522686ed589a9587558ef5fdf2d1f300196",
+      "expectedHeadBlobSha256": "397524ee2ac1676f638bd8e3191ea522686ed589a9587558ef5fdf2d1f300196"
+    },
+    {
+      "path": "src/components/dashboard/aggregate-activity-table.tsx",
+      "testedWorktreeSha256": "f4378802c3f70c6839dec17a61ec377e0d3dc10c9cecedad64d23d434215946a",
+      "testedCommitBlobSha256": "be6de663dde348439fc7f7f06717dda6a2304d62a5ba4a71537ab2fea19e500c",
+      "expectedHeadBlobSha256": "be6de663dde348439fc7f7f06717dda6a2304d62a5ba4a71537ab2fea19e500c"
+    },
+    {
+      "path": "src/components/dashboard/aggregate-bars.tsx",
+      "testedWorktreeSha256": "8f09f15439a745d64b475fa065e55670af02ec2d9887fd7ca5bb0cb5e4a6067e",
+      "testedCommitBlobSha256": "8f09f15439a745d64b475fa065e55670af02ec2d9887fd7ca5bb0cb5e4a6067e",
+      "expectedHeadBlobSha256": "8f09f15439a745d64b475fa065e55670af02ec2d9887fd7ca5bb0cb5e4a6067e"
+    },
+    {
+      "path": "src/components/dashboard/aggregate-pie.tsx",
+      "testedWorktreeSha256": "6051d1e74cf7ec2fa20e9de710458c3292eb4a7229c3d2848a23dda48e6e073f",
+      "testedCommitBlobSha256": "6051d1e74cf7ec2fa20e9de710458c3292eb4a7229c3d2848a23dda48e6e073f",
+      "expectedHeadBlobSha256": "6051d1e74cf7ec2fa20e9de710458c3292eb4a7229c3d2848a23dda48e6e073f"
+    },
+    {
+      "path": "src/components/dashboard/analytical-matrix.tsx",
+      "testedWorktreeSha256": "01d974c74fb822f0807834c19c2a3d0e3d8a76fc5f1e9f675621c0b63c4577bf",
+      "testedCommitBlobSha256": "01d974c74fb822f0807834c19c2a3d0e3d8a76fc5f1e9f675621c0b63c4577bf",
+      "expectedHeadBlobSha256": "01d974c74fb822f0807834c19c2a3d0e3d8a76fc5f1e9f675621c0b63c4577bf"
+    },
+    {
+      "path": "src/components/dashboard/reach-scatter.tsx",
+      "testedWorktreeSha256": "c0269ded41073d18f90c654894685accca1e0425c669dbceec72dcb6d1d4dca8",
+      "testedCommitBlobSha256": "c0269ded41073d18f90c654894685accca1e0425c669dbceec72dcb6d1d4dca8",
+      "expectedHeadBlobSha256": "c0269ded41073d18f90c654894685accca1e0425c669dbceec72dcb6d1d4dca8"
+    },
+    {
+      "path": "src/lib/aggregate-contract.ts",
+      "testedWorktreeSha256": "5d0978fd3aff869c027f26532d4a26a13e5df4a7d5399cb55cc12413d6e14b4a",
+      "testedCommitBlobSha256": "5d0978fd3aff869c027f26532d4a26a13e5df4a7d5399cb55cc12413d6e14b4a",
+      "expectedHeadBlobSha256": "5d0978fd3aff869c027f26532d4a26a13e5df4a7d5399cb55cc12413d6e14b4a"
+    },
+    {
+      "path": "src/lib/csv-export.ts",
+      "testedWorktreeSha256": "8fdd0893729573de6f3d6f08dcde23c06fc56e271dfe4c488d12f66b6751cad7",
+      "testedCommitBlobSha256": "111a90bdeaba1198f7ed98b259a00a19760ff6616c6faded31475efd674a9c0a",
+      "expectedHeadBlobSha256": "111a90bdeaba1198f7ed98b259a00a19760ff6616c6faded31475efd674a9c0a"
+    },
+    {
+      "path": "src/lib/server/activity-detail-query.ts",
+      "testedWorktreeSha256": "2e5dce73eb3507a0929ccc188eb9065c732584b71bebcda525883369f017e825",
+      "testedCommitBlobSha256": "08f3904253b2d2554dbbb2e1de57a8855b72823d5fec519b2aba22a9868d30d2",
+      "expectedHeadBlobSha256": "f344072a04831cbbb96e36d21f6fbc84b9cb66743f5e34564ce0719a33e4f78c"
+    },
+    {
+      "path": "src/lib/server/activity-detail-service.ts",
+      "testedWorktreeSha256": "c693ca37ad12b1fb175b32bdc2602cc3bce95f02dfec8fb09661be12fd621cce",
+      "testedCommitBlobSha256": "13181f4db68065dcf30f7beb364bd02196c2d5d3788704b89277642ba28ce062",
+      "expectedHeadBlobSha256": "700db581365dd5d1ced68bc301dac4da2bd70bc169a35854163b1e4fec1f15c8"
+    },
+    {
+      "path": "src/lib/server/bigquery-dashboard-service.ts",
+      "testedWorktreeSha256": "95f7bc9fcfd51bca8a8cacc6d7f43190dfa371f66a10d2d4eaaa02656e2be21e",
+      "testedCommitBlobSha256": "c848ae79dbd89e94002594da5ea5055cb8f86c3021144fcce63576a042b7cb7a",
+      "expectedHeadBlobSha256": "c848ae79dbd89e94002594da5ea5055cb8f86c3021144fcce63576a042b7cb7a"
+    },
+    {
+      "path": "src/lib/server/dashboard-page-data-service.ts",
+      "testedWorktreeSha256": "51801c5627388448c5a19f3688bf6cf4bb5c668bb29931ec18b0cbb65b6979c8",
+      "testedCommitBlobSha256": "a35d6a82c1f984fa3289e41e07115e93f04a4ea3d0c836955148c9fa905d8a53",
+      "expectedHeadBlobSha256": "575ec6ebbbb77e1292d79d358290a57037fac2e78d1a5f60047ab770a2b75197"
+    },
+    {
+      "path": "src/lib/server/gbv-mock-dashboard-service.ts",
+      "testedWorktreeSha256": "dc60d650482f90ff4a1980bd7ef2aaea974211d625655713e73819b8fa7eff25",
+      "testedCommitBlobSha256": "d17ce484a9163535412b37768533ac5523c85ca0f64d7856ac782d7d640be576",
+      "expectedHeadBlobSha256": "789309cc51ac46c52b5457bedcfdab60e4bb01b790949aa8d6a1bb94b59e281b"
+    },
+    {
+      "path": "src/lib/server/participant-analysis.ts",
+      "testedWorktreeSha256": "ffaf0908202b9ab1699246603caa1699f868be601be0f26438b5f7f3248d4ca0",
+      "testedCommitBlobSha256": "09df9ab8a8b3ad326a5d0a622618d14336ceeb1c648e26108d0ffcd6314dc2f8",
+      "expectedHeadBlobSha256": "e454575192edf1829a20905336bb904c8816b53703685109b6197562a5b05ffb"
+    },
+    {
+      "path": "src/lib/server/participant-metrics.ts",
+      "testedWorktreeSha256": "f59616bfb5558e98dd3b97daec3e39a7e57a7764f49fbd8b2cbcd7b1bcdb5fa5",
+      "testedCommitBlobSha256": "3455babb43a407d8ae1145ac0c4e268d342c90d54dc62d2d7ccc5d721170e4ed",
+      "expectedHeadBlobSha256": "37938f9fb0dbfe5812dbd1a169d9c816c3ca832fdd7ee884f8cdd4577329a38d"
+    },
+    {
+      "path": "src/lib/server/suppression.test.ts",
+      "testedWorktreeSha256": "0e3c8404e1c32bb1f3f82214088e0be4dc1b5a523cc6ed8bde3025d5daf62a38",
+      "testedCommitBlobSha256": "a65a73b62eda8edfedfdaddf728fe2a2a7d1a552acfc27549b0ac574f2f3b120",
+      "expectedHeadBlobSha256": "afcc06adbbaf8063b7787a2d34b4c6cb35d23ae7075905b2bdf3898024e68209"
+    },
+    {
+      "path": "src/lib/server/suppression.ts",
+      "testedWorktreeSha256": "fb66aca3d980b7d5b6d8d8bca0f3f117bc256348c5b4416d7c30aec03e99e6af",
+      "testedCommitBlobSha256": "414176231ae67a475758d836d017397ca779f5ba19a3ae92ea5f4e58a29661d3",
+      "expectedHeadBlobSha256": "b01bb8be859207e37518eae1b018e050b48dc1963283499307606b516fc371c5"
+    },
+    {
+      "path": "tests/ui-harness/entry.tsx",
+      "testedWorktreeSha256": "ba4568288b9b0d948fa340248cf11580b4feb805c31705e4d92612471a13dcd0",
+      "testedCommitBlobSha256": "9427faa9746293b72a2ee1ac88632804efc5a688410631745b3b774f3c299372",
+      "expectedHeadBlobSha256": "55d36782af4e617bc543eb6f231ad8cd8375a4a1b784b15f2abee0076e0b6598"
+    },
+    {
+      "path": "vercel.json",
+      "testedWorktreeSha256": "aa1c73d2ffd02c77c7c334ce984412f9870a1c7f8abb79e08603fb0c2d1cef10",
+      "testedCommitBlobSha256": "aa1c73d2ffd02c77c7c334ce984412f9870a1c7f8abb79e08603fb0c2d1cef10",
+      "expectedHeadBlobSha256": "aa1c73d2ffd02c77c7c334ce984412f9870a1c7f8abb79e08603fb0c2d1cef10"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/production/pr11-disclosure-2026-10-29/disclosure-executive-overview.png",
+      "sha256": "8840da3fe28e7213b4e83f0f8b86a7ead928e2dde02011eccb6d5cc0a43ed110",
+      "scope": "Offline synthetic sanitized component fixture; 375px; not Production UAT"
+    },
+    {
+      "path": "docs/production/pr11-disclosure-2026-10-29/disclosure-activity-detail.png",
+      "sha256": "3c0d5dfe67990a5de56d1a1f57120b6edaba00d817434c6ca94e570b0ff9f11b",
+      "scope": "Offline synthetic sanitized component fixture; 375px; not Production UAT"
+    }
+  ]
+}

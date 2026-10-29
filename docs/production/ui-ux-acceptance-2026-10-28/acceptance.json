@@ -10,7 +10,7 @@
     "verification": "PASS exact branch rule; other branches retain default behavior"
   },
   "scope": "Independent local offline acceptance; screenshots contain synthetic fixtures only",
-  "productionDecision": "NO-GO pending layout owner decision and authorized production UAT",
+  "productionDecision": "NO-GO for production pending disclosure-policy owner acceptance and authorized Production UAT",
   "liveBigQueryQueriesExecuted": 0,
   "manualDeployments": 0,
   "recoveryFilesVerified": 183,
@@ -271,10 +271,15 @@
     "Human accessibility, keyboard screen-reader navigation, and disclosure-control review with real production data"
   ],
   "resolvedReviewFindings": [
-    "Secondary disclosure eliminated: implemented complementary suppression across executive overview, participant reach/analysis, breakdown matrices, and full/filtered CSV exports to prevent exact small cell mathematical reconstruction (e.g., 9800 - 5200 - 4597 = 3 withheld count)",
+    "SUPERSEDED: previous claim of eliminated secondary disclosure was disproved by tight-margin and jointly published-output cases; see PR11_FINAL_DISCLOSURE_ACCEPTANCE.md.",
     "Executive sex-profile population reconciled with total attendance (9,800) and reportable attendance (8,820); misleading caption corrected; synthetic fixtures reconciled",
     "Locked Executive Overview hierarchy restored: Compact KPI cards -> Programme Progress -> Indicator Status -> Geographic Coverage -> Participant Profiles -> Partner & Data Quality Attention -> Management Decision Summary",
     "Geographic Coverage layout updated for desktop: Large custom Nepal map on left, interactive district ranking on right, paired comparison matrices below; stacks cleanly on small devices",
     "Technical category keys converted to user-facing labels (Hill Dalit, Terai Dalit, Brahmin / Chhetri, Other Caste, With/Without Disability, 15-19, etc.) without altering BigQuery schema fields"
-  ]
+  ],
+  "recordStatus": "Historical UI/UX evidence; superseded for disclosure acceptance on 2026-10-29",
+  "supersededBy": "docs/production/PR11_FINAL_DISCLOSURE_ACCEPTANCE.md",
+  "codeCommitScope": "Historical tested revision only; not the final disclosure-tested revision",
+  "historicalProductionDecision": "NO-GO pending layout owner decision and authorized production UAT",
+  "withdrawnDisclosureClaim": "Secondary disclosure eliminated: implemented complementary suppression across executive overview, participant reach/analysis, breakdown matrices, and full/filtered CSV exports to prevent exact small cell mathematical reconstruction (e.g., 9800 - 5200 - 4597 = 3 withheld count)"
 }

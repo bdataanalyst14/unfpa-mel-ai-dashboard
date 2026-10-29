@@ -1,10 +1,12 @@
 # PR #11 — Final Privacy and Evidence Closeout
 
+> **Superseded on 29 October 2026.** Disclosure acceptance and release decisions in this historical report are withdrawn. See [PR11_FINAL_DISCLOSURE_ACCEPTANCE.md](PR11_FINAL_DISCLOSURE_ACCEPTANCE.md) for the corrected policy, tested revision, evidence and remaining risks. Historical test results and hashes below retain their original scope; they do not certify the revised code or Production UAT.
+
 - **Date:** 29 October 2026
 - **Workspace:** `C:\Users\buchaudhary_unfpa\CodexWork\unfpa-mel-dashboard-google-auth`
 - **Branch:** `release/ui-ux-acceptance-2026-10-28`
 - **Baseline Commit:** `41bba0cbc63485b4f81a2d1ea911ca0279eff48d`
-- **Tested Code Revision:** `85ce09b1b96170b8a237b9c9c17b1e3a8fd30e30`
+- **Historical Tested Code Revision:** `85ce09b1b96170b8a237b9c9c17b1e3a8fd30e30`
 - **Pull Request:** PR #11 ([unfpa-mel-ai-dashboard/pull/11](https://github.com/bdataanalyst14/unfpa-mel-ai-dashboard/pull/11))
 - **Production Release Recommendation:** **GO for PR #11 review and approval; NO-GO for direct production deployment until live production UAT gates are executed with authorized credentials.**
 
@@ -24,12 +26,12 @@ A systematic disclosure audit evaluated all six operational and analytical surfa
 
 | Audit Surface | Baseline Vulnerability Identified | Mitigation / Enforced Safe Behavior | Status |
 |---|---|---|---|
-| **1. Executive sex-profile totals & withheld categories** | Single category `<5` (`Other: <5`) with unsuppressed visible `Total: 9,800` and `Female: 5,200`, `Male: 4,597` allowed exact derivation: $9800 - (5200 + 4597) = 3$. | Enforced `suppressCategoryGroup` in `dashboard-page-data-service.ts`. When exactly one category is $<5$, the next smallest positive cell (`Male: 4,597`) is complementarily suppressed (`displayValue: 'Suppressed'`, `value: null`). Subtraction now yields $9800 - 5200 = 4600$, concealing both individual counts. Fixture reconciled. | **RESOLVED** |
-| **2. Donut percentages & published subtotals** | Risk that percentages calculated against true total could reveal the exact value of a suppressed cell. | `aggregate-pie.tsx` computes percentages against `publishedTotal` ($Total - \sum SmallCells$), displaying an explicit partial denominator label and withholding percentages for private/withheld segments. | **VERIFIED SAFE** |
-| **3. Participant demographic profiles (Sex, Disability, Caste)** | When one category in a closed disaggregation was $<5$ and total attendance was known, subtraction could reveal the withheld group. | Integrated `suppressCategoryGroup` across `sexGroup`, `disabilityGroup`, and `casteGroup` in `participant-analysis.ts` and `participant-metrics.ts`. Any single small cell triggers complementary suppression on the smallest companion positive category. | **RESOLVED** |
-| **4. Geographic and partner breakdowns** | Breakdown matrices (Implementation by province, district, partner, project) where a row/column total is published alongside a single suppressed cell. | Introduced `protectSectionRows` in `dashboard-page-data-service.ts` and row protection in `participant-analysis.ts`. If a sub-dimension row/column has a visible margin and a single withheld count, complementary suppression is applied to the adjacent smallest cell. | **RESOLVED** |
-| **5. Narrow filter combinations** | Highly specific filter selections (e.g. single municipality + single partner + single quarter) reducing cell counts to $<5$. | Both aggregate query filters and activity detail filter pipelines pass results through the unified suppression pipeline, ensuring complementary suppression holds even in small filtered cohorts. | **RESOLVED** |
-| **6. Full and visible-column CSV exports** | Direct export of rows where individual disaggregation cells (e.g., `other_sex: 1`) are withheld as `'<5'`, but total columns or `gender_disagg_sum` / `caste_disagg_sum` remained visible. | In `activity-detail-service.ts`, `safeActivityRow` now applies `suppressCategoryGroup` to Sex, Disability, and Caste disaggregations. Furthermore, `gender_disagg_sum` and `caste_disagg_sum` are automatically suppressed whenever *any* category in their group is suppressed. | **RESOLVED** |
+| **1. Executive sex-profile totals & withheld categories** | Single category `<5` (`Other: <5`) with unsuppressed visible `Total: 9,800` and `Female: 5,200`, `Male: 4,597` allowed exact derivation: $9800 - (5200 + 4597) = 3$. | Enforced `suppressCategoryGroup` in `dashboard-page-data-service.ts`. When exactly one category is $<5$, the next smallest positive cell (`Male: 4,597`) is complementarily suppressed (`displayValue: 'Suppressed'`, `value: null`). Subtraction now yields $9800 - 5200 = 4600$, concealing both individual counts. Fixture reconciled. | **SUPERSEDED** |
+| **2. Donut percentages & published subtotals** | Risk that percentages calculated against true total could reveal the exact value of a suppressed cell. | `aggregate-pie.tsx` computes percentages against `publishedTotal` ($Total - \sum SmallCells$), displaying an explicit partial denominator label and withholding percentages for private/withheld segments. | **SUPERSEDED** |
+| **3. Participant demographic profiles (Sex, Disability, Caste)** | When one category in a closed disaggregation was $<5$ and total attendance was known, subtraction could reveal the withheld group. | Integrated `suppressCategoryGroup` across `sexGroup`, `disabilityGroup`, and `casteGroup` in `participant-analysis.ts` and `participant-metrics.ts`. Any single small cell triggers complementary suppression on the smallest companion positive category. | **SUPERSEDED** |
+| **4. Geographic and partner breakdowns** | Breakdown matrices (Implementation by province, district, partner, project) where a row/column total is published alongside a single suppressed cell. | Introduced `protectSectionRows` in `dashboard-page-data-service.ts` and row protection in `participant-analysis.ts`. If a sub-dimension row/column has a visible margin and a single withheld count, complementary suppression is applied to the adjacent smallest cell. | **SUPERSEDED** |
+| **5. Narrow filter combinations** | Highly specific filter selections (e.g. single municipality + single partner + single quarter) reducing cell counts to $<5$. | Both aggregate query filters and activity detail filter pipelines pass results through the unified suppression pipeline, ensuring complementary suppression holds even in small filtered cohorts. | **SUPERSEDED** |
+| **6. Full and visible-column CSV exports** | Direct export of rows where individual disaggregation cells (e.g., `other_sex: 1`) are withheld as `'<5'`, but total columns or `gender_disagg_sum` / `caste_disagg_sum` remained visible. | In `activity-detail-service.ts`, `safeActivityRow` now applies `suppressCategoryGroup` to Sex, Disability, and Caste disaggregations. Furthermore, `gender_disagg_sum` and `caste_disagg_sum` are automatically suppressed whenever *any* category in their group is suppressed. | **SUPERSEDED** |
 
 ---
 
@@ -42,7 +44,7 @@ The core complementary suppression engine is housed in `src/lib/server/suppressi
 2. **Complementary Suppression (`applyComplementarySuppression`)**:
    - Given a finite partition of counts $\{c_1, c_2, \dots, c_k\}$ summing to a margin total $T$:
    - If the total $T$ is itself suppressed ($T < 5$), no subtraction is possible.
-   - If the number of primary suppressed cells in the partition is $\ge 2$, their sum is indeterminate to an external observer; neither count can be resolved.
+   - The previous claim that two or more small cells are inherently indeterminate was incorrect: [8,1,1] with exact total 10 reveals both small values. This claim is withdrawn.
    - If **exactly 1 cell** is suppressed, an observer could calculate $c_{\text{suppressed}} = T - \sum_{i \neq \text{suppressed}} c_i$.
    - **Remedy**: The engine identifies the unsuppressed cell with the minimum positive value and marks it as `complementary_cell` (`displayValue: 'Suppressed'`, `value: null`). Subtraction now yields only the joint sum of two categories, mathematically protecting the small count.
 3. **Disaggregation Sum Rule (`safeActivityRow`)**:

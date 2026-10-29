@@ -1,5 +1,7 @@
 # Independent Codex UI/UX acceptance — 28 October 2026
 
+> **Superseded on 29 October 2026.** Disclosure acceptance and release decisions in this historical report are withdrawn. See [PR11_FINAL_DISCLOSURE_ACCEPTANCE.md](PR11_FINAL_DISCLOSURE_ACCEPTANCE.md) for the corrected policy, tested revision, evidence and remaining risks. Historical test results and hashes below retain their original scope; they do not certify the revised code or Production UAT.
+
 Baseline: `41bba0cbc63485b4f81a2d1ea911ca0279eff48d`.
 Release branch: `release/ui-ux-acceptance-2026-10-28`.
 PR: #11 (`https://github.com/bdataanalyst14/unfpa-mel-ai-dashboard/pull/11`).
